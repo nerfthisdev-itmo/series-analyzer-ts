@@ -17,9 +17,7 @@ class IntervalVariationSeries {
         this._min = Math.min(...data)
         this._max = Math.max(...data)
 
-        // Принудительная инициализация статистического ряда
-
-        // Инициализация cumulativeValues
+        // init cumulative values
         let prev = 0
         this.cumulativeValues = []
         for (const count of Object.values(this._statisticalSeries)) {
