@@ -51,7 +51,7 @@ export class IntervalVariationSeries {
   }
 
   get intervalStartingPoint(): number {
-    return this.min / 2;
+    return this.min;
   }
 
   get intervalBorders(): Array<number> {
