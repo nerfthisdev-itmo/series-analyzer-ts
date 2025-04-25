@@ -32,11 +32,14 @@ describe("IntervalVariationSeries", () => {
     const stats = series.statisticalSeries;
 
     const expectedStats = {
-      "[1.0, 2.8)": 1,
-      "[2.8, 4.6)": 2,
-      "[4.6, 6.4)": 3,
-      "[6.4, 8.2)": 2,
-      "[8.2, 10.0)": 1,
+      "[143.0: 148.375)": 5,
+      "[148.375: 153.75)": 20,
+      "[153.75: 159.125)": 45,
+      "[159.125: 164.5)": 50,
+      "[164.5: 169.875)": 49,
+      "[169.875: 175.25)": 35,
+      "[175.25: 180.625)": 5,
+      "[180.625: 186.0)": 2,
     };
 
     expect(Object.keys(stats)).toEqual(Object.keys(expectedStats));
