@@ -39,7 +39,7 @@ describe("IntervalVariationSeries", () => {
       "[164.5, 169.875)": 49,
       "[169.875, 175.25)": 35,
       "[175.25, 180.625)": 5,
-      "[180.625, 186.0)": 2,
+      "[180.625, 186)": 2,
     };
 
     expect(Object.keys(stats)).toEqual(Object.keys(expectedStats));
