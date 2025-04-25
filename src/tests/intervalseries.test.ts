@@ -21,14 +21,14 @@ describe("IntervalVariationSeries", () => {
   ];
   const series = new IntervalVariationSeries(testData);
 
-  it("should calculate basic statistics correctly", () => {
+  it("calculate basic statistics correctly", () => {
     expect(series.min).toBe(143);
     expect(series.max).toBe(186);
     expect(series.range).toBe(43);
     expect(series.n).toBe(211);
   });
 
-  it("should create correct statistical series", () => {
+  it("create correct statistical series", () => {
     const stats = series.statisticalSeries;
 
     const expectedStats = {
@@ -45,18 +45,39 @@ describe("IntervalVariationSeries", () => {
     expect(Object.keys(stats)).toEqual(Object.keys(expectedStats));
     expect(Object.values(stats)).toEqual(Object.values(expectedStats));
   });
-  it("should calculate expected value correctly", () => {
+  it("calculate expected value correctly", () => {
     const expected = 162.8824;
     expect(series.expectedValue).toBeCloseTo(expected, 1);
   });
 
-  it("should calculate median correctly", () => {
+  it("calculate median correctly", () => {
     const expectedMedian = 162.94125;
     expect(series.median).toBeCloseTo(expectedMedian, 1);
   });
 
-  it("should calculate mode correctly", () => {
+  it("calculate mode correctly", () => {
     const expectedMode = 163.6041;
     expect(series.mode).toBeCloseTo(expectedMode, 1);
+  });
+
+  it("calculate moments correctly", () => {
+    const expectedMoment1 = -5.985085401411088e-16;
+    const expectedMoment2 = 1;
+    const expectedMoment3 = -0.0082653534;
+    const expectedMoment4 = 2.5360411749;
+    expect(series.getNthMoment(1)).toBeCloseTo(expectedMoment1, 1);
+    expect(series.getNthMoment(2)).toBeCloseTo(expectedMoment2, 1);
+    expect(series.getNthMoment(3)).toBeCloseTo(expectedMoment3, 1);
+    expect(series.getNthMoment(4)).toBeCloseTo(expectedMoment4, 1);
+  });
+
+  it("calculate interval length correctly", () => {
+    const intervalLength = 5.375;
+    expect(series.intervalLength).toBe(intervalLength);
+  });
+
+  it("calculate kurtosis correctly", () => {
+    const kurtosis = -0.4639588251;
+    expect(series.getNthMoment(4) - 3).toBeCloseTo(kurtosis);
   });
 });
