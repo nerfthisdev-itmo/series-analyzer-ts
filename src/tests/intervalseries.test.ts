@@ -45,4 +45,18 @@ describe("IntervalVariationSeries", () => {
     expect(Object.keys(stats)).toEqual(Object.keys(expectedStats));
     expect(Object.values(stats)).toEqual(Object.values(expectedStats));
   });
+  it("should calculate expected value correctly", () => {
+    const expected = 162.8824;
+    expect(series.expectedValue).toBeCloseTo(expected, 1);
+  });
+
+  it("should calculate median correctly", () => {
+    const expectedMedian = 162.94125;
+    expect(series.median).toBeCloseTo(expectedMedian, 1);
+  });
+
+  it("should calculate mode correctly", () => {
+    const expectedMode = 163.6041;
+    expect(series.mode).toBeCloseTo(expectedMode, 1);
+  });
 });
