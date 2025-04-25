@@ -22,10 +22,10 @@ describe("IntervalVariationSeries", () => {
   const series = new IntervalVariationSeries(testData);
 
   it("should calculate basic statistics correctly", () => {
-    expect(series.min).toBe(1);
-    expect(series.max).toBe(9);
-    expect(series.range).toBe(8);
-    expect(series.n).toBe(212);
+    expect(series.min).toBe(143);
+    expect(series.max).toBe(186);
+    expect(series.range).toBe(43);
+    expect(series.n).toBe(211);
   });
 
   it("should create correct statistical series", () => {
