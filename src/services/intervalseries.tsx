@@ -1,4 +1,4 @@
-class IntervalVariationSeries {
+export class IntervalVariationSeries {
     private data: Array<number>
     private n: number
     private _min: number

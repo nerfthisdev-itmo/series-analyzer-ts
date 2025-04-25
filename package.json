@@ -7,10 +7,10 @@
     "start": "vite --port 3000",
     "build": "vite build && tsc",
     "serve": "vite preview",
-    "test": "vitest run",
     "lint": "eslint",
     "format": "prettier",
-    "check": "prettier --write . && eslint --fix"
+    "check": "prettier --write . && eslint --fix",
+    "test": "nyc ./node_modules/.bin/_mocha 'test/**/*.test.ts'"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.6",
@@ -24,17 +24,12 @@
   },
   "devDependencies": {
     "@tanstack/eslint-config": "^0.1.0",
-    "@testdeck/mocha": "^0.3.3",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "^16.2.0",
-    "@types/chai": "^5.2.1",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@vitejs/plugin-react": "^4.3.4",
-    "chai": "^5.2.0",
     "jsdom": "^26.0.0",
-    "mocha": "^11.1.0",
-    "nyc": "^17.1.0",
     "prettier": "^3.5.3",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2",
