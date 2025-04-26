@@ -7,7 +7,8 @@ export class Variation {
   private _n: number;
   private _min: number;
   private _max: number;
-  private _statisticalSeries;
+  private _statisticalSeries: StatisticalSeries;
+  private _mode: number;
 
   constructor(data: Array<number>) {
     this.data = [...data].sort((a, b) => a - b);
@@ -15,6 +16,7 @@ export class Variation {
     this._min = Math.min(...data);
     this._max = Math.max(...data);
     this._statisticalSeries = this.calcStatisticalSeries();
+    this._mode = this.getMode();
   }
 
   get variationseries(): Array<number> {
