@@ -9,21 +9,13 @@ export class IntervalVariationSeries {
   private _binCenters: Array<number> | null = null;
   private _expectedValue: number | null = null;
   private _sampleVariance: number | null = null;
-  public cumulativeValues: Array<number> = [];
+  public _cumulativeValues: Array<number> = [];
 
   constructor(data: Array<number>) {
     this.data = [...data].sort((a, b) => a - b);
     this._n = data.length;
     this._min = Math.min(...data);
     this._max = Math.max(...data);
-
-    // init cumulative values
-    let prev = 0;
-    this.cumulativeValues = [];
-    for (const count of Object.values(this._statisticalSeries)) {
-      this.cumulativeValues.push(prev);
-      prev += count;
-    }
   }
 
   get n(): number {
@@ -88,6 +80,19 @@ export class IntervalVariationSeries {
       }
     }
     return this._statisticalSeries;
+  }
+
+  get cumulativeValues(): Array<number> {
+    if (this._cumulativeValues.length === 0) {
+      let prev = 0;
+      const values = [];
+      for (const count of Object.values(this.statisticalSeries)) {
+        values.push(prev);
+        prev += count;
+      }
+      this._cumulativeValues = values;
+    }
+    return this._cumulativeValues;
   }
 
   get binCenters(): Array<number> {
