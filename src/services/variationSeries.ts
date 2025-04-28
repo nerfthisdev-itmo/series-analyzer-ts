@@ -76,8 +76,9 @@ export class VariationSeries {
 
   get expectedValueEstimate(): number {
     if (!this._expectedValueEstimate) {
+      const arrSum = this.data.reduce((sum:number, p:number) => sum + p)
       this._expectedValueEstimate =
-        this.data.reduce((sum, val) => sum + val, 0) / this.data.length;
+        (1 / this.n) * arrSum;
     }
     return this._expectedValueEstimate;
   }
