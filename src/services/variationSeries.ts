@@ -33,6 +33,10 @@ export class VariationSeries {
     return this.max - this.min;
   }
 
+  get initial_data(): Array<number> {
+    return this.data;
+  }
+
   get statisticalSeries(): Record<string, number> {
     if (Object.keys(this._statisticalSeries).length === 0) {
       const freqMap: Record<string, number> = {};
@@ -76,9 +80,8 @@ export class VariationSeries {
 
   get expectedValueEstimate(): number {
     if (!this._expectedValueEstimate) {
-      const arrSum = this.data.reduce((sum:number, p:number) => sum + p)
-      this._expectedValueEstimate =
-        (1 / this.n) * arrSum;
+      const arrSum = this.data.reduce((sum: number, p: number) => sum + p);
+      this._expectedValueEstimate = (1 / this.n) * arrSum;
     }
     return this._expectedValueEstimate;
   }
@@ -112,7 +115,7 @@ export class VariationSeries {
     if (this._cumulativeValues.length === 0) {
       let prev = 0;
       this._cumulativeValues = Object.values(this.statisticalSeries).map(
-        (count) => {
+        count => {
           const current = prev;
           prev += count;
           return current;
@@ -136,6 +139,18 @@ export class VariationSeries {
       if (value < x) count++;
     }
     return count / this.data.length;
+  }
+
+  getEmpiricalDistributionFunctionValue(x: number): number {
+    let count = 0;
+
+    this.data.forEach(value => {
+      if (value <= x) {
+        count++;
+      }
+    });
+
+    return count / this._n;
   }
 }
 
