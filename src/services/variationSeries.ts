@@ -1,5 +1,3 @@
-import { cdf } from 'statistics.js';
-
 export class Variation {
   private data: Array<number>;
   private _n: number;
