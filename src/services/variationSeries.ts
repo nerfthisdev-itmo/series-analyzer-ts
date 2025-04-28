@@ -1,4 +1,4 @@
-export class Variation {
+export class VariationSeries {
   private data: Array<number>;
   private _n: number;
   private _min: number;
