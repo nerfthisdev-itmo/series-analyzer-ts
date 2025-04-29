@@ -10,7 +10,8 @@
     "lint": "eslint",
     "format": "prettier",
     "check": "prettier --write . && eslint --fix",
-    "test": "vitest run"
+    "test": "vitest run",
+    "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json}\""
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.6",
