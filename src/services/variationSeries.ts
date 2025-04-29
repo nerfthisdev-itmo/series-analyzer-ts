@@ -115,7 +115,7 @@ export class VariationSeries {
     if (this._cumulativeValues.length === 0) {
       let prev = 0;
       this._cumulativeValues = Object.values(this.statisticalSeries).map(
-        count => {
+        (count) => {
           const current = prev;
           prev += count;
           return current;
@@ -133,18 +133,18 @@ export class VariationSeries {
     );
   }
 
+  // getCdf(x: number): number {
+  //   let count = 0;
+  //   for (const value of this.data) {
+  //     if (value < x) count++;
+  //   }
+  //   return count / this.data.length;
+  // }
+
   getCdf(x: number): number {
     let count = 0;
-    for (const value of this.data) {
-      if (value < x) count++;
-    }
-    return count / this.data.length;
-  }
 
-  getEmpiricalDistributionFunctionValue(x: number): number {
-    let count = 0;
-
-    this.data.forEach(value => {
+    this.data.forEach((value) => {
       if (value <= x) {
         count++;
       }
