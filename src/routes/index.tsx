@@ -1,8 +1,8 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { EmpiricalDistributionFunctionGraph } from '@/components/EmpiricalDistributionFunctionGraph';
-import { VariationSeries } from '@/services/variationSeries';
+import { createFileRoute } from "@tanstack/react-router";
+import { EmpiricalDistributionFunctionGraph } from "@/components/EmpiricalDistributionFunctionGraph";
+import { VariationSeries } from "@/services/variationSeries";
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute("/")({
   component: App,
 });
 

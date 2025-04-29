@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { Activity } from 'lucide-react';
-import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
-import type { VariationSeries } from '@/services/variationSeries';
+import { Activity } from "lucide-react";
+import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import type { VariationSeries } from "@/services/variationSeries";
 
-import type { ChartConfig } from '@/components/ui/chart';
+import type { ChartConfig } from "@/components/ui/chart";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from '@/components/ui/chart';
+} from "@/components/ui/chart";
 
 import {
   Card,
@@ -17,12 +17,12 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
 
 const chartConfig = {
   desktop: {
-    label: 'Desktop',
-    color: 'hsl(var(--chart-1))',
+    label: "Desktop",
+    color: "hsl(var(--chart-1))",
     icon: Activity,
   },
 } satisfies ChartConfig;
@@ -36,9 +36,9 @@ export function EmpiricalDistributionFunctionGraph({
 }) {
   const x_values = variationSeries.initial_data;
 
-  let data = x_values.map(value => ({
+  let data = x_values.map((value) => ({
     value: value,
-    probability: variationSeries.getEmpiricalDistributionFunctionValue(value),
+    probability: variationSeries.getCdf(value),
   }));
 
   data = [

@@ -1,7 +1,7 @@
-import { describe, expect, it } from 'vitest';
-import { IntervalVariationSeries } from '@/services/intervalSeries';
+import { describe, expect, it } from "vitest";
+import { IntervalVariationSeries } from "@/services/intervalSeries";
 
-describe('IntervalVariationSeries', () => {
+describe("IntervalVariationSeries", () => {
   const testData = [
     174, 166, 157, 161, 165, 162, 161, 164, 172, 158, 161, 163, 160, 154, 171,
     160, 168, 171, 161, 162, 168, 164, 166, 159, 172, 154, 154, 153, 159, 160,
@@ -21,52 +21,52 @@ describe('IntervalVariationSeries', () => {
   ];
   const series = new IntervalVariationSeries(testData);
 
-  it('calculate basic statistics correctly', () => {
+  it("calculate basic statistics correctly", () => {
     expect(series.min).toBe(143);
     expect(series.max).toBe(186);
     expect(series.range).toBe(43);
     expect(series.n).toBe(211);
   });
 
-  it('calculate cumulative valuse', () => {
+  it("calculate cumulative valuse", () => {
     expect(series.cumulativeValues).toStrictEqual([
       0, 5, 25, 70, 120, 169, 204, 209,
     ]);
   });
 
-  it('create correct statistical series', () => {
+  it("create correct statistical series", () => {
     const stats = series.statisticalSeries;
 
     const expectedStats = {
-      '[143, 148.375)': 5,
-      '[148.375, 153.75)': 20,
-      '[153.75, 159.125)': 45,
-      '[159.125, 164.5)': 50,
-      '[164.5, 169.875)': 49,
-      '[169.875, 175.25)': 35,
-      '[175.25, 180.625)': 5,
-      '[180.625, 186)': 2,
+      "[143, 148.375)": 5,
+      "[148.375, 153.75)": 20,
+      "[153.75, 159.125)": 45,
+      "[159.125, 164.5)": 50,
+      "[164.5, 169.875)": 49,
+      "[169.875, 175.25)": 35,
+      "[175.25, 180.625)": 5,
+      "[180.625, 186)": 2,
     };
 
     expect(Object.keys(stats)).toEqual(Object.keys(expectedStats));
     expect(Object.values(stats)).toEqual(Object.values(expectedStats));
   });
-  it('calculate expected value correctly', () => {
+  it("calculate expected value correctly", () => {
     const expected = 162.8824;
     expect(series.expectedValue).toBeCloseTo(expected, 1);
   });
 
-  it('calculate median correctly', () => {
+  it("calculate median correctly", () => {
     const expectedMedian = 162.94125;
     expect(series.median).toBeCloseTo(expectedMedian, 1);
   });
 
-  it('calculate mode correctly', () => {
+  it("calculate mode correctly", () => {
     const expectedMode = 163.6041;
     expect(series.mode).toBeCloseTo(expectedMode, 1);
   });
 
-  it('calculate moments correctly', () => {
+  it("calculate moments correctly", () => {
     const expectedMoment1 = -5.985085401411088e-16;
     const expectedMoment2 = 1;
     const expectedMoment3 = -0.0082653534;
@@ -77,12 +77,12 @@ describe('IntervalVariationSeries', () => {
     expect(series.getNthMoment(4)).toBeCloseTo(expectedMoment4, 1);
   });
 
-  it('calculate interval length correctly', () => {
+  it("calculate interval length correctly", () => {
     const intervalLength = 5.375;
     expect(series.intervalLength).toBe(intervalLength);
   });
 
-  it('calculate kurtosis correctly', () => {
+  it("calculate kurtosis correctly", () => {
     const kurtosis = -0.4639588251;
     expect(series.getNthMoment(4) - 3).toBeCloseTo(kurtosis);
   });
