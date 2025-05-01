@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 
 export function ThemeToggle() {
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(true);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") || "light";
@@ -24,7 +24,7 @@ export function ThemeToggle() {
       onClick={toggleTheme}
       className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
     >
-      {isDark ? "dark" : "light"}
+      {isDark ? "🌙" : "☀️"}
     </button>
   );
 }
