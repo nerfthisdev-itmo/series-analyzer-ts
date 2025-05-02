@@ -35,19 +35,15 @@ export function CdfGraph({
   offset_from_min?: number;
 }) {
   const x_values = variationSeries.initial_data;
+  const domainStart = variationSeries.min - offset_from_min;
+  const uniqueValues = Array.from(new Set(x_values)).sort((a, b) => a - b);
 
-  let data = x_values.map((value) => ({
+  let data = uniqueValues.map((value) => ({
     value: value,
     probability: variationSeries.getCdf(value),
   }));
 
-  data = [
-    {
-      value: variationSeries.min - offset_from_min,
-      probability: 0,
-    },
-    ...data,
-  ];
+  data = [{ value: domainStart, probability: 0 }, ...data];
 
   return (
     <Card>
@@ -73,6 +69,7 @@ export function CdfGraph({
               tickLine={false}
               axisLine={false}
               tickMargin={8}
+              domain={[domainStart, variationSeries.max]}
             />
             <ChartTooltip
               cursor={false}
