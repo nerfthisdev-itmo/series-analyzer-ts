@@ -20,10 +20,14 @@ import {
 } from "@/components/ui/card";
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  value: {
+    label: "Value",
     color: "hsl(var(--chart-1))",
     icon: Activity,
+  },
+  probability: {
+    label: "Probability",
+    color: "hsl(var(--chart-1))",
   },
 } satisfies ChartConfig;
 
@@ -78,9 +82,9 @@ export function CdfGraph({
             <Area
               dataKey="probability"
               type="step"
-              fill="var(--color-desktop)"
+              fill="var(--color-value)"
               fillOpacity={0.4}
-              stroke="var(--color-desktop)"
+              stroke="var(--color-value)"
             />
           </AreaChart>
         </ChartContainer>
