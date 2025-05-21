@@ -1,25 +1,35 @@
+import { DataInput } from "./ui/DataInput";
 import { CdfGraph } from "./CdfGraph";
 import { PolygonGraph } from "./PolygonGraph";
 import { VariationSeries } from "@/services/variationSeries";
+import { useVariationSeries } from "@/context/VariationSeriesContext";
+import { IntervalVariationSeries } from "@/services/intervalSeries";
 
-const data = new VariationSeries([
-  2, 0, 1, 2, 0, 0, 2, 2, 1, 1, 0, 0, 0, 0, 1, 2, 0, 4, 0, 0, 1, 0, 4, 1, 1, 0,
-  2, 1, 0, 0, 2, 1, 1, 1, 1, 0, 1, 1, 0, 3, 1, 2, 1, 0, 1, 2, 1, 2, 3, 0, 2, 4,
-  0, 0, 0, 3, 0, 2, 0, 2, 2, 2, 1, 1,
-]);
 const MainPage = () => {
+  const { seriesA, seriesB, setSeries } = useVariationSeries();
+
+  const handleSubmit = (a: Array<number>, b: Array<number>) => {
+    const varA = new VariationSeries(a);
+    const varB = new IntervalVariationSeries(b);
+    setSeries(varA, varB);
+  };
+
   return (
-    <div>
-      <div className='flex gap-3 min-w-full'>
-        <div className='w-1/2'>
-          <CdfGraph variationSeries={data}></CdfGraph>
+    <div className='p-6 space-y-6'>
+      <DataInput onSubmit={handleSubmit} />
+      {seriesA && seriesB && (
+        <div className='flex gap-3 min-w-full'>
+          <div className='w-1/2'>
+            <CdfGraph variationSeries={seriesA} />
+            <PolygonGraph variationSeries={seriesA} />
+          </div>
+          {/* <div className='w-1/2'> */}
+          {/*   <CdfGraph variationSeries={seriesB} /> */}
+          {/*   <PolygonGraph variationSeries={seriesB} /> */}
+          {/* </div> */}
         </div>
-        <div className='w-1/2'>
-          <PolygonGraph variationSeries={data}></PolygonGraph>
-        </div>
-      </div>
+      )}
     </div>
   );
 };
-
 export default MainPage;
