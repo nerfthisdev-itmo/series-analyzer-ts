@@ -1,6 +1,6 @@
 "use client";
 
-import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
+import { CartesianGrid, Line, LineChart, ReferenceLine, XAxis } from "recharts";
 
 import type { ChartConfig } from "@/components/ui/chart";
 import type { IntervalVariationSeries } from "@/services/intervalSeries";
@@ -21,6 +21,10 @@ const chartConfig = {
   cumulative_freq: {
     label: "Number of occurrences",
     color: "hsl(var(--chart-1))",
+  },
+  median: {
+    label: "Median",
+    color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig;
 
@@ -43,6 +47,11 @@ export function CumulativeGraph({
     });
   });
 
+  const n = intervalVariationSeries.n
+  const domain = [intervalVariationSeries.binCenters[0], intervalVariationSeries.binCenters[n - 1]]
+
+  const medianValue = intervalVariationSeries.median
+
   return (
     <Card>
       <CardHeader>
@@ -64,10 +73,13 @@ export function CumulativeGraph({
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey='bin_center'
+              type="number"
+              domain={domain}
               tickLine={false}
+              tickCount={data.length}
               axisLine={false}
               tickMargin={8}
-              tickFormatter={(value) => value.slice(0, 3)}
+            // tickFormatter={(value) => value.slice(0, 3)}
             />
             <ChartTooltip
               cursor={false}
@@ -83,6 +95,18 @@ export function CumulativeGraph({
               }}
               activeDot={{
                 r: 6,
+              }}
+            />
+            <ReferenceLine
+              x={medianValue}
+              stroke="var(--color-median)"
+              strokeWidth={2}
+              strokeDasharray="5 5"
+              label={{
+                value: 'Median',
+                position: 'insideRight',
+                fill: 'var(--color-median)',
+                fontSize: 12,
               }}
             />
           </LineChart>
