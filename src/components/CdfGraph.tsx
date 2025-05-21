@@ -69,7 +69,7 @@ export function CdfGraph({
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="value"
+              dataKey='value'
               tickLine={false}
               axisLine={false}
               tickMargin={8}
@@ -80,11 +80,11 @@ export function CdfGraph({
               content={<ChartTooltipContent hideLabel />}
             />
             <Area
-              dataKey="probability"
-              type="step"
-              fill="var(--color-value)"
+              dataKey='probability'
+              type='step'
+              fill='var(--color-value)'
               fillOpacity={0.4}
-              stroke="var(--color-value)"
+              stroke='var(--color-value)'
             />
           </AreaChart>
         </ChartContainer>

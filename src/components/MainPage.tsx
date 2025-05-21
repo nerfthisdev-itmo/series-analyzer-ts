@@ -10,11 +10,11 @@ const data = new VariationSeries([
 const MainPage = () => {
   return (
     <div>
-      <div className="flex gap-3 min-w-full">
-        <div className="w-1/2">
+      <div className='flex gap-3 min-w-full'>
+        <div className='w-1/2'>
           <CdfGraph variationSeries={data}></CdfGraph>
         </div>
-        <div className="w-1/2">
+        <div className='w-1/2'>
           <PolygonGraph variationSeries={data}></PolygonGraph>
         </div>
       </div>

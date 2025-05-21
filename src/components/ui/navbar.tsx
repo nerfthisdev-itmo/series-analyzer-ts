@@ -7,11 +7,11 @@ export function Navbar() {
   const pathname = useLocation({ select: (location) => location.pathname });
 
   return (
-    <nav className="bg-background border-b">
-      <div className="flex items-center justify-between h-16 px-4">
-        <div className="flex space-x-4">
+    <nav className='bg-background border-b'>
+      <div className='flex items-center justify-between h-16 px-4'>
+        <div className='flex space-x-4'>
           <Link
-            to="/tab1"
+            to='/tab1'
             className={`px-3 py-2 rounded-md ${
               pathname === "/tab1"
                 ? "bg-gray-100 dark:bg-gray-800"
@@ -21,7 +21,7 @@ export function Navbar() {
             Tab 1
           </Link>
           <Link
-            to="/"
+            to='/'
             className={`px-3 py-2 rounded-md ${
               pathname === "/tab2"
                 ? "bg-gray-100 dark:bg-gray-800"
@@ -31,7 +31,7 @@ export function Navbar() {
             Tab 2
           </Link>
           <Link
-            to="/"
+            to='/'
             className={`px-3 py-2 rounded-md ${
               pathname === "/tab3"
                 ? "bg-gray-100 dark:bg-gray-800"

@@ -52,7 +52,7 @@ export function PolygonGraph({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="w-full min-h-[200px]">
+        <ChartContainer config={chartConfig} className='w-full min-h-[200px]'>
           <LineChart
             accessibilityLayer
             data={data}
@@ -63,7 +63,7 @@ export function PolygonGraph({
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="sample_value"
+              dataKey='sample_value'
               tickLine={false}
               axisLine={false}
               tickMargin={8}
@@ -74,9 +74,9 @@ export function PolygonGraph({
               content={<ChartTooltipContent hideLabel />}
             />
             <Line
-              dataKey="number_of_occurrences"
-              type="linear"
-              stroke="var(--color-number_of_occurrences)"
+              dataKey='number_of_occurrences'
+              type='linear'
+              stroke='var(--color-number_of_occurrences)'
               strokeWidth={2}
               dot={{
                 fill: "var(--color-number_of_occurrences)",
