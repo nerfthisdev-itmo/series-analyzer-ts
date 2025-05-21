@@ -1,3 +1,5 @@
+import { jStat } from "jstat";
+
 export class VariationSeries {
   private data: Array<number>;
   private _n: number;
@@ -154,15 +156,16 @@ export class VariationSeries {
   }
 }
 
-// find a library with these functions (or make them yourself)
-const laplaceFunction = (x: number): number => {
-  return 0;
+export const laplaceFunction = (x: number): number => {
+  return x < 0 ? 0.5 * Math.exp(x) : 1 - 0.5 * Math.exp(-x);
 };
 
-const studentCoefficient = (gamma: number, n: number): number => {
-  return 0;
+export const studentCoefficient = (gamma: number, n: number): number => {
+  const degreesOfFreedom = n - 1;
+  return jStat.studentt.inv((1 + gamma) / 2, degreesOfFreedom);
 };
 
-const getInverseLaplace = (alpha: number): number => {
-  return 0;
+export const getInverseLaplace = (alpha: number): number => {
+  if (alpha < 0.5) return Math.log(2 * alpha);
+  return -Math.log(2 * (1 - alpha));
 };
