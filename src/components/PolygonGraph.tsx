@@ -2,7 +2,6 @@
 
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
 
-import { Activity } from "lucide-react";
 import type { ChartConfig } from "@/components/ui/chart";
 import type { VariationSeries } from "@/services/variationSeries";
 import {

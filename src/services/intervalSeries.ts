@@ -18,6 +18,10 @@ export class IntervalVariationSeries {
     this._max = Math.max(...data);
   }
 
+  get initial_data(): Array<number> {
+    return this.data;
+  }
+
   get n(): number {
     return this._n;
   }

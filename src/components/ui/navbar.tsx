@@ -11,9 +11,9 @@ export function Navbar() {
       <div className='flex items-center justify-between h-16 px-4'>
         <div className='flex space-x-4'>
           <Link
-            to='/tab1'
+            to='/stats'
             className={`px-3 py-2 rounded-md ${
-              pathname === "/tab1"
+              pathname === "/stats"
                 ? "bg-gray-100 dark:bg-gray-800"
                 : "hover:bg-gray-100 dark:hover:bg-gray-800"
             }`}
