@@ -1,3 +1,6 @@
+import { jStat } from "jstat";
+import { getInverseLaplace, studentCoefficient } from "./variationSeries";
+
 export class IntervalVariationSeries {
   private data: Array<number>;
   private _n: number;
@@ -204,5 +207,91 @@ export class IntervalVariationSeries {
       if (value < x) count++;
     }
     return count / this._n;
+  }
+
+  public getLognormalParams(): { mu: number; sigma: number } {
+    const logData = this.data.map((x) => Math.log(x));
+    const mu = logData.reduce((sum, x) => sum + x, 0) / this._n;
+    const sigma = Math.sqrt(
+      logData.reduce((sum, x) => sum + (x - mu) ** 2, 0) / this._n,
+    );
+    return { mu, sigma };
+  }
+
+  public getNormalConfidenceIntervals(gamma: number = 0.95): {
+    mean: [number, number];
+    variance: [number, number];
+  } {
+    return {
+      mean: this.getNormalMeanCI(gamma),
+      variance: this.getNormalVarianceCI(gamma),
+    };
+  }
+
+  private getNormalMeanCI(gamma: number): [number, number] {
+    const t = studentCoefficient(gamma, this._n);
+    const margin = (t * this.sampleStandardDeviation) / Math.sqrt(this._n);
+    return [this.expectedValue - margin, this.expectedValue + margin];
+  }
+
+  private getNormalVarianceCI(gamma: number): [number, number] {
+    const alpha = 1 - gamma;
+    const chi2 = (p: number) => jStat.chisquare.inv(p, this._n - 1);
+    return [
+      ((this._n - 1) * this.sampleVariance) / chi2(1 - alpha / 2),
+      ((this._n - 1) * this.sampleVariance) / chi2(alpha / 2),
+    ];
+  }
+
+  // Для логнормального распределения
+  public getLognormalConfidenceIntervals(gamma: number = 0.95): {
+    mu: [number, number];
+    sigma: [number, number];
+  } {
+    const { mu, sigma } = this.getLognormalParams();
+    const z = getInverseLaplace((1 + gamma) / 2);
+    const n = this._n;
+
+    return {
+      mu: [mu - (z * sigma) / Math.sqrt(n), mu + (z * sigma) / Math.sqrt(n)],
+      sigma: [
+        sigma *
+          Math.sqrt((n - 1) / jStat.chisquare.inv((1 + gamma) / 2, n - 1)),
+        sigma *
+          Math.sqrt((n - 1) / jStat.chisquare.inv((1 - gamma) / 2, n - 1)),
+      ],
+    };
+  }
+
+  private normalCdf(x: number, mu: number, sigma: number): number {
+    return jStat.normal.cdf(x, mu, sigma);
+  }
+
+  private lognormalCdf(x: number, mu: number, sigma: number): number {
+    return x <= 0 ? 0 : jStat.normal.cdf(Math.log(x), mu, sigma);
+  }
+
+  // 2.5 Характеристики распределений
+  public getTheoreticalSkewness(
+    type: "normal" | "lognormal",
+    params: { mu: number; sigma: number },
+  ): number {
+    if (type === "normal") return 0;
+    const sigma = params.sigma;
+    return (Math.exp(sigma ** 2) + 2) * Math.sqrt(Math.exp(sigma ** 2) - 1);
+  }
+
+  public getTheoreticalKurtosis(
+    type: "normal" | "lognormal",
+    params: { mu: number; sigma: number },
+  ): number {
+    if (type === "normal") return 0;
+    const sigma = params.sigma;
+    return (
+      Math.exp(4 * sigma ** 2) +
+      2 * Math.exp(3 * sigma ** 2) +
+      3 * Math.exp(2 * sigma ** 2) -
+      6
+    );
   }
 }

@@ -1,5 +1,4 @@
 import { jStat } from "jstat";
-import { getQTableValue } from "./qTable";
 
 export type Interval = {
   left: number;
@@ -161,32 +160,32 @@ export class VariationSeries {
     return count / this._n;
   }
 
-  getConfidenceIntervalForExpectedValue(confidenceProb: number): Interval {
-    const averageValue = this.expectedValueEstimate;
-    const n = this.n;
-    const sigma = this.sampleStandardDeviationCorrected;
-    let tGamma: number;
-
-    if (n <= 30) {
-      tGamma = studentCoefficient(confidenceProb / 2 + 0.5, n - 1);
-    } else {
-      tGamma = getInverseLaplace(confidenceProb / 2 + 0.5);
-    }
-
-    const margin = (tGamma * sigma) / Math.sqrt(n);
-    return { left: averageValue - margin, right: averageValue + margin };
+  public getNormalConfidenceIntervals(gamma: number = 0.95): {
+    mean: [number, number];
+    variance: [number, number];
+  } {
+    return {
+      mean: this.getNormalMeanCI(gamma),
+      variance: this.getNormalVarianceCI(gamma),
+    };
   }
 
-  getConfidenceIntervalForStandardDeviation(gamma: number): [number, number] {
-    const sigmaCorrected = this.sampleStandardDeviationCorrected;
-    const n = this.n;
-    const q = getQTableValue(gamma, n);
+  private getNormalMeanCI(gamma: number): [number, number] {
+    const t = studentCoefficient(gamma, this._n);
+    const margin = (t * this.sampleStandardDeviation) / Math.sqrt(this._n);
+    return [
+      this.expectedValueEstimate - margin,
+      this.expectedValueEstimate + margin,
+    ];
+  }
 
-    if (q < 1) {
-      return [sigmaCorrected * (1 - q), sigmaCorrected * (1 + q)];
-    } else {
-      return [0, sigmaCorrected * (1 + q)];
-    }
+  private getNormalVarianceCI(gamma: number): [number, number] {
+    const alpha = 1 - gamma;
+    const chi2 = (p: number) => jStat.chisquare.inv(p, this._n - 1);
+    return [
+      ((this._n - 1) * this.sampleVariance) / chi2(1 - alpha / 2),
+      ((this._n - 1) * this.sampleVariance) / chi2(alpha / 2),
+    ];
   }
 }
 
@@ -199,7 +198,6 @@ export const studentCoefficient = (gamma: number, n: number): number => {
   return jStat.studentt.inv((1 + gamma) / 2, degreesOfFreedom);
 };
 
-export const getInverseLaplace = (alpha: number): number => {
-  if (alpha < 0.5) return Math.log(2 * alpha);
-  return -Math.log(2 * (1 - alpha));
+export const getInverseLaplace = (p: number): number => {
+  return jStat.normal.inv(p, 0, 1);
 };
