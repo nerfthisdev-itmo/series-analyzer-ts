@@ -29,6 +29,10 @@ const chartConfig = {
     label: "Number of occurrences",
     color: "hsl(var(--chart-1))",
   },
+  bin_center: {
+    label: "Bin center",
+    color: "hsl(var(--chart-1))",
+  },
   median: {
     label: "Median",
     color: "hsl(var(--chart-2))",
@@ -40,7 +44,7 @@ type CumulativeGraphEntry = {
   cumulative_freq: number;
 };
 
-export function CumulativeGraph({
+export function OgiveGraph({
   intervalVariationSeries,
 }: {
   intervalVariationSeries: IntervalVariationSeries;
@@ -55,7 +59,13 @@ export function CumulativeGraph({
   });
 
   const n = intervalVariationSeries.n;
-  const domain = [
+  const x_domain = [
+    0,
+    intervalVariationSeries.cumulativeValues[
+      intervalVariationSeries.intervalCount - 1
+    ],
+  ];
+  const y_domain = [
     intervalVariationSeries.binCenters[0],
     intervalVariationSeries.binCenters[n - 1],
   ];
@@ -65,9 +75,9 @@ export function CumulativeGraph({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Cumulative graph</CardTitle>
+        <CardTitle>Ogive graph</CardTitle>
         <CardDescription>
-          Constructed by accumulating a number of occurrences for each bin
+          Constructed by flipping X and Y of cumulative graph
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -82,31 +92,29 @@ export function CumulativeGraph({
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey='bin_center'
-              type='number'
-              domain={domain}
-              tickLine={false}
-              tickCount={data.length}
-              axisLine={false}
-              tickMargin={8}
-              // tickFormatter={(value) => value.slice(0, 3)}
-            />
-            <YAxis
               dataKey='cumulative_freq'
               type='number'
-              domain={domain}
+              domain={x_domain}
               tickLine={false}
               tickCount={data.length}
               axisLine={false}
               tickMargin={8}
-              // tickFormatter={(value) => value.slice(0, 3)}
+            />
+            <YAxis
+              dataKey='bin_center'
+              type='number'
+              domain={y_domain}
+              tickLine={false}
+              tickCount={data.length}
+              axisLine={false}
+              tickMargin={8}
             />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
             <Line
-              dataKey='cumulative_freq'
+              dataKey='bin_center'
               type='linear'
               stroke='var(--color-cumulative_freq)'
               strokeWidth={2}
@@ -118,13 +126,13 @@ export function CumulativeGraph({
               }}
             />
             <ReferenceLine
-              x={medianValue}
+              y={medianValue}
               stroke='var(--color-median)'
               strokeWidth={2}
               strokeDasharray='5 5'
               label={{
                 value: "Median",
-                position: "insideRight",
+                position: "insideTop",
                 fill: "var(--color-median)",
                 fontSize: 12,
               }}
