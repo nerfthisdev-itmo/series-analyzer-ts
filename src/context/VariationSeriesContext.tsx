@@ -1,11 +1,12 @@
 import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
 import type { VariationSeries } from "@/services/variationSeries";
+import type { IntervalVariationSeries } from "@/services/intervalSeries";
 
 type VariationSeriesContextType = {
   seriesA: VariationSeries | null;
-  seriesB: VariationSeries | null;
-  setSeries: (a: VariationSeries, b: VariationSeries) => void;
+  seriesB: IntervalVariationSeries | null;
+  setSeries: (a: VariationSeries, b: IntervalVariationSeries) => void;
 };
 
 const VariationSeriesContext = createContext<
@@ -18,9 +19,9 @@ export const VariationSeriesProvider = ({
   children: ReactNode;
 }) => {
   const [seriesA, setSeriesA] = useState<VariationSeries | null>(null);
-  const [seriesB, setSeriesB] = useState<VariationSeries | null>(null);
+  const [seriesB, setSeriesB] = useState<IntervalVariationSeries | null>(null);
 
-  const setSeries = (a: VariationSeries, b: VariationSeries) => {
+  const setSeries = (a: VariationSeries, b: IntervalVariationSeries) => {
     setSeriesA(a);
     setSeriesB(b);
   };
