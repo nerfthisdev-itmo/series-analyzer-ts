@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { getInverseLaplace, laplaceFunction } from "@/services/variationSeries";
+import { getQTableValue } from "@/services/qTable";
 
 describe("math functions", () => {
   it("calculates laplace", () => {
@@ -11,5 +12,9 @@ describe("math functions", () => {
   it("calculates inverse laplace", () => {
     expect(getInverseLaplace(0 + 0.5)).toBeCloseTo(0, 2);
     expect(getInverseLaplace(0.1967 + 0.5)).toBeCloseTo(0.5, 2);
+  });
+
+  it("chooses q correctly", () => {
+    expect(getQTableValue(0.95, 129)).toEqual(getQTableValue(0.95, 100));
   });
 });

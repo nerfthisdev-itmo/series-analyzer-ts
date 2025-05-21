@@ -1,4 +1,10 @@
 import { jStat } from "jstat";
+import { getQTableValue } from "./qTable";
+
+export type Interval = {
+  left: number;
+  right: number;
+};
 
 export class VariationSeries {
   private data: Array<number>;
@@ -153,6 +159,34 @@ export class VariationSeries {
     });
 
     return count / this._n;
+  }
+
+  getConfidenceIntervalForExpectedValue(confidenceProb: number): Interval {
+    const averageValue = this.expectedValueEstimate;
+    const n = this.n;
+    const sigma = this.sampleStandardDeviationCorrected;
+    let tGamma: number;
+
+    if (n <= 30) {
+      tGamma = studentCoefficient(confidenceProb / 2 + 0.5, n - 1);
+    } else {
+      tGamma = getInverseLaplace(confidenceProb / 2 + 0.5);
+    }
+
+    const margin = (tGamma * sigma) / Math.sqrt(n);
+    return { left: averageValue - margin, right: averageValue + margin };
+  }
+
+  getConfidenceIntervalForStandardDeviation(gamma: number): [number, number] {
+    const sigmaCorrected = this.sampleStandardDeviationCorrected;
+    const n = this.n;
+    const q = getQTableValue(gamma, n);
+
+    if (q < 1) {
+      return [sigmaCorrected * (1 - q), sigmaCorrected * (1 + q)];
+    } else {
+      return [0, sigmaCorrected * (1 + q)];
+    }
   }
 }
 
