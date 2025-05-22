@@ -35,7 +35,7 @@ describe("IntervalVariationSeries", () => {
   });
 
   it("create correct statistical series", () => {
-    const stats = series.statisticalSeries;
+    const stats = series.getStatisticalSeries();
 
     const expectedStats = {
       "[143, 148.375)": 5,
@@ -53,7 +53,7 @@ describe("IntervalVariationSeries", () => {
   });
   it("calculate expected value correctly", () => {
     const expected = 162.8824;
-    expect(series.expectedValue).toBeCloseTo(expected, 1);
+    expect(series.mean).toBeCloseTo(expected, 1);
   });
 
   it("calculate median correctly", () => {
@@ -84,6 +84,6 @@ describe("IntervalVariationSeries", () => {
 
   it("calculate kurtosis correctly", () => {
     const kurtosis = -0.4639588251;
-    expect(series.getNthMoment(4) - 3).toBeCloseTo(kurtosis);
+    expect(series.kurtosis).toBeCloseTo(kurtosis);
   });
 });
