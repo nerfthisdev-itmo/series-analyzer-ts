@@ -1,6 +1,6 @@
 import { jStat } from "jstat";
-
-export type DistributionType = "normal" | "binomial" | "poisson";
+import type { IntervalVariationSeries } from "./intervalSeries";
+import type { VariationSeries } from "./variationSeries";
 
 export const laplaceFunction = (x: number): number => {
   return x < 0 ? 0.5 * Math.exp(x) : 1 - 0.5 * Math.exp(-x);
