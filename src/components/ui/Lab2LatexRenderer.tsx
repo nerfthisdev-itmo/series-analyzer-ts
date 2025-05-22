@@ -1,10 +1,10 @@
 import React from "react";
 import "katex/dist/katex.min.css";
 import { BlockMath } from "react-katex";
+import type { DistributionType } from "./seriesMath";
 import type { IntervalVariationSeries } from "@/services/intervalSeries";
 import type { VariationSeries } from "@/services/variationSeries";
 import { useVariationSeries } from "@/context/VariationSeriesContext";
-import { DistributionType } from "./seriesMath";
 
 type Props = {
   type: "interval" | "simple";

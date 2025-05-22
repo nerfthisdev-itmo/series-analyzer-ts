@@ -1,5 +1,6 @@
 import { jStat } from "jstat";
-import { studentCoefficient, type DistributionType } from "./seriesMath";
+import {  studentCoefficient } from "./seriesMath";
+import type {DistributionType} from "./seriesMath";
 
 export type Interval = {
   left: number;
