@@ -4,6 +4,7 @@ import { PolygonGraph } from "./PolygonGraph";
 import { Histogram } from "./Histogram";
 import { CumulativeGraph } from "./CumulativeGraph";
 import { OgiveGraph } from "./OgiveGraph";
+import { HistogramWithTheoreticalValues } from "./HistogramWithTheoreticalValues";
 import { VariationSeries } from "@/services/variationSeries";
 import { useVariationSeries } from "@/context/VariationSeriesContext";
 import { IntervalVariationSeries } from "@/services/intervalSeries";
@@ -27,7 +28,7 @@ const MainPage = () => {
             <PolygonGraph variationSeries={seriesA} />
           </div>
           <div className='w-1/2'>
-            <Histogram intervalVariationSeries={seriesB} />
+            <HistogramWithTheoreticalValues intervalVariationSeries={seriesB} />
             <CumulativeGraph intervalVariationSeries={seriesB} />
             <OgiveGraph intervalVariationSeries={seriesB} />
           </div>
