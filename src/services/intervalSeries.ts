@@ -1,5 +1,5 @@
 import { jStat } from "jstat";
-import { getInverseLaplace, studentCoefficient } from "./variationSeries";
+import { getInverseLaplace, studentCoefficient } from "./seriesMath";
 
 export class IntervalVariationSeries {
   private data: Array<number>;
