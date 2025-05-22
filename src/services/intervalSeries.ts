@@ -294,4 +294,29 @@ export class IntervalVariationSeries {
       6
     );
   }
+
+  public getTheoreticalFrequencies() {
+    const theoreticalFrequencies: Array<number> = [];
+    const borders = this.intervalBorders;
+
+    for (let i = 0; i < borders.length - 1; i++) {
+      const lowerBound = borders[i];
+      const upperBound = borders[i + 1];
+      // Расчет теоретической частоты для интервала в нормальном распределении
+      const prob =
+        this.normalCdf(
+          upperBound,
+          this.expectedValue,
+          this.sampleStandardDeviation,
+        ) -
+        this.normalCdf(
+          lowerBound,
+          this.expectedValue,
+          this.sampleStandardDeviation,
+        );
+      theoreticalFrequencies.push(prob * this.n);
+    }
+
+    return theoreticalFrequencies;
+  }
 }
