@@ -1,7 +1,7 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import type { VariationSeries } from "@/services/variationSeries";
-import type { IntervalVariationSeries } from "@/services/intervalSeries";
+import { VariationSeries } from "@/services/variationSeries";
+import { IntervalVariationSeries } from "@/services/intervalSeries";
 
 type VariationSeriesContextType = {
   seriesA: VariationSeries | null;
@@ -24,7 +24,26 @@ export const VariationSeriesProvider = ({
   const setSeries = (a: VariationSeries, b: IntervalVariationSeries) => {
     setSeriesA(a);
     setSeriesB(b);
+
+    localStorage.setItem("seriesA", JSON.stringify(a.initial_data));
+    localStorage.setItem("seriesB", JSON.stringify(b.initial_data));
   };
+
+  useEffect(() => {
+    const storedA = localStorage.getItem("seriesA");
+    const storedB = localStorage.getItem("seriesB");
+
+    if (storedA && storedB) {
+      try {
+        const aData = JSON.parse(storedA);
+        const bData = JSON.parse(storedB);
+        setSeriesA(new VariationSeries(aData));
+        setSeriesB(new IntervalVariationSeries(bData));
+      } catch (e) {
+        console.warn("Не удалось загрузить сохранённые данные", e);
+      }
+    }
+  }, []);
 
   return (
     <VariationSeriesContext.Provider value={{ seriesA, seriesB, setSeries }}>

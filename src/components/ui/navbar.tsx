@@ -30,16 +30,6 @@ export function Navbar() {
           >
             stats
           </Link>
-          <Link
-            to='/'
-            className={`px-3 py-2 rounded-md ${
-              pathname === "/tab3"
-                ? "bg-gray-100 dark:bg-gray-800"
-                : "hover:bg-gray-100 dark:hover:bg-gray-800"
-            }`}
-          >
-            Tab 3
-          </Link>
         </div>
         <ThemeToggle />
       </div>

@@ -70,6 +70,15 @@ export const DataInput = ({ onSubmit }: Props) => {
       >
         Построить
       </button>
+      <button
+        className='ml-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700'
+        onClick={() => {
+          localStorage.clear();
+          location.reload(); // или сбрось через setSeriesA(null) и setSeriesB(null)
+        }}
+      >
+        Сбросить данные
+      </button>
     </div>
   );
 };
