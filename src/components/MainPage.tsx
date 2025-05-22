@@ -1,10 +1,9 @@
 import { DataInput } from "./ui/DataInput";
 import { CdfGraph } from "./CdfGraph";
-import { PolygonGraph } from "./PolygonGraph";
-import { Histogram } from "./Histogram";
 import { CumulativeGraph } from "./CumulativeGraph";
 import { OgiveGraph } from "./OgiveGraph";
 import { HistogramWithTheoreticalValues } from "./HistogramWithTheoreticalValues";
+import { PolygonGraphWithTheoreticalValues } from "./PolygonGraphWithTheoreticalValues";
 import { VariationSeries } from "@/services/variationSeries";
 import { useVariationSeries } from "@/context/VariationSeriesContext";
 import { IntervalVariationSeries } from "@/services/intervalSeries";
@@ -24,8 +23,11 @@ const MainPage = () => {
       {seriesA && seriesB && (
         <div className='flex gap-3 min-w-full'>
           <div className='w-1/2'>
+            <PolygonGraphWithTheoreticalValues
+              variationSeries={seriesA}
+              distribution='binomial'
+            />
             <CdfGraph variationSeries={seriesA} />
-            <PolygonGraph variationSeries={seriesA} />
           </div>
           <div className='w-1/2'>
             <HistogramWithTheoreticalValues intervalVariationSeries={seriesB} />

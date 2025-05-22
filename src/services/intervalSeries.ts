@@ -295,6 +295,7 @@ export class IntervalVariationSeries {
     );
   }
 
+  // TODO: refactor to use different distributions
   public getTheoreticalFrequencies() {
     const theoreticalFrequencies: Array<number> = [];
     const borders = this.intervalBorders;
