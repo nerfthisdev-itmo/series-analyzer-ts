@@ -17,139 +17,134 @@ const StatsLatexRenderer: React.FC<Props> = ({ type, distribution }) => {
   if (type === "interval") {
     const series = seriesB;
     if (series !== null && series.initial_data.length !== 0) {
-      lines.push(`\\text{ Минимум: } \\min = ${series.min} `);
-      lines.push(`\\text{ Максимум: } \\max = ${series.max} `);
-      lines.push(`\\text{ Размах: } R = ${series.range} `);
+      lines.push(`\\text{Минимум: } \\min = ${series.min}`);
+      lines.push(`\\text{Максимум: } \\max = ${series.max}`);
+      lines.push(`\\text{Размах: } R = ${series.range}`);
       lines.push(
-        `\\text{ Интервалов(Стерджесс): } k = ${series.intervalCount} `,
+        `\\text{Интервалов (Стерджесс): } k = ${series.intervalCount}`,
       );
       lines.push(
-        `\\text{Длина интервала: } h = ${series.intervalLength.toFixed(3)} `,
+        `\\text{Длина интервала: } h = ${series.intervalLength.toFixed(3)}`,
       );
       lines.push(
-        `\\text{Математическое ожидание: } \\hat{ M } = ${series.expectedValue.toFixed(4)} `,
+        `\\text{Математическое ожидание: } \\hat{M} = ${series.expectedValue.toFixed(4)}`,
       );
+      lines.push(`\\text{Дисперсия: } D = ${series.sampleVariance.toFixed(4)}`);
       lines.push(
-        `\\text{ Дисперсия: } D = ${series.sampleVariance.toFixed(4)} `,
+        `\\text{Стандартное отклонение: } \\sigma = ${series.sampleStandardDeviation.toFixed(4)}`,
       );
+      lines.push(`\\text{Мода: } Mo = ${series.mode.toFixed(4)}`);
+      lines.push(`\\text{Медиана: } Me = ${series.median.toFixed(4)}`);
       lines.push(
-        `\\text{Стандартное отклонение: } \\sigma = ${series.sampleStandardDeviation.toFixed(4)} `,
+        `\\text{Ассиметрия: } A = ${series.getNthMoment(3).toFixed(4)}`,
       );
-      lines.push(`\\text{ Мода: } Mo = ${series.mode.toFixed(4)} `);
-      lines.push(`\\text{ Медиана: } Me = ${series.median.toFixed(4)} `);
-      lines.push(
-        `\\text{ Ассиметрия: } A = ${series.getNthMoment(3).toFixed(4)} `,
-      );
-      lines.push(
-        `\\text{ Эксцесс: } E = ${series.getNthMoment(4).toFixed(4)} `,
-      );
+      lines.push(`\\text{Эксцесс: } E = ${series.getNthMoment(4).toFixed(4)}`);
 
-      // Добавление сравнения теоретических и эмпирических частот для интервального ряда
+      // Сравнение с теоретическими моментами для нормального распределения
       if (distribution === "normal") {
-        lines.push(
-          "\\text{Сравнение эмпирических и теоретических частот (Нормальное распределение):}",
-        );
-        lines.push(
-          `\\text{Параметры нормального распределения(оценки): } \\mu \\approx ${series.expectedValue.toFixed(4)}, \\sigma \\approx ${series.sampleStandardDeviation.toFixed(4)} `,
-        );
-        lines.push(
-          `\\text{Параметры нормального распределения(теоретические): } \\mu \\approx ${series.expectedValue.toFixed(4)}, \\sigma \\approx ${series.sampleStandardDeviation.toFixed(4)} `,
-        );
+        const mu = series.expectedValue;
+        const sigma = series.sampleStandardDeviation;
+        const skew = series.getTheoreticalSkewness("normal", { mu, sigma });
+        const kurt = series.getTheoreticalKurtosis("normal", { mu, sigma });
 
+        lines.push(
+          "\\text{\\textbf{Сравнение с теоретическими моментами (нормальное распределение):}}",
+        );
+        lines.push(
+          `\\text{Математическое ожидание: эмп. } \\hat{M} = ${mu.toFixed(4)}, \\text{ теор. } M = ${mu.toFixed(4)}`,
+        );
+        lines.push(
+          `\\text{Дисперсия: эмп. } D = ${(sigma ** 2).toFixed(4)}, \\text{ теор. } D = ${(sigma ** 2).toFixed(4)}`,
+        );
+        lines.push(
+          `\\text{Мода: эмп. } Mo = ${series.mode.toFixed(4)} \\text{ (для нормального } Mo = \\mu)`,
+        );
+        lines.push(
+          `\\text{Медиана: эмп. } Me = ${series.median.toFixed(4)} \\text{ (для нормального } Me = \\mu)`,
+        );
+        lines.push(
+          `\\text{Ассиметрия: эмп. } A = ${series.getNthMoment(3).toFixed(4)}, \\text{ теор. } A = ${skew.toFixed(4)}`,
+        );
+        lines.push(
+          `\\text{Эксцесс: эмп. } E = ${series.getNthMoment(4).toFixed(4)}, \\text{ теор. } E = ${kurt.toFixed(4)}`,
+        );
+      }
+
+      // Сравнение частот
+      if (distribution === "normal") {
+        lines.push("\\text{\\textbf{Сравнение частот по интервалам:}}");
         const empiricalFrequencies = Object.values(series.statisticalSeries);
-        const theoreticalFrequencies: Array<number> =
-          series.getTheoreticalFrequencies();
+        const theoreticalFrequencies = series.getTheoreticalFrequencies();
         const borders = series.intervalBorders;
 
-        empiricalFrequencies.forEach((empFreq, index) => {
+        empiricalFrequencies.forEach((empFreq, i) => {
           lines.push(
-            `\\text{ Интервал } [${borders[index].toFixed(3)}, ${borders[index + 1].toFixed(3)}): \\text{ Эмпирическая } f_{ э } = ${empFreq}, \\text{ Теоретическая } f_{ т } \\approx ${theoreticalFrequencies[index].toFixed(4)}`,
+            `\\text{Интервал } [${borders[i].toFixed(3)}, ${borders[i + 1].toFixed(3)}): \\text{Эмп. } f_э = ${empFreq}, \\text{Теор. } f_т \\approx ${theoreticalFrequencies[i].toFixed(4)}`,
           );
         });
-        //  TODO
-        // } else if (distribution === "lognormal") {
-        //     const { mu, sigma } = series.getLognormalParams();
-        //     lines.push(
-        //         "\\text{Сравнение эмпирических и теоретических частот (Логнормальное распределение):}",
-        //     );
-        //     lines.push(
-        //         `\\text{ Параметры логнормального распределения(оценки): } \\mu_{ ln } \\approx ${mu.toFixed(4)}, \\sigma_{ ln } \\approx ${sigma.toFixed(4)}`,
-        //     );
-
-        //     const binCenters = series.binCenters;
-        //     const empiricalFrequencies = Object.values(
-        //         series.statisticalSeries,
-        //     );
-        //     const theoreticalFrequencies: number[] = [];
-        //     const borders = series.intervalBorders;
-
-        //     for (let i = 0; i < borders.length - 1; i++) {
-        //         const lowerBound = borders[i];
-        //         const upperBound = borders[i + 1];
-        //         // Расчет теоретической частоты для интервала в логнормальном распределении
-        //         const prob =
-        //             series["lognormalCdf"](upperBound, mu, sigma) -
-        //             series["lognormalCdf"](lowerBound, mu, sigma);
-        //         theoreticalFrequencies.push(prob * series.n);
-        //     }
-
-        //     empiricalFrequencies.forEach((empFreq, index) => {
-        //         lines.push(
-        //             `\\text{ Интервал }[${borders[index].toFixed(3)}, ${borders[index + 1].toFixed(3)}): \\text{ Эмпирическая } f_{ э } = ${empFreq}, \\text{ Теоретическая } f_{ т } \\approx ${theoreticalFrequencies[index].toFixed(4)}`,
-        //         );
-        //     });
       }
     } else {
-      lines.push(`\\text{ Данные выборки B не найдены }`);
+      lines.push(`\\text{Данные выборки B не найдены}`);
     }
   } else {
     const series = seriesA;
     if (series !== null && series.initial_data.length !== 0) {
-      lines.push(`\\text{ Минимум: } \\min = ${series.min}`);
-      lines.push(`\\text{ Максимум: } \\max = ${series.max}`);
-      lines.push(`\\text{ Размах: } R = ${series.range}`);
+      lines.push(`\\text{Минимум: } \\min = ${series.min}`);
+      lines.push(`\\text{Максимум: } \\max = ${series.max}`);
+      lines.push(`\\text{Размах: } R = ${series.range}`);
+      lines.push(`\\text{Дисперсия: } D = ${series.sampleVariance.toFixed(4)}`);
       lines.push(
-        `\\text{ Дисперсия: } D = ${series.sampleVariance.toFixed(4)}`,
+        `\\text{Стандартное отклонение: } \\sigma = ${series.sampleStandardDeviation.toFixed(4)}`,
       );
       lines.push(
-        `\\text{ Стандартное отклонение: } \\sigma = ${series.sampleStandardDeviation.toFixed(4)}`,
+        `\\text{Исправленное СКО: } \\sigma^* = ${series.sampleStandardDeviationCorrected.toFixed(4)}`,
       );
+      lines.push(`\\text{Мода: } Mo = ${series.mode.toFixed(4)}`);
+      lines.push(`\\text{Медиана: } Me = ${series.median.toFixed(4)}`);
       lines.push(
-        `\\text{ Исправленное СКО: } \\sigma ^* = ${series.sampleStandardDeviationCorrected.toFixed(4)}`,
+        `\\text{Ассиметрия: } A = ${series.getNthMoment(3).toFixed(4)}`,
       );
-      lines.push(`\\text{ Мода: } Mo = ${series.mode.toFixed(4)}`);
-      lines.push(`\\text{ Медиана: } Me = ${series.median.toFixed(4)}`);
-      lines.push(
-        `\\text{ Ассиметрия: } A = ${series.getNthMoment(3).toFixed(4)}`,
-      );
-      lines.push(`\\text{ Эксцесс: } E = ${series.getNthMoment(4).toFixed(4)}`);
+      lines.push(`\\text{Эксцесс: } E = ${series.getNthMoment(4).toFixed(4)}`);
 
-      // Добавление сравнения теоретических и эмпирических частот для дискретного ряда
+      // Сравнение с биномиальным теоретическим распределением
       if (distribution === "binomial") {
+        const theoretical = series.getTheoreticalCharacteristics("binomial");
+
+        lines.push(
+          "\\text{\\textbf{Сравнение с теоретическими моментами (биномиальное распределение):}}",
+        );
+        lines.push(
+          `\\text{Математическое ожидание: эмп. } \\hat{M} = ${series.expectedValueEstimate.toFixed(4)}, \\text{ теор. } M = ${theoretical.mean.toFixed(4)}`,
+        );
+        lines.push(
+          `\\text{Дисперсия: эмп. } D = ${series.sampleVariance.toFixed(4)}, \\text{ теор. } D = ${theoretical.variance.toFixed(4)}`,
+        );
+        lines.push(
+          `\\text{Мода: эмп. } Mo = ${series.mode.toFixed(4)}, \\text{ теор. } Mo = ${theoretical.mode.toFixed(4)}`,
+        );
+        lines.push(
+          `\\text{Ассиметрия: эмп. } A = ${series.getNthMoment(3).toFixed(4)}, \\text{ теор. } A = ${theoretical.skewness.toFixed(4)}`,
+        );
+        lines.push(
+          `\\text{Эксцесс: эмп. } E = ${series.getNthMoment(4).toFixed(4)}, \\text{ теор. } E = ${theoretical.kurtosis.toFixed(4)}`,
+        );
+
+        const empiricalFrequencies = series.statisticalSeries;
         const theoreticalFrequencies =
           series.getTheoreticalFrequencies("binomial");
-        const empiricalFrequencies = series.statisticalSeries;
-        const theoreticalCharacteristics =
-          series.getTheoreticalCharacteristics("binomial");
 
-        lines.push(
-          "\\text{Сравнение эмпирических и теоретических частот (Биномиальное распределение):}",
-        );
-        lines.push(
-          `\\text{ Теоретические характеристики(Биномиальное): } M = ${theoreticalCharacteristics.mean.toFixed(4)}, D = ${theoreticalCharacteristics.variance.toFixed(4)}`,
-        );
-
-        for (const valueStr in empiricalFrequencies) {
-          const value = parseFloat(valueStr);
-          const empFreq = empiricalFrequencies[valueStr];
-          const theoreticalFreq = theoreticalFrequencies[value] || 0;
+        lines.push("\\text{\\textbf{Сравнение частот:}}");
+        for (const key in empiricalFrequencies) {
+          const x = parseFloat(key);
+          const f_emp = empiricalFrequencies[key];
+          const f_theo = theoreticalFrequencies[x] ?? 0;
           lines.push(
-            `\\text{ Значение } ${value}: \\text{ Эмпирическая } f_{ э } = ${empFreq}, \\text{ Теоретическая } f_{ т } \\approx ${theoreticalFreq.toFixed(4)}`,
+            `\\text{Значение } ${x}: \\text{Эмп. } f_э = ${f_emp}, \\text{Теор. } f_т \\approx ${f_theo.toFixed(4)}`,
           );
         }
       }
     } else {
-      lines.push(`\\text{ Данные выборки A не найдены }`);
+      lines.push(`\\text{Данные выборки A не найдены}`);
     }
   }
 
