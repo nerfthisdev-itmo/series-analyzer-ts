@@ -122,6 +122,8 @@ const StatsLatexRenderer: React.FC<Props> = ({ type, distribution }) => {
         const ci = series.getNormalConfidenceIntervals(0.95);
         const binomialCI = series.getBinomialConfidenceIntervals(0.95);
 
+        const { n, p } = series.getBinomialParams(series.n)
+
         lines.push(
           "\\text{\\textbf{Доверительные интервалы (доверие 95\\%):}}",
         );
@@ -131,8 +133,11 @@ const StatsLatexRenderer: React.FC<Props> = ({ type, distribution }) => {
         lines.push(
           `\\text{Дисперсия: } [${ci.variance[0].toFixed(4)}, ${ci.variance[1].toFixed(4)}]`,
         );
+        // lines.push(
+        //   `\\text{Вероятность успеха (бином.): } [${binomialCI.p[0].toFixed(4)}, ${binomialCI.p[1].toFixed(4)}]`,
+        // );
         lines.push(
-          `\\text{Вероятность успеха (бином.): } [${binomialCI.p[0].toFixed(4)}, ${binomialCI.p[1].toFixed(4)}]`,
+          `\\text{Вероятность успеха (бином.): } ${p.toFixed(4)} \\in [${binomialCI.p[0].toFixed(4)}, ${binomialCI.p[1].toFixed(4)}]`,
         );
 
         const theoretical = series.getTheoreticalCharacteristics("binomial");
