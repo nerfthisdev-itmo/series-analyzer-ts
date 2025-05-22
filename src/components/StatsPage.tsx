@@ -23,14 +23,14 @@ const StatsPage = () => {
         <Card>
           <CardContent className='p-4 space-y-4'>
             <h2 className='text-xl font-semibold text-center'>Ряд A</h2>
-            <StatsLatexRenderer type='simple' />
+            <StatsLatexRenderer type='simple' distribution='binomial' />
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className='p-4 space-y-4'>
             <h2 className='text-xl font-semibold text-center'>Ряд B</h2>
-            <StatsLatexRenderer type='interval' />
+            <StatsLatexRenderer type='interval' distribution='normal' />
           </CardContent>
         </Card>
       </div>

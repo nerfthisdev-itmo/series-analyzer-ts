@@ -1,5 +1,6 @@
 import { jStat } from "jstat";
-import { getQTableValue } from "./qTable";
+import { studentCoefficient } from "./seriesMath";
+import type { DistributionType } from "./seriesMath";
 
 export type Interval = {
   left: number;
@@ -161,45 +162,107 @@ export class VariationSeries {
     return count / this._n;
   }
 
-  getConfidenceIntervalForExpectedValue(confidenceProb: number): Interval {
-    const averageValue = this.expectedValueEstimate;
-    const n = this.n;
-    const sigma = this.sampleStandardDeviationCorrected;
-    let tGamma: number;
-
-    if (n <= 30) {
-      tGamma = studentCoefficient(confidenceProb / 2 + 0.5, n - 1);
-    } else {
-      tGamma = getInverseLaplace(confidenceProb / 2 + 0.5);
-    }
-
-    const margin = (tGamma * sigma) / Math.sqrt(n);
-    return { left: averageValue - margin, right: averageValue + margin };
+  public getNormalConfidenceIntervals(gamma: number = 0.95): {
+    mean: [number, number];
+    variance: [number, number];
+  } {
+    return {
+      mean: this.getNormalMeanCI(gamma),
+      variance: this.getNormalVarianceCI(gamma),
+    };
   }
 
-  getConfidenceIntervalForStandardDeviation(gamma: number): [number, number] {
-    const sigmaCorrected = this.sampleStandardDeviationCorrected;
-    const n = this.n;
-    const q = getQTableValue(gamma, n);
+  private getNormalMeanCI(gamma: number): [number, number] {
+    const t = studentCoefficient(gamma, this._n);
+    const margin = (t * this.sampleStandardDeviation) / Math.sqrt(this._n);
+    return [
+      this.expectedValueEstimate - margin,
+      this.expectedValueEstimate + margin,
+    ];
+  }
 
-    if (q < 1) {
-      return [sigmaCorrected * (1 - q), sigmaCorrected * (1 + q)];
-    } else {
-      return [0, sigmaCorrected * (1 + q)];
+  private getNormalVarianceCI(gamma: number): [number, number] {
+    const alpha = 1 - gamma;
+    const chi2 = (p: number) => jStat.chisquare.inv(p, this._n - 1);
+    return [
+      ((this._n - 1) * this.sampleVariance) / chi2(1 - alpha / 2),
+      ((this._n - 1) * this.sampleVariance) / chi2(alpha / 2),
+    ];
+  }
+
+  // 1.1 Точечные оценки параметров для биномиального распределения
+  public getBinomialParams(knownN?: number): { n: number; p: number } {
+    // Если n известно из контекста задачи
+    if (knownN !== undefined) {
+      const p = this.expectedValueEstimate / knownN;
+      return { n: knownN, p };
     }
+
+    // Если n неизвестно (эвристика: максимальное значение + 1)
+    const estimatedN = Math.max(...this.data) + 1;
+    const p = this.expectedValueEstimate / estimatedN;
+    return { n: estimatedN, p };
+  }
+
+  // 1.2 Теоретические частоты для дискретных распределений
+  public getTheoreticalFrequencies(
+    distribution: DistributionType,
+    params?: { n?: number; p?: number },
+  ): Record<number, number> {
+    switch (distribution) {
+      case "binomial":
+        return this.calculateBinomialFrequencies(params?.n, params?.p);
+      // Добавьте другие распределения по аналогии
+      default:
+        throw new Error("Unsupported distribution type");
+    }
+  }
+
+  private calculateBinomialFrequencies(
+    n?: number,
+    p?: number,
+  ): Record<number, number> {
+    const { n: estN, p: estP } = this.getBinomialParams(n);
+    const frequencies: Record<number, number> = {};
+
+    for (let k = 0; k <= estN; k++) {
+      frequencies[k] = jStat.binomial.pdf(k, estN, estP) * this._n;
+    }
+
+    return frequencies;
+  }
+
+  // 1.4 Доверительные интервалы для биномиального распределения
+  public getBinomialConfidenceIntervals(gamma: number = 0.95): {
+    p: [number, number];
+  } {
+    const { n, p } = this.getBinomialParams();
+    const z = jStat.normal.inv(1 - (1 - gamma) / 2, 0, 1);
+    const se = Math.sqrt((p * (1 - p)) / n);
+
+    return {
+      p: [Math.max(0, p - z * se), Math.min(1, p + z * se)],
+    };
+  }
+
+  // 1.5 Числовые характеристики для биномиального распределения
+  public getTheoreticalCharacteristics(distribution: "binomial"): {
+    mean: number;
+    variance: number;
+    mode: number;
+    skewness: number;
+    kurtosis: number;
+  } {
+    const { n, p } = this.getBinomialParams();
+
+    return {
+      mean: n * p,
+      variance: n * p * (1 - p),
+      mode: Math.floor((n + 1) * p),
+      skewness: (1 - 2 * p) / Math.sqrt(n * p * (1 - p)),
+      kurtosis: (1 - 6 * p * (1 - p)) / (n * p * (1 - p)),
+    };
   }
 }
 
-export const laplaceFunction = (x: number): number => {
-  return x < 0 ? 0.5 * Math.exp(x) : 1 - 0.5 * Math.exp(-x);
-};
-
-export const studentCoefficient = (gamma: number, n: number): number => {
-  const degreesOfFreedom = n - 1;
-  return jStat.studentt.inv((1 + gamma) / 2, degreesOfFreedom);
-};
-
-export const getInverseLaplace = (alpha: number): number => {
-  if (alpha < 0.5) return Math.log(2 * alpha);
-  return -Math.log(2 * (1 - alpha));
-};
+export { studentCoefficient };
