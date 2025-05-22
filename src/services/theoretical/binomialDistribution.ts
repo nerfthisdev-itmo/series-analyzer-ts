@@ -1,9 +1,8 @@
-import { studentCoefficient } from "../variationSeries";
+import { jStat } from "jstat";
 import { isIntervalSeries } from "./theoreticalTypes";
 import type { VariationSeries } from "../variationSeries";
 import type { TheoreticalDistribution } from "./theoreticalTypes";
 import type { IntervalVariationSeries } from "../intervalSeries";
-import { jStat } from "jstat";
 
 export type BinomialDistributionCharacteristics = {
   n: number;
@@ -49,37 +48,24 @@ export const normal: TheoreticalDistribution<BinomialDistributionCharacteristics
       left: BinomialDistributionCharacteristics;
       right: BinomialDistributionCharacteristics;
     } => {
-      const getNormalMeanCI = (): [number, number] => {
-        const t = studentCoefficient(gamma, characteristics.n);
-        const margin =
-          (t * characteristics.sigma) / Math.sqrt(characteristics.n);
-        return [characteristics.mu - margin, characteristics.mu + margin];
+      const getPConfidenceInterval = (): [number, number] => {
+        const { n, p } = characteristics;
+        const z = jStat.normal.inv(1 - (1 - gamma) / 2, 0, 1);
+        const se = Math.sqrt((p * (1 - p)) / n);
+
+        return [Math.max(0, p - z * se), Math.min(1, p + z * se)];
       };
 
-      const getNormalVarianceCI = (): [number, number] => {
-        const alpha = 1 - gamma;
-        const variance = characteristics.sigma * characteristics.sigma;
-        const chi2 = (p: number) =>
-          jStat.chisquare.inv(p, characteristics.n - 1);
-        return [
-          ((characteristics.n - 1) * variance) / chi2(1 - alpha / 2),
-          ((characteristics.n - 1) * variance) / chi2(alpha / 2),
-        ];
-      };
-
-      const [leftMean, rightMean] = getNormalMeanCI();
-      const [leftVariance, rightVariance] = getNormalVarianceCI();
+      const [leftP, rightP] = getPConfidenceInterval();
 
       return {
         left: {
           n: characteristics.n,
-          mu: leftMean,
-          sigma: leftVariance,
+          p: leftP,
         },
         right: {
           n: characteristics.n,
-          mu: rightMean,
-          sigma: rightVariance,
+          p: rightP,
         },
       };
     },

@@ -1,9 +1,9 @@
+import { jStat } from "jstat";
 import { studentCoefficient } from "../variationSeries";
 import { isIntervalSeries } from "./theoreticalTypes";
 import type { VariationSeries } from "../variationSeries";
 import type { TheoreticalDistribution } from "./theoreticalTypes";
 import type { IntervalVariationSeries } from "../intervalSeries";
-import { jStat } from "jstat";
 
 export type NormalDistributionCharacteristics = {
   n: number;
