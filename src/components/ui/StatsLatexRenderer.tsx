@@ -26,8 +26,8 @@ const StatsTextRenderer: React.FC<Props> = ({ type, distribution }) => {
     lines.push(format("Размах", s.range));
     lines.push(format("Интервалов (Стерджесс)", s.intervalCount));
     lines.push(format("Длина интервала", s.intervalLength.toFixed(3)));
-    lines.push(format("Мат. ожидание (μ)", s.expectedValue.toFixed(4)));
-    lines.push(format("Дисперсия (D)", s.sampleVariance.toFixed(4)));
+    lines.push(format("Мат. ожидание (μ)", s.mean.toFixed(4)));
+    lines.push(format("Дисперсия (D)", s.variance.toFixed(4)));
     lines.push(format("СКО (σ)", s.sampleStandardDeviation.toFixed(4)));
     lines.push(format("Мода", s.mode.toFixed(4)));
     lines.push(format("Медиана", s.median.toFixed(4)));
@@ -35,7 +35,7 @@ const StatsTextRenderer: React.FC<Props> = ({ type, distribution }) => {
     lines.push(format("Эксцесс (E)", s.getNthMoment(4).toFixed(4)));
 
     if (distribution === "normal") {
-      const mu = s.expectedValue;
+      const mu = s.mean;
       const sigma = s.sampleStandardDeviation;
       const normalCI = s.getNormalConfidenceIntervals(0.95);
 
@@ -81,13 +81,10 @@ const StatsTextRenderer: React.FC<Props> = ({ type, distribution }) => {
     lines.push(format("Минимум", s.min));
     lines.push(format("Максимум", s.max));
     lines.push(format("Размах", s.range));
-    lines.push(format("Дисперсия", s.sampleVariance.toFixed(4)));
-    lines.push(format("СКО (σ)", s.sampleStandardDeviation.toFixed(4)));
+    lines.push(format("Дисперсия", s.variance.toFixed(4)));
+    lines.push(format("СКО (σ)", s.standardDeviation.toFixed(4)));
     lines.push(
-      format(
-        "Исправленное СКО (σ*)",
-        s.sampleStandardDeviationCorrected.toFixed(4),
-      ),
+      format("Исправленное СКО (σ*)", s.sampleStandardDeviation.toFixed(4)),
     );
     lines.push(format("Мода", s.mode.toFixed(4)));
     lines.push(format("Медиана", s.median.toFixed(4)));
@@ -126,13 +123,13 @@ const StatsTextRenderer: React.FC<Props> = ({ type, distribution }) => {
       lines.push(
         format(
           "Мат. ожидание",
-          `эмп. ${s.expectedValueEstimate.toFixed(4)}, теор. ${theoretical.mean.toFixed(4)}`,
+          `эмп. ${s.mean.toFixed(4)}, теор. ${theoretical.mean.toFixed(4)}`,
         ),
       );
       lines.push(
         format(
           "Дисперсия",
-          `эмп. ${s.sampleVariance.toFixed(4)}, теор. ${theoretical.variance.toFixed(4)}`,
+          `эмп. ${s.variance.toFixed(4)}, теор. ${theoretical.variance.toFixed(4)}`,
         ),
       );
       lines.push(

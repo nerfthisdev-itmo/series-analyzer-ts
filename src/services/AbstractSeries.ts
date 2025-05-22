@@ -37,5 +37,4 @@ export abstract class AbstractSeries {
   abstract get median(): number;
   abstract get cumulativeValues(): Array<number>;
   abstract get sampleStandardDeviation(): number;
-  abstract get sampleStandardDeviation(): number;
 }
