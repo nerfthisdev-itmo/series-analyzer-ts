@@ -1,16 +1,13 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from "recharts";
 
 import type { ChartConfig } from "@/components/ui/chart";
-import type { VariationSeries } from "@/services/variationSeries";
 import type { IntervalVariationSeries } from "@/services/intervalSeries";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
