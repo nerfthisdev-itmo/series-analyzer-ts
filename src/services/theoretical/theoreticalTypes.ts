@@ -21,6 +21,11 @@ export type TheoreticalDistribution<T extends DistributionCharacteristics> = {
     left: T;
     right: T;
   };
+
+  calculateTheoreticalFrequencies: (
+    characteristics: T,
+    values: Array<number>,
+  ) => Record<number, number>;
 };
 
 export function isIntervalSeries(

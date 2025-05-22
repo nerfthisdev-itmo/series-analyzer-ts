@@ -69,4 +69,19 @@ export const normal: TheoreticalDistribution<BinomialDistributionCharacteristics
         },
       };
     },
+
+    calculateTheoreticalFrequencies: (
+      characteristics: BinomialDistributionCharacteristics,
+      values: Array<number>,
+    ): Record<number, number> => {
+      const { n: estN, p: estP } = characteristics;
+      const frequencies: Record<number, number> = {};
+
+      values.forEach((value) => {
+        frequencies[value] =
+          jStat.binomial.pdf(value, estN, estP) * characteristics.n;
+      });
+
+      return frequencies;
+    },
   };
