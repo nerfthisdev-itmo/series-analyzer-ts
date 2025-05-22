@@ -42,6 +42,17 @@ const StatsLatexRenderer: React.FC<Props> = ({ type, distribution }) => {
 
       // Сравнение с теоретическими моментами для нормального распределения
       if (distribution === "normal") {
+        const normalCI = series.getNormalConfidenceIntervals(0.95);
+
+        lines.push(
+          "\\text{\\textbf{Доверительные интервалы (доверие 95\\%):}}",
+        );
+        lines.push(
+          `\\text{Математическое ожидание (норм.): } [${normalCI.mean[0].toFixed(4)}, ${normalCI.mean[1].toFixed(4)}]`,
+        );
+        lines.push(
+          `\\text{Дисперсия (норм.): } [${normalCI.variance[0].toFixed(4)}, ${normalCI.variance[1].toFixed(4)}]`,
+        );
         const mu = series.expectedValue;
         const sigma = series.sampleStandardDeviation;
         const skew = series.getTheoreticalSkewness("normal", { mu, sigma });
@@ -108,6 +119,22 @@ const StatsLatexRenderer: React.FC<Props> = ({ type, distribution }) => {
 
       // Сравнение с биномиальным теоретическим распределением
       if (distribution === "binomial") {
+        const ci = series.getNormalConfidenceIntervals(0.95);
+        const binomialCI = series.getBinomialConfidenceIntervals(0.95);
+
+        lines.push(
+          "\\text{\\textbf{Доверительные интервалы (доверие 95\\%):}}",
+        );
+        lines.push(
+          `\\text{Математическое ожидание: } [${ci.mean[0].toFixed(4)}, ${ci.mean[1].toFixed(4)}]`,
+        );
+        lines.push(
+          `\\text{Дисперсия: } [${ci.variance[0].toFixed(4)}, ${ci.variance[1].toFixed(4)}]`,
+        );
+        lines.push(
+          `\\text{Вероятность успеха (бином.): } [${binomialCI.p[0].toFixed(4)}, ${binomialCI.p[1].toFixed(4)}]`,
+        );
+
         const theoretical = series.getTheoreticalCharacteristics("binomial");
 
         lines.push(
