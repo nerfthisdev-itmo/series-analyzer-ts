@@ -30,7 +30,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 type PolygonGraphWithTheoreticalValuesEntry = {
-  sample_value: string;
+  sample_value: number;
   number_of_occurrences: number;
   theoretical_value: number;
 };
@@ -49,7 +49,7 @@ export function PolygonGraphWithTheoreticalValues({
   Object.entries(variationSeries.statisticalSeries).forEach(
     ([sample_value, number_of_occurrences], index) => {
       data.push({
-        sample_value,
+        sample_value: parseFloat(sample_value),
         number_of_occurrences,
         theoretical_value: theoreticalFrequencies[index],
       });
@@ -76,11 +76,12 @@ export function PolygonGraphWithTheoreticalValues({
           >
             <CartesianGrid vertical={false} />
             <XAxis
+              type="number"
               dataKey='sample_value'
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              tickFormatter={(value) => value.slice(0, 3)}
+            // tickFormatter={(value) => value.slice(0, 3)}
             />
             <ChartTooltip
               cursor={false}
