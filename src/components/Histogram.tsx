@@ -36,7 +36,7 @@ export function Histogram({
 }) {
   const chartData = new Array<HistogramEntry>();
 
-  Object.entries(intervalVariationSeries.statisticalSeries).forEach(
+  Object.entries(intervalVariationSeries.getStatisticalSeries()).forEach(
     ([boarders_str, number_of_occurrences]) => {
       chartData.push({ boarders_str, number_of_occurrences });
     },
