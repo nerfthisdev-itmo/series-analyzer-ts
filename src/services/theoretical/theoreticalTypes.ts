@@ -1,14 +1,18 @@
-import type { IntervalVariationSeries } from "../intervalSeries";
-import type { VariationSeries } from "../variationSeries";
+import type { AbstractSeries } from "../AbstractSeries";
 
-export type DistributionType = "normal" | "binomial" | "poisson" | "laplace";
+export type DistributionType =
+  | "normal"
+  | "binomial"
+  | "poisson"
+  | "laplace"
+  | "geometric";
 
-export type DistributionCharacteristics = {};
+export type DistributionCharacteristics = {
+  n: number;
+};
 
 export type TheoreticalDistribution<T extends DistributionCharacteristics> = {
-  getCharacteristicsFromEmpiricalData: (
-    series: IntervalVariationSeries | VariationSeries,
-  ) => T;
+  getCharacteristicsFromEmpiricalData: (series: AbstractSeries) => T;
 
   getTheoreticalKurtosis: (characteristics: T) => number;
 
@@ -22,20 +26,6 @@ export type TheoreticalDistribution<T extends DistributionCharacteristics> = {
     right: T;
   };
 
-  calculateTheoreticalFrequencies: (
-    characteristics: T,
-    values: Array<number>,
-  ) => Record<number, number>;
+  pdf: (x: number, characteristics: T) => number;
+  cdf: (x: number, characteristics: T) => number;
 };
-
-export function isIntervalSeries(
-  series: IntervalVariationSeries | VariationSeries,
-): series is IntervalVariationSeries {
-  return "intervalCount" in series;
-}
-
-export function isVariationSeries(
-  series: IntervalVariationSeries | VariationSeries,
-): series is VariationSeries {
-  return !("intervalCount" in series);
-}

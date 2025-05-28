@@ -1,7 +1,6 @@
 import { jStat } from "jstat";
-import type { IntervalVariationSeries } from "../intervalSeries";
-import type { VariationSeries } from "../variationSeries";
 import type { TheoreticalDistribution } from "./theoreticalTypes";
+import type { AbstractSeries } from "../AbstractSeries";
 
 export type LaplaceDistributionCharacteristics = {
   mu: number;
@@ -12,7 +11,7 @@ export type LaplaceDistributionCharacteristics = {
 export const laplace: TheoreticalDistribution<LaplaceDistributionCharacteristics> =
   {
     getCharacteristicsFromEmpiricalData: (
-      series: VariationSeries | IntervalVariationSeries,
+      series: AbstractSeries,
     ): LaplaceDistributionCharacteristics => {
       return {
         mu: series.mean,
@@ -53,25 +52,15 @@ export const laplace: TheoreticalDistribution<LaplaceDistributionCharacteristics
       };
     },
 
-    calculateTheoreticalFrequencies: (
-      { mu, b, n }: LaplaceDistributionCharacteristics,
-      borders: Array<number>,
-    ): Record<number, number> => {
-      const frequencies: Record<number, number> = {};
-
-      const laplaceCDF = (x: number): number =>
-        x < mu
-          ? 0.5 * Math.exp((x - mu) / b)
-          : 1 - 0.5 * Math.exp(-(x - mu) / b);
-
-      for (let i = 0; i < borders.length - 1; i++) {
-        const left = borders[i];
-        const right = borders[i + 1];
-        const mid = (left + right) / 2;
-        const p = laplaceCDF(right) - laplaceCDF(left);
-        frequencies[mid] = p * n;
+    cdf: (x: number, { mu, b }: LaplaceDistributionCharacteristics): number => {
+      if (x < mu) {
+        return 0.5 * Math.exp((x - mu) / b);
+      } else {
+        return 1 - 0.5 * Math.exp(-(x - mu) / b);
       }
+    },
 
-      return frequencies;
+    pdf: (x: number, { mu, b }: LaplaceDistributionCharacteristics): number => {
+      return (1 / (2 * b)) * Math.exp(-Math.abs(x - mu) / b);
     },
   };

@@ -25,6 +25,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { getTheoreticalDistribution } from "@/services/theoretical/getTheoreticalDistribution";
+import { calculateContinuousTheoreticalFrequencies } from "@/services/theoretical/theoreticalFrequencies";
 
 const chartConfig = {
   number_of_occurrences: {
@@ -57,11 +58,15 @@ export function Histogram({
 
   if (distributionType != undefined) {
     const theory = getTheoreticalDistribution(distributionType);
+    const characteristics = theory.getCharacteristicsFromEmpiricalData(intervalVariationSeries);
 
-    const theoretical_frequencies = Object.values(theory.calculateTheoreticalFrequencies(
-      theory.getCharacteristicsFromEmpiricalData(intervalVariationSeries),
-      intervalVariationSeries.intervalBorders
-    ));
+    const theoretical_frequencies = Object.values(
+      calculateContinuousTheoreticalFrequencies(
+        characteristics,
+        theory,
+        intervalVariationSeries.intervalBorders
+      )
+    );
 
     Object.entries(intervalVariationSeries.getStatisticalSeries()).forEach(
       ([bin_center_str, number_of_occurrences]: [string, number], index) => {

@@ -95,3 +95,9 @@ export class VariationSeries extends AbstractSeries {
     return this.getNthMoment(4) / this.standardDeviation ** 4 - 3;
   }
 }
+
+export function isVariationSeries(
+  series: AbstractSeries,
+): series is VariationSeries {
+  return !("intervalCount" in series);
+}
