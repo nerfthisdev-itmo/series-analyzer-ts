@@ -1,5 +1,5 @@
 import { jStat } from "jstat";
-import { studentCoefficient } from "../variationSeries";
+import { studentCoefficient } from "../seriesMath";
 import { isIntervalSeries } from "./theoreticalTypes";
 import type { VariationSeries } from "../variationSeries";
 import type { TheoreticalDistribution } from "./theoreticalTypes";
@@ -19,13 +19,13 @@ export const normal: TheoreticalDistribution<NormalDistributionCharacteristics> 
       if (isIntervalSeries(series)) {
         return {
           n: series.n,
-          mu: series.expectedValue,
+          mu: series.mean,
           sigma: series.sampleStandardDeviation,
         };
       } else {
         return {
           n: series.n,
-          mu: series.expectedValueEstimate,
+          mu: series.mean,
           sigma: series.sampleStandardDeviation,
         };
       }
