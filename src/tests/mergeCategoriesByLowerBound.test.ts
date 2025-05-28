@@ -14,12 +14,10 @@ describe("mergeCategoriesByLowerBound", () => {
     );
 
     expect(result.mergedEmpirical).toEqual({
-      "1-2": 10,
-      "3+": 5,
+      "[1, 3]": 15,
     });
     expect(result.mergedTheoretical).toEqual({
-      "1-2": 5,
-      "3+": 4,
+      "[1, 3]": 9,
     });
   });
 
@@ -50,12 +48,12 @@ describe("mergeCategoriesByLowerBound", () => {
     );
 
     expect(result.mergedEmpirical).toEqual({
-      "1-2": 6,
-      "3-4": 9,
+      "[1, 2]": 6,
+      "[3, 4]": 9,
     });
     expect(result.mergedTheoretical).toEqual({
-      "1-2": 3,
-      "3-4": 7,
+      "[1, 2]": 3,
+      "[3, 4]": 7,
     });
   });
 
@@ -71,12 +69,10 @@ describe("mergeCategoriesByLowerBound", () => {
     );
 
     expect(result.mergedEmpirical).toEqual({
-      "1": 5,
-      "1+": 4,
+      "[1, 2]": 9,
     });
     expect(result.mergedTheoretical).toEqual({
-      "1": 2,
-      "1+": 3,
+      "[1, 2]": 5,
     });
   });
 
@@ -92,10 +88,10 @@ describe("mergeCategoriesByLowerBound", () => {
     );
 
     expect(result.mergedEmpirical).toEqual({
-      "1-2": 7,
+      "[1, 2]": 7,
     });
     expect(result.mergedTheoretical).toEqual({
-      "1-2": 7,
+      "[1, 2]": 7,
     });
   });
 
@@ -126,12 +122,10 @@ describe("mergeCategoriesByLowerBound", () => {
     );
 
     expect(result.mergedEmpirical).toEqual({
-      "1-3": 6,
-      "4+": 4,
+      "[1, 5]": 10,
     });
     expect(result.mergedTheoretical).toEqual({
-      "1-3": 1.5,
-      "4+": 1.0,
+      "[1, 5]": 2.5,
     });
   });
 
@@ -147,12 +141,12 @@ describe("mergeCategoriesByLowerBound", () => {
     );
 
     expect(result.mergedEmpirical).toEqual({
-      "1-2": 5,
+      "[1, 2]": 5,
       "3": 5,
       "4": 5,
     });
     expect(result.mergedTheoretical).toEqual({
-      "1-2": 2,
+      "[1, 2]": 2,
       "3": 1,
       "4": 1,
     });
@@ -170,11 +164,11 @@ describe("mergeCategoriesByLowerBound", () => {
     );
 
     expect(result.mergedEmpirical).toEqual({
-      "1-2": 5,
+      "[1, 2]": 5,
       "3": 5,
     });
     expect(result.mergedTheoretical).toEqual({
-      "1-2": 0,
+      "[1, 2]": 0,
       "3": 0,
     });
   });

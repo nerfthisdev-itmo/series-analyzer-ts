@@ -46,19 +46,19 @@ export const geometric: TheoreticalDistribution<GeometricDistributionCharacteris
       };
     },
 
-    cdf: (x: number, { p }): number => {
+    cdf: (x: number, { n, p }): number => {
       if (x <= 0) {
         return 0;
       }
 
       const x_floor = Math.floor(x) + 1;
 
-      return 1 - Math.pow(1 - p, x_floor);
+      return (1 - Math.pow(1 - p, x_floor)) * n;
     },
 
-    pdf: (x: number, { p }): number => {
+    pdf: (x: number, { n, p }): number => {
       const k = Math.floor(x);
 
-      return Math.pow(1 - p, k) * p;
+      return Math.pow(1 - p, k) * p * n;
     },
   };

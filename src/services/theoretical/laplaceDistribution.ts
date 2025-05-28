@@ -52,15 +52,21 @@ export const laplace: TheoreticalDistribution<LaplaceDistributionCharacteristics
       };
     },
 
-    cdf: (x: number, { mu, b }: LaplaceDistributionCharacteristics): number => {
+    cdf: (
+      x: number,
+      { n, mu, b }: LaplaceDistributionCharacteristics,
+    ): number => {
       if (x < mu) {
-        return 0.5 * Math.exp((x - mu) / b);
+        return 0.5 * Math.exp((x - mu) / b) * n;
       } else {
-        return 1 - 0.5 * Math.exp(-(x - mu) / b);
+        return (1 - 0.5 * Math.exp(-(x - mu) / b)) * n;
       }
     },
 
-    pdf: (x: number, { mu, b }: LaplaceDistributionCharacteristics): number => {
-      return (1 / (2 * b)) * Math.exp(-Math.abs(x - mu) / b);
+    pdf: (
+      x: number,
+      { n, mu, b }: LaplaceDistributionCharacteristics,
+    ): number => {
+      return (1 / (2 * b)) * Math.exp(-Math.abs(x - mu) / b) * n;
     },
   };

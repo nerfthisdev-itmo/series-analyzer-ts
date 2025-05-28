@@ -1,6 +1,8 @@
 import { binomial } from "./binomialDistribution";
 import { normal } from "./normalDistribution";
 import { laplace } from "./laplaceDistribution";
+import { geometric } from "./geometricDistribution";
+import type { GeometricDistributionCharacteristics } from "./geometricDistribution";
 import type { LaplaceDistributionCharacteristics } from "./laplaceDistribution";
 import type { NormalDistributionCharacteristics } from "./normalDistribution";
 import type { BinomialDistributionCharacteristics } from "./binomialDistribution";
@@ -19,6 +21,9 @@ export function getTheoreticalDistribution(
 export function getTheoreticalDistribution(
   type: "laplace",
 ): TheoreticalDistribution<LaplaceDistributionCharacteristics>;
+export function getTheoreticalDistribution(
+  type: "laplace",
+): TheoreticalDistribution<GeometricDistributionCharacteristics>;
 
 export function getTheoreticalDistribution(
   type: DistributionType,
@@ -26,6 +31,7 @@ export function getTheoreticalDistribution(
   | NormalDistributionCharacteristics
   | BinomialDistributionCharacteristics
   | LaplaceDistributionCharacteristics
+  | GeometricDistributionCharacteristics
 >;
 
 // Implementation
@@ -39,6 +45,8 @@ export function getTheoreticalDistribution(
       return binomial;
     case "laplace":
       return laplace;
+    case "geometric":
+      return geometric;
     default:
       throw new Error(`Unknown distribution type: ${type}`);
   }
@@ -52,5 +60,6 @@ export function getAllTheoreticalDistributions(): Array<{
     { type: "normal", theory: normal },
     { type: "binomial", theory: binomial },
     { type: "laplace", theory: laplace },
+    { type: "geometric", theory: geometric },
   ];
 }

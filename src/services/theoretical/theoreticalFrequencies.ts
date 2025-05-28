@@ -9,8 +9,8 @@ export function calculateContinuousTheoreticalFrequencies<
   characteristics: T,
   theory: TheoreticalDistribution<T>,
   intervalBorders: Array<number>,
-): Record<number, number> {
-  const theoreticalFrequencies: Record<number, number> = [];
+): Record<string, number> {
+  const theoreticalFrequencies: Record<string, number> = {};
 
   for (let i = 0; i < intervalBorders.length - 1; i++) {
     const lowerBound = intervalBorders[i];
@@ -19,8 +19,7 @@ export function calculateContinuousTheoreticalFrequencies<
     const prob =
       theory.cdf(upperBound, characteristics) -
       theory.cdf(lowerBound, characteristics);
-    theoreticalFrequencies[(lowerBound + upperBound) / 2] =
-      prob * characteristics.n;
+    theoreticalFrequencies[`[${lowerBound}, ${upperBound})`] = prob;
   }
   return theoreticalFrequencies;
 }
@@ -35,7 +34,7 @@ export function calculateDiscreteTheoreticalFrequencies<
   const frequencies: Record<number, number> = {};
 
   values.forEach((value) => {
-    frequencies[value] = theory.pdf(value, characteristics) * characteristics.n;
+    frequencies[value] = theory.pdf(value, characteristics);
   });
 
   return frequencies;

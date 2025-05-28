@@ -75,14 +75,14 @@ export const normal: TheoreticalDistribution<NormalDistributionCharacteristics> 
 
     pdf: function (
       x: number,
-      { mu, sigma }: NormalDistributionCharacteristics,
+      { n, mu, sigma }: NormalDistributionCharacteristics,
     ): number {
-      return jStat.normal.pdf(x, mu, sigma);
+      return jStat.normal.pdf(x, mu, sigma) * n;
     },
     cdf: function (
       x: number,
-      { mu, sigma }: NormalDistributionCharacteristics,
+      { n, mu, sigma }: NormalDistributionCharacteristics,
     ): number {
-      return jStat.normal.cdf(x, mu, sigma);
+      return jStat.normal.cdf(x, mu, sigma) * n;
     },
   };

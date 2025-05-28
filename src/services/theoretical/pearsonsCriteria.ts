@@ -2,7 +2,10 @@ import { jStat } from "jstat";
 
 import { isIntervalSeries } from "../intervalSeries";
 import { getAllTheoreticalDistributions } from "./getTheoreticalDistribution";
-import { calculateContinuousTheoreticalFrequencies } from "./theoreticalFrequencies";
+import {
+  calculateContinuousTheoreticalFrequencies,
+  calculateDiscreteTheoreticalFrequencies,
+} from "./theoreticalFrequencies";
 import type { AbstractSeries } from "../AbstractSeries";
 import type {
   DistributionCharacteristics,
@@ -36,77 +39,107 @@ export function getDegreesOfFreedom<T extends DistributionCharacteristics>(
 }
 
 export function mergeCategoriesByLowerBound(
-  empiricalData: Record<number, number>,
-  theoreticalData: Record<number, number>,
+  empiricalData: Record<number | string, number>,
+  theoreticalData: Record<number | string, number>,
   lowerBound = DISTINCT_CATEGORY_LOWER_BOUND,
 ): {
-  mergedEmpirical: Record<number | string, number>;
-  mergedTheoretical: Record<number | string, number>;
+  mergedEmpirical: Record<string, number>;
+  mergedTheoretical: Record<string, number>;
 } {
-  const mergedEmpirical: Record<number | string, number> = {};
-  const mergedTheoretical: Record<number | string, number> = {};
-
-  let buffer: Array<{
-    key: number | string;
-    empiricalValue: number;
-    theoreticalValue: number;
-  }> = [];
-
-  let bufferSumEmpirical = 0;
-  let bufferSumTheoretical = 0;
-
-  Object.entries(empiricalData).forEach(
-    ([key_str, value]: [string, number]) => {
-      const key = parseFloat(key_str);
-
-      const expectedValue = theoreticalData[key];
-
-      buffer.push({
-        key,
-        empiricalValue: value,
-        theoreticalValue: expectedValue,
-      });
-      bufferSumEmpirical += value;
-      bufferSumTheoretical += expectedValue;
-
-      if (bufferSumEmpirical >= lowerBound) {
-        const first = buffer[0].key;
-        const last = buffer[buffer.length - 1].key;
-
-        let mergedKey = "";
-        if (first === last) {
-          mergedKey = `${first}`;
-        } else {
-          mergedKey = `${first}-${last}`;
-        }
-        mergedEmpirical[mergedKey] = bufferSumEmpirical;
-        mergedTheoretical[mergedKey] = bufferSumTheoretical;
-        buffer = [];
-        bufferSumEmpirical = 0;
-        bufferSumTheoretical = 0;
-      }
-    },
-  );
-
-  if (buffer.length > 0) {
-    const lastKey = Object.keys(mergedEmpirical).pop();
-
-    if (lastKey == undefined) {
-      const first = Object.keys(empiricalData)[0];
-      const last =
-        Object.keys(empiricalData)[Object.keys(empiricalData).length - 1];
-
-      mergedEmpirical[`${first}-${last}`] = bufferSumEmpirical;
-      mergedTheoretical[`${first}-${last}`] = bufferSumTheoretical;
-      return { mergedEmpirical, mergedTheoretical };
-    }
-
-    if (lastKey.includes("-")) {
-      mergedEmpirical[`${buffer[0].key}+`] = bufferSumEmpirical;
-      mergedTheoretical[`${buffer[0].key}+`] = bufferSumTheoretical;
+  function parseKeyString(keyStr: string): { start: number; end: number } {
+    if (keyStr.startsWith("[")) {
+      const closingBracketIndex = keyStr.lastIndexOf("]");
+      const closingParenIndex = keyStr.lastIndexOf(")");
+      const endsWith =
+        closingBracketIndex > -1 ? "]" : closingParenIndex > -1 ? ")" : "";
+      const content = keyStr.substring(
+        1,
+        keyStr.length - 1 - (endsWith === ")" ? 1 : 0),
+      );
+      const parts = content.split(",").map((part) => part.trim());
+      const start = parseFloat(parts[0]);
+      const end = parseFloat(parts[1]);
+      return { start, end };
     } else {
-      mergedEmpirical[`${lastKey}+`] = bufferSumEmpirical;
-      mergedTheoretical[`${lastKey}+`] = bufferSumTheoretical;
+      const num = parseFloat(keyStr.toString());
+      return { start: num, end: num };
+    }
+  }
+
+  const mergedEmpirical: Record<string, number> = {};
+  const mergedTheoretical: Record<string, number> = {};
+
+  let bufferEmpiricalSum = 0;
+  let bufferTheoreticalSum = 0;
+  const buffer: Array<{ key_str: string }> = [];
+
+  Object.entries(empiricalData).forEach(([key_str, empiricalValue]) => {
+    const theoreticalValue = theoreticalData[key_str] || 0;
+
+    buffer.push({ key_str });
+    bufferEmpiricalSum += empiricalValue;
+    bufferTheoreticalSum += theoreticalValue;
+
+    if (bufferEmpiricalSum >= lowerBound) {
+      const firstKeyStr = buffer[0].key_str;
+      const lastKeyStr = buffer[buffer.length - 1].key_str;
+
+      const { start: firstStart } = parseKeyString(firstKeyStr);
+      const { end: lastEnd } = parseKeyString(lastKeyStr);
+
+      const mergedKey =
+        firstStart === lastEnd
+          ? `${firstStart}`
+          : `[${firstStart}, ${lastEnd}]`;
+
+      mergedEmpirical[mergedKey] = bufferEmpiricalSum;
+      mergedTheoretical[mergedKey] = bufferTheoreticalSum;
+
+      // Reset buffer
+      bufferEmpiricalSum = 0;
+      bufferTheoreticalSum = 0;
+      buffer.length = 0;
+    }
+  });
+
+  // Handle remaining buffer
+  if (buffer.length > 0) {
+    if (Object.keys(mergedEmpirical).length > 0) {
+      // Merge buffer into the last merged category
+      const lastMergedKey = Object.keys(mergedEmpirical).pop()!;
+      const { start: lastStart, end: lastEnd } = parseKeyString(lastMergedKey);
+      const { start: bufferFirstStart } = parseKeyString(buffer[0].key_str);
+      const { end: bufferLastEnd } = parseKeyString(
+        buffer[buffer.length - 1].key_str,
+      );
+
+      const newStart = lastStart;
+      const newEnd = bufferLastEnd;
+      const newMergedKey =
+        newStart === newEnd ? `${newStart}` : `[${newStart}, ${newEnd}]`;
+
+      mergedEmpirical[newMergedKey] =
+        mergedEmpirical[lastMergedKey] + bufferEmpiricalSum;
+      mergedTheoretical[newMergedKey] =
+        mergedTheoretical[lastMergedKey] + bufferTheoreticalSum;
+
+      delete mergedEmpirical[lastMergedKey];
+      delete mergedTheoretical[lastMergedKey];
+    } else {
+      // Merge all buffer entries into one category
+      const firstKeyStr = buffer[0].key_str;
+      const lastKeyStr = buffer[buffer.length - 1].key_str;
+
+      const { start: firstStart } = parseKeyString(firstKeyStr);
+      const { end: lastEnd } = parseKeyString(lastKeyStr);
+
+      const mergedKey =
+        firstStart === lastEnd
+          ? `${firstStart}`
+          : `[${firstStart}, ${lastEnd}]`;
+
+      mergedEmpirical[mergedKey] = bufferEmpiricalSum;
+      mergedTheoretical[mergedKey] = bufferTheoreticalSum;
     }
   }
 
@@ -126,16 +159,14 @@ export function PearsonChiSquaredCharacteristic<
     theoreticalFreqs = calculateContinuousTheoreticalFrequencies(
       characteristics,
       theory,
-      series.intervalBorders.sort((a, b) => a - b),
+      series.intervalBorders.sort(),
     );
   } else {
     empiricalFreqs = series.getStatisticalSeries();
-    theoreticalFreqs = calculateContinuousTheoreticalFrequencies(
+    theoreticalFreqs = calculateDiscreteTheoreticalFrequencies(
       characteristics,
       theory,
-      Object.keys(series.getStatisticalSeries())
-        .map(parseFloat)
-        .sort((a, b) => a - b),
+      Object.keys(series.getStatisticalSeries()).map(parseFloat).sort(),
     );
   }
 
@@ -177,17 +208,22 @@ export function getPearsonForEveryDistributionType(
     });
   });
 
+  console.log(results);
+
   return results;
 }
 
-export function getBestDistributionTypeByPearson(series: AbstractSeries) {
+export function getBestDistributionTypeByPearson(
+  series: AbstractSeries,
+): DistributionType | undefined {
   const results = getPearsonForEveryDistributionType(series);
 
-  const validResults = results.filter((result) => result.fit.pValue >= 0.05);
+  //   const validResults = results.filter((result) => result.fit.pValue >= 0.05);
+  const validResults = results;
 
   if (validResults.length === 0) {
     console.warn("No distribution passed the Chi-Squared test.");
-    return null;
+    return undefined;
   }
 
   // Step 2: Sort by Chi-Squared (lower is better)
