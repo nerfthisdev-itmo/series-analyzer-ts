@@ -117,7 +117,7 @@ const StatsTextRenderer: React.FC<Props> = ({
   return (
     <div className='overflow-x-auto'>
       <table className='min-w-full text-sm border-collapse'>
-        <thead className='bg-gray-200 dark:bg-neutral-800'>
+        <thead className='bg-zinc-200 dark:bg-zinc-800'>
           <tr>
             <th className='px-3 py-1 text-left'>Показатель</th>
             <th className='px-3 py-1 text-right'>Эмпир.</th>
@@ -127,7 +127,7 @@ const StatsTextRenderer: React.FC<Props> = ({
               </th>
             ))}
           </tr>
-          <tr className='bg-gray-100 dark:bg-neutral-700 text-xs'>
+          <tr className='bg-zinc-100 dark:bg-zinc-700 text-xs'>
             <th />
             <th />
             {theories.map((t) => (
