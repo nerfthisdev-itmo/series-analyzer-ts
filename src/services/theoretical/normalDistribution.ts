@@ -81,13 +81,13 @@ export const normal: TheoreticalDistribution<NormalDistributionCharacteristics> 
       };
     },
     calculateTheoreticalFrequencies: (
-      chars: NormalDistributionCharacteristics,
+      { mu, sigma, n }: NormalDistributionCharacteristics,
       borders: Array<number>,
     ): Record<number, number> => {
       const theoreticalFrequencies: Record<number, number> = [];
 
-      const normalCdf = (x: number, mu: number, sigma: number): number => {
-        return jStat.normal.cdf(x, mu, sigma);
+      const normalCdf = (x: number, _mu: number, _sigma: number): number => {
+        return jStat.normal.cdf(x, _mu, _sigma);
       };
 
       for (let i = 0; i < borders.length - 1; i++) {
@@ -95,9 +95,8 @@ export const normal: TheoreticalDistribution<NormalDistributionCharacteristics> 
         const upperBound = borders[i + 1];
         // Расчет теоретической частоты для интервала в нормальном распределении
         const prob =
-          normalCdf(upperBound, chars.mu, chars.sigma) -
-          normalCdf(lowerBound, chars.mu, chars.sigma);
-        theoreticalFrequencies[(lowerBound + upperBound) / 2] = prob * chars.n;
+          normalCdf(upperBound, mu, sigma) - normalCdf(lowerBound, mu, sigma);
+        theoreticalFrequencies[(lowerBound + upperBound) / 2] = prob * n;
       }
 
       return theoreticalFrequencies;

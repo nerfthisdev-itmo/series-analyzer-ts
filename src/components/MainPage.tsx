@@ -22,15 +22,15 @@ const MainPage = () => {
       <DataInput onSubmit={handleSubmit} />
       {seriesA && seriesB && (
         <div className='flex gap-3 min-w-full'>
-          <div className='w-1/2 gap-3'>
+          <div className='gap-3 w-1/2'>
             <PolygonGraphWithTheoreticalValues
               variationSeries={seriesA}
-              distribution='binomial'
+              distributionType='binomial'
             />
             <CdfGraph variationSeries={seriesA} />
           </div>
-          <div className='w-1/2 gap-3'>
-            <HistogramWithTheoreticalValues intervalVariationSeries={seriesB} />
+          <div className='gap-3 w-1/2'>
+            <HistogramWithTheoreticalValues intervalVariationSeries={seriesB} distributionType="normal" />
             <CumulativeGraph intervalVariationSeries={seriesB} />
             <OgiveGraph intervalVariationSeries={seriesB} />
           </div>

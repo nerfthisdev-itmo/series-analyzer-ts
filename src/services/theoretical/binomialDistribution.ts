@@ -9,7 +9,7 @@ export type BinomialDistributionCharacteristics = {
   p: number;
 };
 
-export const normal: TheoreticalDistribution<BinomialDistributionCharacteristics> =
+export const binomial: TheoreticalDistribution<BinomialDistributionCharacteristics> =
   {
     getCharacteristicsFromEmpiricalData: (
       series: IntervalVariationSeries | VariationSeries,

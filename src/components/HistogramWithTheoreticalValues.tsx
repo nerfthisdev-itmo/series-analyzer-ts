@@ -11,6 +11,7 @@ import {
 
 import type { ChartConfig } from "@/components/ui/chart";
 import type { IntervalVariationSeries } from "@/services/intervalSeries";
+import type { DistributionType } from "@/services/theoretical/theoreticalTypes";
 import {
   Card,
   CardContent,
@@ -23,6 +24,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { getTheoreticalDistribution } from "@/services/theoretical/getTheoreticalDistribution";
 
 const chartConfig = {
   number_of_occurrences: {
@@ -43,17 +45,26 @@ type HistogramWithTheoreticalValuesEntry = {
 
 export function HistogramWithTheoreticalValues({
   intervalVariationSeries,
+  distributionType
 }: {
   intervalVariationSeries: IntervalVariationSeries;
+  distributionType: DistributionType
 }) {
   const chartData = new Array<HistogramWithTheoreticalValuesEntry>();
-  const theoretical_frequencies =
-    intervalVariationSeries.getTheoreticalFrequencies();
 
-  Object.entries(intervalVariationSeries.statisticalSeries).forEach(
-    ([bin_center, number_of_occurrences]: [string, number], index) => {
+  const theory = getTheoreticalDistribution(distributionType);
+
+  const theoretical_frequencies = Object.values(theory.calculateTheoreticalFrequencies(
+    theory.getCharacteristicsFromEmpiricalData(intervalVariationSeries),
+    intervalVariationSeries.intervalBorders
+  ));
+
+  Object.entries(intervalVariationSeries.getStatisticalSeries()).forEach(
+    ([bin_center_str, number_of_occurrences]: [string, number], index) => {
+      const bin_center = parseFloat(bin_center_str);
+
       chartData.push({
-        bin_center: parseFloat(bin_center),
+        bin_center,
         number_of_occurrences,
         theoretical_frequency: theoretical_frequencies[index],
       });
@@ -83,11 +94,11 @@ export function HistogramWithTheoreticalValues({
               tickLine={false}
               tickMargin={10}
               axisLine={false}
-              // tickFormatter={(value: string) => {
-              //     const values = value.split(", ");
-              //     values[0] = values[0].slice(1);
-              //     return `${values[0]}-`;
-              // }}
+            // tickFormatter={(value: string) => {
+            //     const values = value.split(", ");
+            //     values[0] = values[0].slice(1);
+            //     return `${values[0]}-`;
+            // }}
             />
             <ChartTooltip
               cursor={false}
