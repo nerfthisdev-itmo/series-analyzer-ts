@@ -25,14 +25,14 @@ const MainPage = () => {
           <div className='gap-3 w-1/2'>
             <Polygon
               variationSeries={seriesA}
-              distributionType='binomial'
+              distributionType='auto'
             />
             <CdfGraph variationSeries={seriesA} />
           </div>
           <div className='gap-3 w-1/2'>
             <Histogram
               intervalVariationSeries={seriesB}
-              distributionType="normal"
+              distributionType="auto"
             />
             <CumulativeGraph intervalVariationSeries={seriesB} />
             <OgiveGraph intervalVariationSeries={seriesB} />

@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/chart";
 import { getTheoreticalDistribution } from "@/services/theoretical/getTheoreticalDistribution";
 import { calculateDiscreteTheoreticalFrequencies } from "@/services/theoretical/theoreticalFrequencies";
+import { getBestDistributionTypeByPearson } from "@/services/theoretical/pearsonsCriteria";
 
 const chartConfig = {
   number_of_occurrences: {
@@ -45,9 +46,13 @@ export function Polygon({
   distributionType,
 }: {
   variationSeries: VariationSeries;
-  distributionType?: DistributionType;
+  distributionType?: "auto" | DistributionType;
 }) {
   const data = new Array<PolygonGraphEntry | PolygonGraphWithTheoreticalValuesEntry>();
+
+  if (distributionType == "auto") {
+    distributionType = getBestDistributionTypeByPearson(variationSeries)
+  }
 
   if (distributionType != undefined) {
     const theory = getTheoreticalDistribution(distributionType);
