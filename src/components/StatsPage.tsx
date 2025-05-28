@@ -1,4 +1,4 @@
-import StatsLatexRenderer from "@/components/ui/StatsLatexRenderer";
+import StatsTextRenderer from "@/components/ui/StatsTextRenderer";
 import { useVariationSeries } from "@/context/VariationSeriesContext";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -13,9 +13,6 @@ const StatsPage = () => {
     );
   }
 
-  console.log("seriesA.initial_data", seriesA.initial_data);
-  console.log("seriesA.expectedValueEstimate", seriesA.expectedValueEstimate);
-
   return (
     <div className='p-6 space-y-6'>
       <h1 className='text-2xl font-bold'>Статистические характеристики</h1>
@@ -23,14 +20,17 @@ const StatsPage = () => {
         <Card>
           <CardContent className='p-4 space-y-4'>
             <h2 className='text-xl font-semibold text-center'>Ряд A</h2>
-            <StatsLatexRenderer type='simple' distribution='binomial' />
+            <StatsTextRenderer distributions={["normal", "laplace"]} />
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className='p-4 space-y-4'>
             <h2 className='text-xl font-semibold text-center'>Ряд B</h2>
-            <StatsLatexRenderer type='interval' distribution='normal' />
+            <StatsTextRenderer
+              distributions={["normal", "binomial"]}
+              useSeries='B'
+            />
           </CardContent>
         </Card>
       </div>
