@@ -36,7 +36,7 @@ export function PolygonGraph({
 }) {
   const data = new Array<PolygonGraphEntry>();
 
-  Object.entries(variationSeries.statisticalSeries).forEach(
+  Object.entries(variationSeries.getStatisticalSeries()).forEach(
     ([sample_value, number_of_occurrences]) => {
       data.push({ sample_value, number_of_occurrences });
     },

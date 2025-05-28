@@ -4,7 +4,7 @@ import { CartesianGrid, ComposedChart, Line, XAxis } from "recharts";
 
 import type { ChartConfig } from "@/components/ui/chart";
 import type { VariationSeries } from "@/services/variationSeries";
-import type { DistributionType } from "@/services/seriesMath";
+import type { DistributionType } from "@/services/theoretical/theoreticalTypes";
 import {
   Card,
   CardContent,
@@ -17,6 +17,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { getTheoreticalDistribution } from "@/services/theoretical/getTheoreticalDistribution";
 
 const chartConfig = {
   number_of_occurrences: {
@@ -37,16 +38,21 @@ type PolygonGraphWithTheoreticalValuesEntry = {
 
 export function PolygonGraphWithTheoreticalValues({
   variationSeries,
-  distribution,
+  distributionType,
 }: {
   variationSeries: VariationSeries;
-  distribution: DistributionType;
+  distributionType: DistributionType;
 }) {
-  const data = new Array<PolygonGraphWithTheoreticalValuesEntry>();
-  const theoreticalFrequencies =
-    variationSeries.getTheoreticalFrequencies(distribution);
+  const theory = getTheoreticalDistribution(distributionType);
 
-  Object.entries(variationSeries.statisticalSeries).forEach(
+  const theoreticalFrequencies = theory.calculateTheoreticalFrequencies(
+    theory.getCharacteristicsFromEmpiricalData(variationSeries),
+    Object.keys(variationSeries.getStatisticalSeries()).map(parseFloat)
+  );
+
+  const data = new Array<PolygonGraphWithTheoreticalValuesEntry>();
+
+  Object.entries(variationSeries.getStatisticalSeries()).forEach(
     ([sample_value, number_of_occurrences], index) => {
       data.push({
         sample_value: parseFloat(sample_value),
