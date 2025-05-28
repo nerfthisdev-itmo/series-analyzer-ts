@@ -1,8 +1,6 @@
 import { jStat } from "jstat";
-import { isIntervalSeries } from "./theoreticalTypes";
-import type { VariationSeries } from "../variationSeries";
 import type { TheoreticalDistribution } from "./theoreticalTypes";
-import type { IntervalVariationSeries } from "../intervalSeries";
+import type { AbstractSeries } from "../AbstractSeries";
 
 export type BinomialDistributionCharacteristics = {
   n: number;
@@ -12,19 +10,12 @@ export type BinomialDistributionCharacteristics = {
 export const binomial: TheoreticalDistribution<BinomialDistributionCharacteristics> =
   {
     getCharacteristicsFromEmpiricalData: (
-      series: IntervalVariationSeries | VariationSeries,
+      series: AbstractSeries,
     ): BinomialDistributionCharacteristics => {
-      if (isIntervalSeries(series)) {
-        return {
-          n: series.n,
-          p: series.mean / series.n,
-        };
-      } else {
-        return {
-          n: series.n,
-          p: series.mean / series.n,
-        };
-      }
+      return {
+        n: series.n,
+        p: series.mean / series.n,
+      };
     },
 
     getTheoreticalKurtosis: (
@@ -70,18 +61,12 @@ export const binomial: TheoreticalDistribution<BinomialDistributionCharacteristi
       };
     },
 
-    calculateTheoreticalFrequencies: (
-      characteristics: BinomialDistributionCharacteristics,
-      values: Array<number>,
-    ): Record<number, number> => {
-      const { n: estN, p: estP } = characteristics;
-      const frequencies: Record<number, number> = {};
+    // TODO: replace with actual formulas for educational reasons
+    cdf: (x: number, { n, p }: BinomialDistributionCharacteristics): number => {
+      return jStat.binomial.cdf(x, n, p) * n;
+    },
 
-      values.forEach((value) => {
-        frequencies[value] =
-          jStat.binomial.pdf(value, estN, estP) * characteristics.n;
-      });
-
-      return frequencies;
+    pdf: (x: number, { n, p }: BinomialDistributionCharacteristics): number => {
+      return jStat.binomial.pdf(x, n, p) * n;
     },
   };

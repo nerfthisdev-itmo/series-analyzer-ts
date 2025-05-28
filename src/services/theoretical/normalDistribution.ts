@@ -1,12 +1,12 @@
 import { jStat } from "jstat";
 import { studentCoefficient } from "../seriesMath";
-import { isIntervalSeries } from "./theoreticalTypes";
-import type { VariationSeries } from "../variationSeries";
-import type { TheoreticalDistribution } from "./theoreticalTypes";
-import type { IntervalVariationSeries } from "../intervalSeries";
+import type {
+  DistributionCharacteristics,
+  TheoreticalDistribution,
+} from "./theoreticalTypes";
+import type { AbstractSeries } from "../AbstractSeries";
 
-export type NormalDistributionCharacteristics = {
-  n: number;
+export type NormalDistributionCharacteristics = DistributionCharacteristics & {
   mu: number;
   sigma: number;
 };
@@ -14,21 +14,13 @@ export type NormalDistributionCharacteristics = {
 export const normal: TheoreticalDistribution<NormalDistributionCharacteristics> =
   {
     getCharacteristicsFromEmpiricalData: (
-      series: IntervalVariationSeries | VariationSeries,
+      series: AbstractSeries,
     ): NormalDistributionCharacteristics => {
-      if (isIntervalSeries(series)) {
-        return {
-          n: series.n,
-          mu: series.mean,
-          sigma: series.sampleStandardDeviation,
-        };
-      } else {
-        return {
-          n: series.n,
-          mu: series.mean,
-          sigma: series.sampleStandardDeviation,
-        };
-      }
+      return {
+        n: series.n,
+        mu: series.mean,
+        sigma: series.sampleStandardDeviation,
+      };
     },
 
     getTheoreticalKurtosis: (_: NormalDistributionCharacteristics): number => {
@@ -80,25 +72,17 @@ export const normal: TheoreticalDistribution<NormalDistributionCharacteristics> 
         },
       };
     },
-    calculateTheoreticalFrequencies: (
-      { mu, sigma, n }: NormalDistributionCharacteristics,
-      borders: Array<number>,
-    ): Record<number, number> => {
-      const theoreticalFrequencies: Record<number, number> = [];
 
-      const normalCdf = (x: number, _mu: number, _sigma: number): number => {
-        return jStat.normal.cdf(x, _mu, _sigma);
-      };
-
-      for (let i = 0; i < borders.length - 1; i++) {
-        const lowerBound = borders[i];
-        const upperBound = borders[i + 1];
-        // Расчет теоретической частоты для интервала в нормальном распределении
-        const prob =
-          normalCdf(upperBound, mu, sigma) - normalCdf(lowerBound, mu, sigma);
-        theoreticalFrequencies[(lowerBound + upperBound) / 2] = prob * n;
-      }
-
-      return theoreticalFrequencies;
+    pdf: function (
+      x: number,
+      { mu, sigma }: NormalDistributionCharacteristics,
+    ): number {
+      return jStat.normal.pdf(x, mu, sigma);
+    },
+    cdf: function (
+      x: number,
+      { mu, sigma }: NormalDistributionCharacteristics,
+    ): number {
+      return jStat.normal.cdf(x, mu, sigma);
     },
   };

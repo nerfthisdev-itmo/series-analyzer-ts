@@ -172,3 +172,9 @@ export class IntervalVariationSeries extends AbstractSeries {
     return Math.sqrt(this.variance * (this.n / (this.n - 1)));
   }
 }
+
+export function isIntervalSeries(
+  series: AbstractSeries,
+): series is IntervalVariationSeries {
+  return "intervalCount" in series;
+}

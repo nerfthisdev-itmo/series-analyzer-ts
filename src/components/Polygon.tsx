@@ -18,6 +18,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { getTheoreticalDistribution } from "@/services/theoretical/getTheoreticalDistribution";
+import { calculateTheoreticalFrequenciesByValues } from "@/services/theoretical/theoreticalFrequencies";
 
 const chartConfig = {
   number_of_occurrences: {
@@ -49,12 +50,15 @@ export function Polygon({
   const data = new Array<PolygonGraphEntry | PolygonGraphWithTheoreticalValuesEntry>();
 
   if (distributionType != undefined) {
-
     const theory = getTheoreticalDistribution(distributionType);
+    const characteristics = theory.getCharacteristicsFromEmpiricalData(variationSeries);
 
-    const theoreticalFrequencies = theory.calculateTheoreticalFrequencies(
-      theory.getCharacteristicsFromEmpiricalData(variationSeries),
-      Object.keys(variationSeries.getStatisticalSeries()).map(parseFloat)
+    const theoreticalFrequencies = Object.values(
+      calculateTheoreticalFrequenciesByValues(
+        characteristics,
+        theory,
+        Object.keys(variationSeries.getStatisticalSeries()).map(parseFloat)
+      )
     );
 
     Object.entries(variationSeries.getStatisticalSeries()).forEach(

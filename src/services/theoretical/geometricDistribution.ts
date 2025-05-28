@@ -1,6 +1,7 @@
-import type { VariationSeries } from "../variationSeries";
-import type { IntervalVariationSeries } from "../intervalSeries";
+import { jStat } from "jstat";
+
 import type { TheoreticalDistribution } from "./theoreticalTypes";
+import type { AbstractSeries } from "../AbstractSeries";
 
 export type GeometricDistributionCharacteristics = {
   p: number;
@@ -10,7 +11,7 @@ export type GeometricDistributionCharacteristics = {
 export const geometric: TheoreticalDistribution<GeometricDistributionCharacteristics> =
   {
     getCharacteristicsFromEmpiricalData: (
-      series: VariationSeries | IntervalVariationSeries,
+      series: AbstractSeries,
     ): GeometricDistributionCharacteristics => {
       // E(X) = 1 / p  →  p = 1 / mean
       const p = 1 / series.mean;
@@ -35,8 +36,7 @@ export const geometric: TheoreticalDistribution<GeometricDistributionCharacteris
       left: GeometricDistributionCharacteristics;
       right: GeometricDistributionCharacteristics;
     } => {
-      // простейшая оценка по нормальному приближению через delta method
-      const z = 1.96; // нормальная квантиль (для gamma ≈ 0.95)
+      const z = jStat.normal.inv(1 - (1 - gamma) / 2, 0, 1);
       const se = Math.sqrt((1 - p) / (n * p ** 2)); // стандартная ошибка оценки p
       const delta = z * se;
 
@@ -46,23 +46,19 @@ export const geometric: TheoreticalDistribution<GeometricDistributionCharacteris
       };
     },
 
-    calculateTheoreticalFrequencies: (
-      { p, n }: GeometricDistributionCharacteristics,
-      borders: Array<number>,
-    ): Record<number, number> => {
-      const frequencies: Record<number, number> = {};
-
-      const geometricCDF = (k: number): number =>
-        1 - Math.pow(1 - p, Math.floor(k));
-
-      for (let i = 0; i < borders.length - 1; i++) {
-        const left = borders[i];
-        const right = borders[i + 1];
-        const mid = (left + right) / 2;
-        const prob = geometricCDF(right) - geometricCDF(left);
-        frequencies[mid] = prob * n;
+    cdf: (x: number, { p }): number => {
+      if (x <= 0) {
+        return 0;
       }
 
-      return frequencies;
+      const x_floor = Math.floor(x) + 1;
+
+      return 1 - Math.pow(1 - p, x_floor);
+    },
+
+    pdf: (x: number, { p }): number => {
+      const k = Math.floor(x);
+
+      return Math.pow(1 - p, k) * p;
     },
   };
