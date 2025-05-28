@@ -4,6 +4,9 @@ import type { GeometricDistributionCharacteristics } from "@/services/theoretica
 import type { LaplaceDistributionCharacteristics } from "@/services/theoretical/distributions/laplaceDistribution";
 import type { NormalDistributionCharacteristics } from "@/services/theoretical/distributions/normalDistribution";
 import type { DistributionType } from "@/services/theoretical/theoreticalTypes";
+import type { UniformDistributionCharacteristics } from "@/services/theoretical/distributions/uniformDistribution";
+import type { ExponentialDistributionCharacteristics } from "@/services/theoretical/distributions/exponentialDistribution";
+import type { PoissonDistributionCharacteristics } from "@/services/theoretical/distributions/poissonDistribution";
 import { getTheoreticalDistribution } from "@/services/theoretical/getTheoreticalDistribution";
 import { useVariationSeries } from "@/context/VariationSeriesContext";
 
@@ -49,6 +52,22 @@ const StatsTextRenderer: React.FC<Props> = ({
       case "laplace": {
         const c = chars as LaplaceDistributionCharacteristics; // {mu,b}
         return { mean: c.mu, variance: 2 * c.b ** 2, sd: Math.SQRT2 * c.b };
+      }
+      case "uniform": {
+        const c = chars as UniformDistributionCharacteristics;
+        const mean = (c.a + c.b) / 2;
+        const variance = ((c.b - c.a) ** 2) / 12;
+        return { mean, variance, sd: Math.sqrt(variance), };
+      }
+      case "exponential": {
+        const c = chars as ExponentialDistributionCharacteristics;
+        const mean = 1 / c.lambda;
+        const variance = 1 / (c.lambda ** 2);
+        return { mean, variance, sd: Math.sqrt(variance), };
+      }
+      case "poisson": {
+        const c = chars as PoissonDistributionCharacteristics;
+        return { mean: c.lambda, variance: c.lambda, sd: Math.sqrt(c.lambda), };
       }
       default:
         throw new Error("unsupported distribution");
