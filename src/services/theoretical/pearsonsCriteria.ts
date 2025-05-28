@@ -1,4 +1,5 @@
 import type { AbstractSeries } from "../AbstractSeries";
+import { isIntervalSeries } from "../intervalSeries";
 import { isVariationSeries } from "../variationSeries";
 import { calculateContinuousTheoreticalFrequencies } from "./theoreticalFrequencies";
 import type {
@@ -108,40 +109,47 @@ export function mergeCategoriesByLowerBound(
   return { mergedEmpirical, mergedTheoretical };
 }
 
-// export function PearsonTestDistribution<T extends DistributionCharacteristics>(
-//   empiricalSeries: AbstractSeries,
-//   theory: TheoreticalDistribution<T>,
-// ): FitResult {
-//   const characteristics =
-//     theory.getCharacteristicsFromEmpiricalData(empiricalSeries);
+export function PearsonChiSquaredCharacteristic<
+  T extends DistributionCharacteristics,
+>(series: AbstractSeries, theory: TheoreticalDistribution<T>): FitResult {
+  const characteristics = theory.getCharacteristicsFromEmpiricalData(series);
 
-//   let theoreticalFreqs: Record<number | string, number> = {};
-//   let observedFreqs: Record<number | string, number> = {};
+  let theoreticalFreqs: Record<number | string, number> = {};
+  let empiricalFreqs: Record<number | string, number> = {};
 
-//   if (isVariationSeries(empiricalSeries)) {
-//     observedFreqs = empiricalSeries.getStatisticalSeries();
-//     theoreticalFreqs = calculateContinuousTheoreticalFrequencies(
-//       characteristics,
-//       theory,
-//     );
-//   }
+  if (isIntervalSeries(series)) {
+    empiricalFreqs = series.getStatisticalSeries();
+    theoreticalFreqs = calculateContinuousTheoreticalFrequencies(
+      characteristics,
+      theory,
+      series.intervalBorders,
+    );
+  } else {
+    empiricalFreqs = series.getStatisticalSeries();
+    theoreticalFreqs = calculateContinuousTheoreticalFrequencies(
+      characteristics,
+      theory,
+      Object.keys(series.getStatisticalSeries()).map(parseFloat),
+    );
+  }
 
-//   // Step 4: Compute chi-squared
-//   let chiSquared = 0;
-//   let k = 0; // Number of intervals
+  const { mergedEmpirical, mergedTheoretical } = mergeCategoriesByLowerBound(
+    empiricalFreqs,
+    theoreticalFreqs,
+  );
 
-//   for (const key in theoreticalFreqs) {
-//     const o = observedFreqs[key] || 0;
-//     const e = theoreticalFreqs[key];
-//     chiSquared += Math.pow(o - e, 2) / e;
-//     k++;
-//   }
+  let chiSquared = 0;
+  let k = 0; // Number of intervals
 
-//   // Step 5: Degrees of freedom
-//   const df = getDegreesOfFreedom(k, characteristics);
+  for (const key in mergedEmpirical) {
+    const o = mergedEmpirical[key] || 0;
+    const e = mergedTheoretical[key];
+    chiSquared += Math.pow(o - e, 2) / e;
+    k++;
+  }
 
-//   return {
-//     chiSquared,
-//     degreesOfFreedom: df,
-//   };
-// }
+  return {
+    chiSquared,
+    degreesOfFreedom: getDegreesOfFreedom(k, characteristics),
+  };
+}
