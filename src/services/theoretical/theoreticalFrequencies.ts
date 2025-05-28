@@ -3,7 +3,7 @@ import type {
   TheoreticalDistribution,
 } from "./theoreticalTypes";
 
-export function calculateTheoreticalFrequenciesByIntervals<
+export function calculateContinuousTheoreticalFrequencies<
   T extends DistributionCharacteristics,
 >(
   characteristics: T,
@@ -25,7 +25,7 @@ export function calculateTheoreticalFrequenciesByIntervals<
   return theoreticalFrequencies;
 }
 
-export function calculateTheoreticalFrequenciesByValues<
+export function calculateDiscreteTheoreticalFrequencies<
   T extends DistributionCharacteristics,
 >(
   characteristics: T,
