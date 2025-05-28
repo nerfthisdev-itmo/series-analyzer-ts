@@ -1,9 +1,17 @@
 "use client";
 
-import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from "recharts";
+import {
+  Bar,
+  CartesianGrid,
+  ComposedChart,
+  LabelList,
+  Line,
+  XAxis,
+} from "recharts";
 
 import type { ChartConfig } from "@/components/ui/chart";
 import type { IntervalVariationSeries } from "@/services/intervalSeries";
+import type { DistributionType } from "@/services/theoretical/theoreticalTypes";
 import {
   Card,
   CardContent,
@@ -16,31 +24,69 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { getTheoreticalDistribution } from "@/services/theoretical/getTheoreticalDistribution";
 
 const chartConfig = {
   number_of_occurrences: {
     label: "Number of occurrences",
     color: "hsl(var(--chart-1))",
   },
+  theoretical_frequency: {
+    label: "Theoretical Frequency",
+    color: "hsl(var(--chart-2))",
+  },
 } satisfies ChartConfig;
 
 type HistogramEntry = {
-  boarders_str: string;
+  bin_center: number;
   number_of_occurrences: number;
+};
+
+type HistogramWithTheoreticalValuesEntry = HistogramEntry & {
+  theoretical_frequency: number;
 };
 
 export function Histogram({
   intervalVariationSeries,
+  distributionType
 }: {
   intervalVariationSeries: IntervalVariationSeries;
+  distributionType?: DistributionType
 }) {
-  const chartData = new Array<HistogramEntry>();
+  const chartData = new Array<HistogramWithTheoreticalValuesEntry | HistogramEntry>();
 
-  Object.entries(intervalVariationSeries.getStatisticalSeries()).forEach(
-    ([boarders_str, number_of_occurrences]) => {
-      chartData.push({ boarders_str, number_of_occurrences });
-    },
-  );
+  if (distributionType != undefined) {
+    const theory = getTheoreticalDistribution(distributionType);
+
+    const theoretical_frequencies = Object.values(theory.calculateTheoreticalFrequencies(
+      theory.getCharacteristicsFromEmpiricalData(intervalVariationSeries),
+      intervalVariationSeries.intervalBorders
+    ));
+
+    Object.entries(intervalVariationSeries.getStatisticalSeries()).forEach(
+      ([bin_center_str, number_of_occurrences]: [string, number], index) => {
+        const bin_center = parseFloat(bin_center_str);
+
+        chartData.push({
+          bin_center,
+          number_of_occurrences,
+          theoretical_frequency: theoretical_frequencies[index],
+        } satisfies HistogramWithTheoreticalValuesEntry);
+      },
+    );
+  } else {
+    Object.entries(intervalVariationSeries.getStatisticalSeries()).forEach(
+      ([bin_center_str, number_of_occurrences]: [string, number]) => {
+        const bin_center = parseFloat(bin_center_str);
+
+        chartData.push({
+          bin_center,
+          number_of_occurrences,
+        } satisfies HistogramEntry);
+      },
+    );
+  }
+
 
   return (
     <Card>
@@ -52,7 +98,7 @@ export function Histogram({
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <BarChart
+          <ComposedChart
             accessibilityLayer
             data={chartData}
             margin={{
@@ -61,15 +107,10 @@ export function Histogram({
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey='boarders_str'
+              dataKey='bin_center'
               tickLine={false}
               tickMargin={10}
               axisLine={false}
-              tickFormatter={(value: string) => {
-                const values = value.split(", ");
-                values[0] = values[0].slice(1);
-                return `${values[0]}-`;
-              }}
             />
             <ChartTooltip
               cursor={false}
@@ -87,7 +128,15 @@ export function Histogram({
                 fontSize={12}
               />
             </Bar>
-          </BarChart>
+
+            {distributionType != undefined ? <Line
+              dataKey='theoretical_frequency'
+              stroke='var(--color-theoretical_frequency)'
+              type='natural'
+              strokeWidth={2}
+              dot={false}
+            /> : <></>}
+          </ComposedChart>
         </ChartContainer>
       </CardContent>
     </Card>

@@ -30,37 +30,52 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-type PolygonGraphWithTheoreticalValuesEntry = {
+type PolygonGraphEntry = {
   sample_value: number;
   number_of_occurrences: number;
+};
+
+type PolygonGraphWithTheoreticalValuesEntry = PolygonGraphEntry & {
   theoretical_value: number;
 };
 
-export function PolygonGraphWithTheoreticalValues({
+export function Polygon({
   variationSeries,
   distributionType,
 }: {
   variationSeries: VariationSeries;
-  distributionType: DistributionType;
+  distributionType?: DistributionType;
 }) {
-  const theory = getTheoreticalDistribution(distributionType);
+  const data = new Array<PolygonGraphEntry | PolygonGraphWithTheoreticalValuesEntry>();
 
-  const theoreticalFrequencies = theory.calculateTheoreticalFrequencies(
-    theory.getCharacteristicsFromEmpiricalData(variationSeries),
-    Object.keys(variationSeries.getStatisticalSeries()).map(parseFloat)
-  );
+  if (distributionType != undefined) {
 
-  const data = new Array<PolygonGraphWithTheoreticalValuesEntry>();
+    const theory = getTheoreticalDistribution(distributionType);
 
-  Object.entries(variationSeries.getStatisticalSeries()).forEach(
-    ([sample_value, number_of_occurrences], index) => {
-      data.push({
-        sample_value: parseFloat(sample_value),
-        number_of_occurrences,
-        theoretical_value: theoreticalFrequencies[index],
-      });
-    },
-  );
+    const theoreticalFrequencies = theory.calculateTheoreticalFrequencies(
+      theory.getCharacteristicsFromEmpiricalData(variationSeries),
+      Object.keys(variationSeries.getStatisticalSeries()).map(parseFloat)
+    );
+
+    Object.entries(variationSeries.getStatisticalSeries()).forEach(
+      ([sample_value, number_of_occurrences], index) => {
+        data.push({
+          sample_value: parseFloat(sample_value),
+          number_of_occurrences,
+          theoretical_value: theoreticalFrequencies[index],
+        } satisfies PolygonGraphWithTheoreticalValuesEntry);
+      },
+    );
+  } else {
+    Object.entries(variationSeries.getStatisticalSeries()).forEach(
+      ([sample_value, number_of_occurrences]) => {
+        data.push({
+          sample_value: parseFloat(sample_value),
+          number_of_occurrences,
+        } satisfies PolygonGraphEntry);
+      },
+    );
+  }
 
   return (
     <Card>
@@ -106,13 +121,13 @@ export function PolygonGraphWithTheoreticalValues({
               }}
             />
 
-            <Line
+            {distributionType != undefined ? <Line
               dataKey='theoretical_value'
               type='natural'
               stroke='var(--color-theoretical_frequency)'
               strokeWidth={2}
               dot={false}
-            />
+            /> : <></>}
           </ComposedChart>
         </ChartContainer>
       </CardContent>
