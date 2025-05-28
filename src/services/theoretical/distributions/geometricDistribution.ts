@@ -1,7 +1,7 @@
 import { jStat } from "jstat";
 
-import type { TheoreticalDistribution } from "./theoreticalTypes";
-import type { AbstractSeries } from "../AbstractSeries";
+import type { TheoreticalDistribution } from "../theoreticalTypes";
+import type { AbstractSeries } from "../../AbstractSeries";
 
 export type GeometricDistributionCharacteristics = {
   p: number;
@@ -46,7 +46,7 @@ export const geometric: TheoreticalDistribution<GeometricDistributionCharacteris
       };
     },
 
-    cdf: (x: number, { p }): number => {
+    cdf: (x: number, { n, p }): number => {
       if (x <= 0) {
         return 0;
       }
@@ -56,7 +56,7 @@ export const geometric: TheoreticalDistribution<GeometricDistributionCharacteris
       return 1 - Math.pow(1 - p, x_floor);
     },
 
-    pdf: (x: number, { p }): number => {
+    pdf: (x: number, { n, p }): number => {
       const k = Math.floor(x);
 
       return Math.pow(1 - p, k) * p;

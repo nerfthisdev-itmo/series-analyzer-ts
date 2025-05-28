@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/chart";
 import { getTheoreticalDistribution } from "@/services/theoretical/getTheoreticalDistribution";
 import { calculateContinuousTheoreticalFrequencies } from "@/services/theoretical/theoreticalFrequencies";
+import { getBestDistributionTypeByPearson } from "@/services/theoretical/pearsonsCriteria";
 
 const chartConfig = {
   number_of_occurrences: {
@@ -52,12 +53,17 @@ export function Histogram({
   distributionType
 }: {
   intervalVariationSeries: IntervalVariationSeries;
-  distributionType?: DistributionType
+  distributionType?: "auto" | DistributionType
 }) {
   const chartData = new Array<HistogramWithTheoreticalValuesEntry | HistogramEntry>();
 
+  if (distributionType == "auto") {
+    distributionType = getBestDistributionTypeByPearson(intervalVariationSeries)
+  }
+
   if (distributionType != undefined) {
-    const theory = getTheoreticalDistribution(distributionType);
+    const theory = getTheoreticalDistribution(distributionType)
+
     const characteristics = theory.getCharacteristicsFromEmpiricalData(intervalVariationSeries);
 
     const theoretical_frequencies = Object.values(

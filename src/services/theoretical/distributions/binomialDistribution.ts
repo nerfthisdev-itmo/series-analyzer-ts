@@ -1,6 +1,6 @@
 import { jStat } from "jstat";
-import type { TheoreticalDistribution } from "./theoreticalTypes";
-import type { AbstractSeries } from "../AbstractSeries";
+import type { TheoreticalDistribution } from "../theoreticalTypes";
+import type { AbstractSeries } from "../../AbstractSeries";
 
 export type BinomialDistributionCharacteristics = {
   n: number;
@@ -63,10 +63,10 @@ export const binomial: TheoreticalDistribution<BinomialDistributionCharacteristi
 
     // TODO: replace with actual formulas for educational reasons
     cdf: (x: number, { n, p }: BinomialDistributionCharacteristics): number => {
-      return jStat.binomial.cdf(x, n, p) * n;
+      return jStat.binomial.cdf(x, n, p);
     },
 
     pdf: (x: number, { n, p }: BinomialDistributionCharacteristics): number => {
-      return jStat.binomial.pdf(x, n, p) * n;
+      return jStat.binomial.pdf(x, n, p);
     },
   };

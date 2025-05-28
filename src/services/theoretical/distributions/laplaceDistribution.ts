@@ -1,6 +1,6 @@
 import { jStat } from "jstat";
-import type { TheoreticalDistribution } from "./theoreticalTypes";
-import type { AbstractSeries } from "../AbstractSeries";
+import type { TheoreticalDistribution } from "../theoreticalTypes";
+import type { AbstractSeries } from "../../AbstractSeries";
 
 export type LaplaceDistributionCharacteristics = {
   mu: number;
@@ -52,7 +52,10 @@ export const laplace: TheoreticalDistribution<LaplaceDistributionCharacteristics
       };
     },
 
-    cdf: (x: number, { mu, b }: LaplaceDistributionCharacteristics): number => {
+    cdf: (
+      x: number,
+      { n, mu, b }: LaplaceDistributionCharacteristics,
+    ): number => {
       if (x < mu) {
         return 0.5 * Math.exp((x - mu) / b);
       } else {
@@ -60,7 +63,10 @@ export const laplace: TheoreticalDistribution<LaplaceDistributionCharacteristics
       }
     },
 
-    pdf: (x: number, { mu, b }: LaplaceDistributionCharacteristics): number => {
+    pdf: (
+      x: number,
+      { n, mu, b }: LaplaceDistributionCharacteristics,
+    ): number => {
       return (1 / (2 * b)) * Math.exp(-Math.abs(x - mu) / b);
     },
   };
