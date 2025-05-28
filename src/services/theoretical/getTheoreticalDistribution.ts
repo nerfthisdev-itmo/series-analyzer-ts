@@ -43,3 +43,14 @@ export function getTheoreticalDistribution(
       throw new Error(`Unknown distribution type: ${type}`);
   }
 }
+
+export function getAllTheoreticalDistributions(): Array<{
+  type: DistributionType;
+  theory: TheoreticalDistribution<any>;
+}> {
+  return [
+    { type: "normal", theory: normal },
+    { type: "binomial", theory: binomial },
+    { type: "laplace", theory: laplace },
+  ];
+}

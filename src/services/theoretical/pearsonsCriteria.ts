@@ -1,15 +1,19 @@
-import type { AbstractSeries } from "../AbstractSeries";
+import { jStat } from "jstat";
+
 import { isIntervalSeries } from "../intervalSeries";
-import { isVariationSeries } from "../variationSeries";
+import { getAllTheoreticalDistributions } from "./getTheoreticalDistribution";
 import { calculateContinuousTheoreticalFrequencies } from "./theoreticalFrequencies";
+import type { AbstractSeries } from "../AbstractSeries";
 import type {
   DistributionCharacteristics,
+  DistributionType,
   TheoreticalDistribution,
 } from "./theoreticalTypes";
 
 type FitResult = {
   chiSquared: number;
   degreesOfFreedom: number;
+  pValue: number;
 };
 const DISTINCT_CATEGORY_LOWER_BOUND = 5;
 
@@ -122,14 +126,16 @@ export function PearsonChiSquaredCharacteristic<
     theoreticalFreqs = calculateContinuousTheoreticalFrequencies(
       characteristics,
       theory,
-      series.intervalBorders,
+      series.intervalBorders.sort((a, b) => a - b),
     );
   } else {
     empiricalFreqs = series.getStatisticalSeries();
     theoreticalFreqs = calculateContinuousTheoreticalFrequencies(
       characteristics,
       theory,
-      Object.keys(series.getStatisticalSeries()).map(parseFloat),
+      Object.keys(series.getStatisticalSeries())
+        .map(parseFloat)
+        .sort((a, b) => a - b),
     );
   }
 
@@ -139,17 +145,53 @@ export function PearsonChiSquaredCharacteristic<
   );
 
   let chiSquared = 0;
-  let k = 0; // Number of intervals
 
   for (const key in mergedEmpirical) {
     const o = mergedEmpirical[key] || 0;
     const e = mergedTheoretical[key];
     chiSquared += Math.pow(o - e, 2) / e;
-    k++;
   }
+
+  const degreesOfFreedom = getDegreesOfFreedom(
+    Object.keys(mergedEmpirical).length,
+    characteristics,
+  );
+
+  const pValue = 1 - jStat.chisquare.cdf(chiSquared, degreesOfFreedom);
 
   return {
     chiSquared,
-    degreesOfFreedom: getDegreesOfFreedom(k, characteristics),
+    degreesOfFreedom,
+    pValue,
   };
+}
+
+export function getPearsonForEveryDistributionType(
+  series: AbstractSeries,
+): Array<{ type: DistributionType; fit: FitResult }> {
+  const results: Array<{ type: DistributionType; fit: FitResult }> = [];
+  getAllTheoreticalDistributions().map(({ type, theory }) => {
+    results.push({
+      type,
+      fit: PearsonChiSquaredCharacteristic(series, theory),
+    });
+  });
+
+  return results;
+}
+
+export function getBestDistributionTypeByPearson(series: AbstractSeries) {
+  const results = getPearsonForEveryDistributionType(series);
+
+  const validResults = results.filter((result) => result.fit.pValue >= 0.05);
+
+  if (validResults.length === 0) {
+    console.warn("No distribution passed the Chi-Squared test.");
+    return null;
+  }
+
+  // Step 2: Sort by Chi-Squared (lower is better)
+  validResults.sort((a, b) => a.fit.chiSquared - b.fit.chiSquared);
+
+  return validResults[0].type;
 }
