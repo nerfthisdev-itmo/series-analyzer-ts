@@ -1,8 +1,8 @@
 import React from "react";
-import type { BinomialDistributionCharacteristics } from "@/services/theoretical/binomialDistribution";
-import type { GeometricDistributionCharacteristics } from "@/services/theoretical/geometricDistribution";
-import type { LaplaceDistributionCharacteristics } from "@/services/theoretical/laplaceDistribution";
-import type { NormalDistributionCharacteristics } from "@/services/theoretical/normalDistribution";
+import type { BinomialDistributionCharacteristics } from "@/services/theoretical/distributions/binomialDistribution";
+import type { GeometricDistributionCharacteristics } from "@/services/theoretical/distributions/geometricDistribution";
+import type { LaplaceDistributionCharacteristics } from "@/services/theoretical/distributions/laplaceDistribution";
+import type { NormalDistributionCharacteristics } from "@/services/theoretical/distributions/normalDistribution";
 import type { DistributionType } from "@/services/theoretical/theoreticalTypes";
 import { getTheoreticalDistribution } from "@/services/theoretical/getTheoreticalDistribution";
 import { useVariationSeries } from "@/context/VariationSeriesContext";
@@ -123,7 +123,7 @@ const StatsTextRenderer: React.FC<Props> = ({
           {rows.map((r) => (
             <tr
               key={r.label}
-              className='even:bg-gray-50 dark:even:bg-neutral-900'
+              className='dark:even:bg-neutral-900 even:bg-gray-50'
             >
               <td className='px-3 py-1'>{r.label}</td>
               <td className='px-3 py-1 text-right'>{r.emp.toFixed(4)}</td>
