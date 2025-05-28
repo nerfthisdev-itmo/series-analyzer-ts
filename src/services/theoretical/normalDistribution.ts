@@ -77,12 +77,12 @@ export const normal: TheoreticalDistribution<NormalDistributionCharacteristics> 
       x: number,
       { n, mu, sigma }: NormalDistributionCharacteristics,
     ): number {
-      return jStat.normal.pdf(x, mu, sigma) * n;
+      return jStat.normal.pdf(x, mu, sigma);
     },
     cdf: function (
       x: number,
       { n, mu, sigma }: NormalDistributionCharacteristics,
     ): number {
-      return jStat.normal.cdf(x, mu, sigma) * n;
+      return jStat.normal.cdf(x, mu, sigma);
     },
   };

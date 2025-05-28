@@ -19,7 +19,8 @@ export function calculateContinuousTheoreticalFrequencies<
     const prob =
       theory.cdf(upperBound, characteristics) -
       theory.cdf(lowerBound, characteristics);
-    theoreticalFrequencies[`[${lowerBound}, ${upperBound})`] = prob;
+    theoreticalFrequencies[`[${lowerBound}, ${upperBound})`] =
+      prob * characteristics.n;
   }
   return theoreticalFrequencies;
 }
@@ -34,7 +35,7 @@ export function calculateDiscreteTheoreticalFrequencies<
   const frequencies: Record<number, number> = {};
 
   values.forEach((value) => {
-    frequencies[value] = theory.pdf(value, characteristics);
+    frequencies[value] = theory.pdf(value, characteristics) * characteristics.n;
   });
 
   return frequencies;

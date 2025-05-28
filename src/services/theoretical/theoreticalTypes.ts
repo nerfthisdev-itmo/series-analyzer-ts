@@ -5,7 +5,8 @@ export type DistributionType =
   | "binomial"
   | "poisson"
   | "laplace"
-  | "geometric";
+  | "geometric"
+  | "uniform";
 
 export type DistributionCharacteristics = {
   n: number;

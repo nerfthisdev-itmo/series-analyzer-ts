@@ -57,9 +57,9 @@ export const laplace: TheoreticalDistribution<LaplaceDistributionCharacteristics
       { n, mu, b }: LaplaceDistributionCharacteristics,
     ): number => {
       if (x < mu) {
-        return 0.5 * Math.exp((x - mu) / b) * n;
+        return 0.5 * Math.exp((x - mu) / b);
       } else {
-        return (1 - 0.5 * Math.exp(-(x - mu) / b)) * n;
+        return 1 - 0.5 * Math.exp(-(x - mu) / b);
       }
     },
 
@@ -67,6 +67,6 @@ export const laplace: TheoreticalDistribution<LaplaceDistributionCharacteristics
       x: number,
       { n, mu, b }: LaplaceDistributionCharacteristics,
     ): number => {
-      return (1 / (2 * b)) * Math.exp(-Math.abs(x - mu) / b) * n;
+      return (1 / (2 * b)) * Math.exp(-Math.abs(x - mu) / b);
     },
   };

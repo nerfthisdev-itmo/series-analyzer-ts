@@ -107,8 +107,7 @@ export function mergeCategoriesByLowerBound(
     if (Object.keys(mergedEmpirical).length > 0) {
       // Merge buffer into the last merged category
       const lastMergedKey = Object.keys(mergedEmpirical).pop()!;
-      const { start: lastStart, end: lastEnd } = parseKeyString(lastMergedKey);
-      const { start: bufferFirstStart } = parseKeyString(buffer[0].key_str);
+      const { start: lastStart } = parseKeyString(lastMergedKey);
       const { end: bufferLastEnd } = parseKeyString(
         buffer[buffer.length - 1].key_str,
       );
@@ -226,7 +225,6 @@ export function getBestDistributionTypeByPearson(
     return undefined;
   }
 
-  // Step 2: Sort by Chi-Squared (lower is better)
   validResults.sort((a, b) => a.fit.chiSquared - b.fit.chiSquared);
 
   return validResults[0].type;

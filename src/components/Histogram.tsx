@@ -11,7 +11,7 @@ import {
 
 import type { ChartConfig } from "@/components/ui/chart";
 import type { IntervalVariationSeries } from "@/services/intervalSeries";
-import type { DistributionType, TheoreticalDistribution } from "@/services/theoretical/theoreticalTypes";
+import type { DistributionType } from "@/services/theoretical/theoreticalTypes";
 import {
   Card,
   CardContent,
