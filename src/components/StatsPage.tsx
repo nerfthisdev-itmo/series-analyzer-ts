@@ -14,21 +14,21 @@ const StatsPage = () => {
   }
 
   return (
-    <div className='p-6 space-y-6'>
-      <h1 className='text-2xl font-bold'>Статистические характеристики</h1>
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+    <div className='space-y-6 p-6'>
+      <h1 className='font-bold text-2xl'>Статистические характеристики</h1>
+      <div className='gap-6 grid grid-cols-1 md:grid-cols-2'>
         <Card>
-          <CardContent className='p-4 space-y-4'>
-            <h2 className='text-xl font-semibold text-center'>Ряд A</h2>
-            <StatsTextRenderer distributions={["normal", "laplace"]} />
+          <CardContent className='space-y-4 p-4'>
+            <h2 className='font-semibold text-xl text-center'>Ряд A</h2>
+            <StatsTextRenderer distributions={["binomial", "uniform"]} />
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className='p-4 space-y-4'>
-            <h2 className='text-xl font-semibold text-center'>Ряд B</h2>
+          <CardContent className='space-y-4 p-4'>
+            <h2 className='font-semibold text-xl text-center'>Ряд B</h2>
             <StatsTextRenderer
-              distributions={["normal", "binomial"]}
+              distributions={["normal", "laplace"]}
               useSeries='B'
             />
           </CardContent>
