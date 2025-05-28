@@ -17,12 +17,12 @@ export const normal: TheoreticalDistribution<BinomialDistributionCharacteristics
       if (isIntervalSeries(series)) {
         return {
           n: series.n,
-          p: series.expectedValue / series.n,
+          p: series.mean / series.n,
         };
       } else {
         return {
           n: series.n,
-          p: series.expectedValueEstimate / series.n,
+          p: series.mean / series.n,
         };
       }
     },
