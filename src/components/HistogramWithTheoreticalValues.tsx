@@ -37,9 +37,12 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-type HistogramWithTheoreticalValuesEntry = {
+type HistogramEntry = {
   bin_center: number;
   number_of_occurrences: number;
+};
+
+type HistogramWithTheoreticalValuesEntry = HistogramEntry & {
   theoretical_frequency: number;
 };
 
@@ -48,28 +51,42 @@ export function HistogramWithTheoreticalValues({
   distributionType
 }: {
   intervalVariationSeries: IntervalVariationSeries;
-  distributionType: DistributionType
+  distributionType?: DistributionType
 }) {
-  const chartData = new Array<HistogramWithTheoreticalValuesEntry>();
+  const chartData = new Array<HistogramWithTheoreticalValuesEntry | HistogramEntry>();
 
-  const theory = getTheoreticalDistribution(distributionType);
+  if (distributionType != undefined) {
+    const theory = getTheoreticalDistribution(distributionType);
 
-  const theoretical_frequencies = Object.values(theory.calculateTheoreticalFrequencies(
-    theory.getCharacteristicsFromEmpiricalData(intervalVariationSeries),
-    intervalVariationSeries.intervalBorders
-  ));
+    const theoretical_frequencies = Object.values(theory.calculateTheoreticalFrequencies(
+      theory.getCharacteristicsFromEmpiricalData(intervalVariationSeries),
+      intervalVariationSeries.intervalBorders
+    ));
 
-  Object.entries(intervalVariationSeries.getStatisticalSeries()).forEach(
-    ([bin_center_str, number_of_occurrences]: [string, number], index) => {
-      const bin_center = parseFloat(bin_center_str);
+    Object.entries(intervalVariationSeries.getStatisticalSeries()).forEach(
+      ([bin_center_str, number_of_occurrences]: [string, number], index) => {
+        const bin_center = parseFloat(bin_center_str);
 
-      chartData.push({
-        bin_center,
-        number_of_occurrences,
-        theoretical_frequency: theoretical_frequencies[index],
-      });
-    },
-  );
+        chartData.push({
+          bin_center,
+          number_of_occurrences,
+          theoretical_frequency: theoretical_frequencies[index],
+        } satisfies HistogramWithTheoreticalValuesEntry);
+      },
+    );
+  } else {
+    Object.entries(intervalVariationSeries.getStatisticalSeries()).forEach(
+      ([bin_center_str, number_of_occurrences]: [string, number]) => {
+        const bin_center = parseFloat(bin_center_str);
+
+        chartData.push({
+          bin_center,
+          number_of_occurrences,
+        } satisfies HistogramEntry);
+      },
+    );
+  }
+
 
   return (
     <Card>
@@ -94,11 +111,6 @@ export function HistogramWithTheoreticalValues({
               tickLine={false}
               tickMargin={10}
               axisLine={false}
-            // tickFormatter={(value: string) => {
-            //     const values = value.split(", ");
-            //     values[0] = values[0].slice(1);
-            //     return `${values[0]}-`;
-            // }}
             />
             <ChartTooltip
               cursor={false}
@@ -117,13 +129,13 @@ export function HistogramWithTheoreticalValues({
               />
             </Bar>
 
-            <Line
+            {distributionType != undefined ? <Line
               dataKey='theoretical_frequency'
               stroke='var(--color-theoretical_frequency)'
               type='natural'
               strokeWidth={2}
               dot={false}
-            />
+            /> : <></>}
           </ComposedChart>
         </ChartContainer>
       </CardContent>
