@@ -39,7 +39,7 @@ type PolygonGraphWithTheoreticalValuesEntry = PolygonGraphEntry & {
   theoretical_value: number;
 };
 
-export function PolygonGraphWithTheoreticalValues({
+export function Polygon({
   variationSeries,
   distributionType,
 }: {

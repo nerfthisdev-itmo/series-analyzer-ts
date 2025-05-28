@@ -46,7 +46,7 @@ type HistogramWithTheoreticalValuesEntry = HistogramEntry & {
   theoretical_frequency: number;
 };
 
-export function HistogramWithTheoreticalValues({
+export function Histogram({
   intervalVariationSeries,
   distributionType
 }: {
