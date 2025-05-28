@@ -6,7 +6,8 @@ export type DistributionType =
   | "poisson"
   | "laplace"
   | "geometric"
-  | "uniform";
+  | "uniform"
+  | "exponential";
 
 export type DistributionCharacteristics = {
   n: number;

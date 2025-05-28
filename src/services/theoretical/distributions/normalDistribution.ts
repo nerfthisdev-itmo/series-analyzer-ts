@@ -1,10 +1,10 @@
 import { jStat } from "jstat";
-import { studentCoefficient } from "../seriesMath";
+import { studentCoefficient } from "../../seriesMath";
 import type {
   DistributionCharacteristics,
   TheoreticalDistribution,
-} from "./theoreticalTypes";
-import type { AbstractSeries } from "../AbstractSeries";
+} from "../theoreticalTypes";
+import type { AbstractSeries } from "../../AbstractSeries";
 
 export type NormalDistributionCharacteristics = DistributionCharacteristics & {
   mu: number;

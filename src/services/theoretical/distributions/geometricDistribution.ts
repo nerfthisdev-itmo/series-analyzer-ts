@@ -1,7 +1,7 @@
 import { jStat } from "jstat";
 
-import type { TheoreticalDistribution } from "./theoreticalTypes";
-import type { AbstractSeries } from "../AbstractSeries";
+import type { TheoreticalDistribution } from "../theoreticalTypes";
+import type { AbstractSeries } from "../../AbstractSeries";
 
 export type GeometricDistributionCharacteristics = {
   p: number;
