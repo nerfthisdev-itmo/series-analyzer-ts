@@ -1,7 +1,8 @@
 import type { IntervalVariationSeries } from "../intervalSeries";
 import type { VariationSeries } from "../variationSeries";
 
-export type DistributionType = "normal" | "binomial";
+export type DistributionType = "normal" | "binomial" | "poisson" | "laplace";
+
 export type DistributionCharacteristics = {};
 
 export type TheoreticalDistribution<T extends DistributionCharacteristics> = {
