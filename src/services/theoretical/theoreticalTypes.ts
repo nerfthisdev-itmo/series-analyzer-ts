@@ -8,6 +8,7 @@ export type DistributionType =
   | "geometric"
   | "uniform"
   | "exponential";
+export type DistributionPair = [DistributionType, DistributionType];
 
 export type DistributionCharacteristics = {
   n: number;
