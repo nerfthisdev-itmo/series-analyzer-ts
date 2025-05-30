@@ -13,7 +13,7 @@ import type {
   TheoreticalDistribution,
 } from "./theoreticalTypes";
 
-type FitResult = {
+export type PearsonResult = {
   chiSquared: number;
   degreesOfFreedom: number;
   pValue: number;
@@ -154,7 +154,7 @@ export function mergeCategoriesByLowerBound(
 
 export function PearsonChiSquaredCharacteristic<
   T extends DistributionCharacteristics,
->(series: AbstractSeries, theory: TheoreticalDistribution<T>): FitResult {
+>(series: AbstractSeries, theory: TheoreticalDistribution<T>): PearsonResult {
   const characteristics = theory.getCharacteristicsFromEmpiricalData(series);
 
   let theoreticalFreqs: Record<string, number> = {};
@@ -215,12 +215,12 @@ export function PearsonChiSquaredCharacteristic<
 
 export function getPearsonForEveryDistributionType(
   series: AbstractSeries,
-): Array<{ type: DistributionType; fit: FitResult }> {
-  const results: Array<{ type: DistributionType; fit: FitResult }> = [];
+): Array<{ type: DistributionType; result: PearsonResult }> {
+  const results: Array<{ type: DistributionType; result: PearsonResult }> = [];
   getAllTheoreticalDistributions().forEach(({ type, theory }) => {
     results.push({
       type,
-      fit: PearsonChiSquaredCharacteristic(series, theory),
+      result: PearsonChiSquaredCharacteristic(series, theory),
     });
   });
 
@@ -229,11 +229,11 @@ export function getPearsonForEveryDistributionType(
 
 export function getBestDistributionTypeByPearson(
   series: AbstractSeries,
-): { type: DistributionType; fit: FitResult } | undefined {
+): { type: DistributionType; result: PearsonResult } | undefined {
   const results = getPearsonForEveryDistributionType(series);
 
   // Filter only distributions with p-value ≥ 0.05
-  // const validResults = results.filter((result) => result.fit.pValue >= 0.05);
+  // const validResults = results.filter((result) => result.result.pValue >= 0.05);
   const validResults = results;
 
   if (validResults.length === 0) {
@@ -242,7 +242,7 @@ export function getBestDistributionTypeByPearson(
   }
 
   // Select best by highest p-value
-  validResults.sort((a, b) => b.fit.pValue - a.fit.pValue);
+  validResults.sort((a, b) => b.result.pValue - a.result.pValue);
 
   return validResults[0];
 }
