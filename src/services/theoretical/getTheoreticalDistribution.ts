@@ -4,6 +4,8 @@ import { laplace } from "./distributions/laplaceDistribution";
 import { geometric } from "./distributions/geometricDistribution";
 import { uniform } from "./distributions/uniformDistribution";
 import { poisson } from "./distributions/poissonDistribution";
+import { exponential } from "./distributions/exponentialDistribution";
+import type { ExponentialDistributionCharacteristics } from "./distributions/exponentialDistribution";
 import type { PoissonDistributionCharacteristics } from "./distributions/poissonDistribution";
 import type { UniformDistributionCharacteristics } from "./distributions/uniformDistribution";
 import type { GeometricDistributionCharacteristics } from "./distributions/geometricDistribution";
@@ -14,10 +16,15 @@ import type {
   DistributionType,
   TheoreticalDistribution,
 } from "./theoreticalTypes";
-import {
-  exponential,
-  type ExponentialDistributionCharacteristics,
-} from "./distributions/exponentialDistribution";
+
+export type SomeTheoreticalDistribution =
+  | NormalDistributionCharacteristics
+  | BinomialDistributionCharacteristics
+  | LaplaceDistributionCharacteristics
+  | GeometricDistributionCharacteristics
+  | UniformDistributionCharacteristics
+  | PoissonDistributionCharacteristics
+  | ExponentialDistributionCharacteristics;
 
 // Overloads for literal types
 export function getTheoreticalDistribution(
@@ -44,15 +51,7 @@ export function getTheoreticalDistribution(
 
 export function getTheoreticalDistribution(
   type: DistributionType,
-): TheoreticalDistribution<
-  | NormalDistributionCharacteristics
-  | BinomialDistributionCharacteristics
-  | LaplaceDistributionCharacteristics
-  | GeometricDistributionCharacteristics
-  | UniformDistributionCharacteristics
-  | PoissonDistributionCharacteristics
-  | ExponentialDistributionCharacteristics
->;
+): TheoreticalDistribution<SomeTheoreticalDistribution>;
 
 // Implementation
 export function getTheoreticalDistribution(

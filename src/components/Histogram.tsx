@@ -12,10 +12,14 @@ import {
 import type { ChartConfig } from "@/components/ui/chart";
 import type { IntervalVariationSeries } from "@/services/intervalSeries";
 import type { DistributionType } from "@/services/theoretical/theoreticalTypes";
+import type { PearsonResult } from "@/services/theoretical/pearsonsCriteria";
+import type { KSTestResult } from "@/services/theoretical/kolmogorovCriteria";
+import type { SomeTheoreticalDistribution } from "@/services/theoretical/getTheoreticalDistribution";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -26,8 +30,13 @@ import {
 } from "@/components/ui/chart";
 import { getTheoreticalDistribution } from "@/services/theoretical/getTheoreticalDistribution";
 import { calculateContinuousTheoreticalFrequencies } from "@/services/theoretical/theoreticalFrequencies";
-import { getBestDistributionTypeByPearson } from "@/services/theoretical/pearsonsCriteria";
 import { getBestDistributionType } from "@/services/theoretical/getBestDistribution";
+import { Badge } from "./ui/badge";
+import { DistributionInfo } from "./ui/DistributionInfo";
+import { TestResultDisplay } from "./ui/TestResultDisplay";
+import { DistributionBadges } from "./ui/DistributionBadges";
+import { TestResultBadge } from "./ui/TestResultBadge";
+import { TheoreticalDistributionData } from "./ui/TheoreticalDistributionData";
 
 const chartConfig = {
   number_of_occurrences: {
@@ -57,15 +66,27 @@ export function Histogram({
   distributionType?: "auto" | DistributionType
 }) {
   const chartData = new Array<HistogramWithTheoreticalValuesEntry | HistogramEntry>();
+  let characteristics: SomeTheoreticalDistribution | undefined = undefined;
+  let bestDistributionResult: {
+    type: DistributionType;
+    result: PearsonResult;
+  } | {
+    type: DistributionType;
+    result: KSTestResult;
+  } | undefined = undefined;
+  let resolvedDistributionType: DistributionType | undefined;
 
   if (distributionType == "auto") {
-    distributionType = getBestDistributionType(intervalVariationSeries)?.type
+    bestDistributionResult = getBestDistributionType(intervalVariationSeries);
+    resolvedDistributionType = bestDistributionResult?.type;
+  } else {
+    resolvedDistributionType = distributionType;
   }
 
-  if (distributionType != undefined) {
-    const theory = getTheoreticalDistribution(distributionType)
+  if (resolvedDistributionType != undefined) {
+    const theory = getTheoreticalDistribution(resolvedDistributionType)
 
-    const characteristics = theory.getCharacteristicsFromEmpiricalData(intervalVariationSeries);
+    characteristics = theory.getCharacteristicsFromEmpiricalData(intervalVariationSeries);
 
     const theoretical_frequencies = Object.values(
       calculateContinuousTheoreticalFrequencies(
@@ -151,6 +172,15 @@ export function Histogram({
           </ComposedChart>
         </ChartContainer>
       </CardContent>
+      {resolvedDistributionType && characteristics && (
+        <CardFooter className="border-t">
+          <TheoreticalDistributionData
+            resolvedDistributionType={resolvedDistributionType}
+            characteristics={characteristics}
+            bestDistributionResult={bestDistributionResult}>
+          </TheoreticalDistributionData>
+        </CardFooter>
+      )}
     </Card>
   );
 }
