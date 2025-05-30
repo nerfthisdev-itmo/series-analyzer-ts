@@ -9,6 +9,7 @@ import {
   XAxis,
 } from "recharts";
 
+import { TheoreticalDistributionData } from "./ui/TheoreticalDistributionData";
 import type { ChartConfig } from "@/components/ui/chart";
 import type { IntervalVariationSeries } from "@/services/intervalSeries";
 import type { DistributionType } from "@/services/theoretical/theoreticalTypes";
@@ -31,12 +32,6 @@ import {
 import { getTheoreticalDistribution } from "@/services/theoretical/getTheoreticalDistribution";
 import { calculateContinuousTheoreticalFrequencies } from "@/services/theoretical/theoreticalFrequencies";
 import { getBestDistributionType } from "@/services/theoretical/getBestDistribution";
-import { Badge } from "./ui/badge";
-import { DistributionInfo } from "./ui/DistributionInfo";
-import { TestResultDisplay } from "./ui/TestResultDisplay";
-import { DistributionBadges } from "./ui/DistributionBadges";
-import { TestResultBadge } from "./ui/TestResultBadge";
-import { TheoreticalDistributionData } from "./ui/TheoreticalDistributionData";
 
 const chartConfig = {
   number_of_occurrences: {
