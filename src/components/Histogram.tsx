@@ -58,7 +58,7 @@ export function Histogram({
   const chartData = new Array<HistogramWithTheoreticalValuesEntry | HistogramEntry>();
 
   if (distributionType == "auto") {
-    distributionType = getBestDistributionTypeByPearson(intervalVariationSeries)
+    distributionType = getBestDistributionTypeByPearson(intervalVariationSeries)?.type
   }
 
   if (distributionType != undefined) {

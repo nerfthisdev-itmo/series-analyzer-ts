@@ -229,7 +229,7 @@ export function getPearsonForEveryDistributionType(
 
 export function getBestDistributionTypeByPearson(
   series: AbstractSeries,
-): DistributionType | undefined {
+): { type: DistributionType; fit: FitResult } | undefined {
   const results = getPearsonForEveryDistributionType(series);
 
   // Filter only distributions with p-value ≥ 0.05
@@ -244,5 +244,5 @@ export function getBestDistributionTypeByPearson(
   // Select best by highest p-value
   validResults.sort((a, b) => b.fit.pValue - a.fit.pValue);
 
-  return validResults[0].type;
+  return validResults[0];
 }

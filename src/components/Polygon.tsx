@@ -51,7 +51,7 @@ export function Polygon({
   const data = new Array<PolygonGraphEntry | PolygonGraphWithTheoreticalValuesEntry>();
 
   if (distributionType == "auto") {
-    distributionType = getBestDistributionTypeByPearson(variationSeries)
+    distributionType = getBestDistributionTypeByPearson(variationSeries)?.type
   }
 
   if (distributionType != undefined) {
