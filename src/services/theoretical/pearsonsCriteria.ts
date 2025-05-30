@@ -18,12 +18,12 @@ type FitResult = {
   degreesOfFreedom: number;
   pValue: number;
 };
+
 const DISTINCT_CATEGORY_LOWER_BOUND = 5;
 
 export function getNumberOfDistributionParameters<
   T extends DistributionCharacteristics,
 >(characteristics: T): number {
-  // minus one because there is always the n characteristic
   return Object.keys(characteristics).length - 1;
 }
 
@@ -38,34 +38,34 @@ export function getDegreesOfFreedom<T extends DistributionCharacteristics>(
   );
 }
 
+function parseKeyString(keyStr: string): { start: number; end: number } {
+  if (keyStr.startsWith("[")) {
+    const closingBracketIndex = keyStr.lastIndexOf("]");
+    const closingParenIndex = keyStr.lastIndexOf(")");
+    const endsWith =
+      closingBracketIndex > -1 ? "]" : closingParenIndex > -1 ? ")" : "";
+    const content = keyStr.substring(
+      1,
+      keyStr.length - 1 - (endsWith === ")" ? 1 : 0),
+    );
+    const parts = content.split(",").map((part) => part.trim());
+    const start = parseFloat(parts[0]);
+    const end = parseFloat(parts[1]);
+    return { start, end };
+  } else {
+    const num = parseFloat(keyStr.toString());
+    return { start: num, end: num };
+  }
+}
+
 export function mergeCategoriesByLowerBound(
-  empiricalData: Record<number | string, number>,
-  theoreticalData: Record<number | string, number>,
+  empiricalData: Record<string, number>,
+  theoreticalData: Record<string, number>,
   lowerBound = DISTINCT_CATEGORY_LOWER_BOUND,
 ): {
   mergedEmpirical: Record<string, number>;
   mergedTheoretical: Record<string, number>;
 } {
-  function parseKeyString(keyStr: string): { start: number; end: number } {
-    if (keyStr.startsWith("[")) {
-      const closingBracketIndex = keyStr.lastIndexOf("]");
-      const closingParenIndex = keyStr.lastIndexOf(")");
-      const endsWith =
-        closingBracketIndex > -1 ? "]" : closingParenIndex > -1 ? ")" : "";
-      const content = keyStr.substring(
-        1,
-        keyStr.length - 1 - (endsWith === ")" ? 1 : 0),
-      );
-      const parts = content.split(",").map((part) => part.trim());
-      const start = parseFloat(parts[0]);
-      const end = parseFloat(parts[1]);
-      return { start, end };
-    } else {
-      const num = parseFloat(keyStr.toString());
-      return { start: num, end: num };
-    }
-  }
-
   const mergedEmpirical: Record<string, number> = {};
   const mergedTheoretical: Record<string, number> = {};
 
@@ -80,7 +80,7 @@ export function mergeCategoriesByLowerBound(
     bufferEmpiricalSum += empiricalValue;
     bufferTheoreticalSum += theoreticalValue;
 
-    if (bufferEmpiricalSum >= lowerBound) {
+    if (bufferTheoreticalSum >= lowerBound) {
       const firstKeyStr = buffer[0].key_str;
       const lastKeyStr = buffer[buffer.length - 1].key_str;
 
@@ -105,7 +105,6 @@ export function mergeCategoriesByLowerBound(
   // Handle remaining buffer
   if (buffer.length > 0) {
     if (Object.keys(mergedEmpirical).length > 0) {
-      // Merge buffer into the last merged category
       const lastMergedKey = Object.keys(mergedEmpirical).pop()!;
       const { start: lastStart } = parseKeyString(lastMergedKey);
       const { end: bufferLastEnd } = parseKeyString(
@@ -125,7 +124,6 @@ export function mergeCategoriesByLowerBound(
       delete mergedEmpirical[lastMergedKey];
       delete mergedTheoretical[lastMergedKey];
     } else {
-      // Merge all buffer entries into one category
       const firstKeyStr = buffer[0].key_str;
       const lastKeyStr = buffer[buffer.length - 1].key_str;
 
@@ -142,6 +140,15 @@ export function mergeCategoriesByLowerBound(
     }
   }
 
+  // Final validation: ensure all theoretical frequencies ≥ 5
+  for (const key in mergedTheoretical) {
+    if (mergedTheoretical[key] < DISTINCT_CATEGORY_LOWER_BOUND) {
+      console.warn(
+        `Expected frequency for category "${key}" is below threshold: ${mergedTheoretical[key]}.`,
+      );
+    }
+  }
+
   return { mergedEmpirical, mergedTheoretical };
 }
 
@@ -150,8 +157,8 @@ export function PearsonChiSquaredCharacteristic<
 >(series: AbstractSeries, theory: TheoreticalDistribution<T>): FitResult {
   const characteristics = theory.getCharacteristicsFromEmpiricalData(series);
 
-  let theoreticalFreqs: Record<number | string, number> = {};
-  let empiricalFreqs: Record<number | string, number> = {};
+  let theoreticalFreqs: Record<string, number> = {};
+  let empiricalFreqs: Record<string, number> = {};
 
   if (isIntervalSeries(series)) {
     empiricalFreqs = series.getStatisticalSeries();
@@ -165,17 +172,31 @@ export function PearsonChiSquaredCharacteristic<
     theoreticalFreqs = calculateDiscreteTheoreticalFrequencies(
       characteristics,
       theory,
-      Object.keys(series.getStatisticalSeries()).map(parseFloat).sort(),
+      Object.keys(empiricalFreqs)
+        .map(parseFloat)
+        .sort((a, b) => a - b),
     );
   }
 
+  // Sort empirical and theoretical keys by numeric interval start
+  const sortedKeys = Object.keys(empiricalFreqs).sort(
+    (a, b) => parseKeyString(a).start - parseKeyString(b).start,
+  );
+
+  const sortedEmpirical: Record<string, number> = {};
+  const sortedTheoretical: Record<string, number> = {};
+
+  sortedKeys.forEach((key) => {
+    sortedEmpirical[key] = empiricalFreqs[key];
+    sortedTheoretical[key] = theoreticalFreqs[key] || 0;
+  });
+
   const { mergedEmpirical, mergedTheoretical } = mergeCategoriesByLowerBound(
-    empiricalFreqs,
-    theoreticalFreqs,
+    sortedEmpirical,
+    sortedTheoretical,
   );
 
   let chiSquared = 0;
-
   for (const key in mergedEmpirical) {
     const o = mergedEmpirical[key] || 0;
     const e = mergedTheoretical[key];
@@ -189,25 +210,19 @@ export function PearsonChiSquaredCharacteristic<
 
   const pValue = 1 - jStat.chisquare.cdf(chiSquared, degreesOfFreedom);
 
-  return {
-    chiSquared,
-    degreesOfFreedom,
-    pValue,
-  };
+  return { chiSquared, degreesOfFreedom, pValue };
 }
 
 export function getPearsonForEveryDistributionType(
   series: AbstractSeries,
 ): Array<{ type: DistributionType; fit: FitResult }> {
   const results: Array<{ type: DistributionType; fit: FitResult }> = [];
-  getAllTheoreticalDistributions().map(({ type, theory }) => {
+  getAllTheoreticalDistributions().forEach(({ type, theory }) => {
     results.push({
       type,
       fit: PearsonChiSquaredCharacteristic(series, theory),
     });
   });
-
-  console.log(results);
 
   return results;
 }
@@ -217,7 +232,8 @@ export function getBestDistributionTypeByPearson(
 ): DistributionType | undefined {
   const results = getPearsonForEveryDistributionType(series);
 
-  //   const validResults = results.filter((result) => result.fit.pValue >= 0.05);
+  // Filter only distributions with p-value ≥ 0.05
+  // const validResults = results.filter((result) => result.fit.pValue >= 0.05);
   const validResults = results;
 
   if (validResults.length === 0) {
@@ -225,7 +241,8 @@ export function getBestDistributionTypeByPearson(
     return undefined;
   }
 
-  validResults.sort((a, b) => a.fit.chiSquared - b.fit.chiSquared);
+  // Select best by highest p-value
+  validResults.sort((a, b) => b.fit.pValue - a.fit.pValue);
 
   return validResults[0].type;
 }
