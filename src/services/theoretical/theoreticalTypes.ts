@@ -14,6 +14,12 @@ export type DistributionCharacteristics = {
   n: number;
 };
 
+export type StandardDistributionMetrics = {
+  mean: number;
+  variance: number;
+  sigma: number;
+};
+
 export type TheoreticalDistribution<T extends DistributionCharacteristics> = {
   getCharacteristicsFromEmpiricalData: (series: AbstractSeries) => T;
 
@@ -21,13 +27,7 @@ export type TheoreticalDistribution<T extends DistributionCharacteristics> = {
 
   getTheoreticalSkewness: (characteristics: T) => number;
 
-  getConfidenceIntervals: (
-    gamma: number,
-    characteristics: T,
-  ) => {
-    left: T;
-    right: T;
-  };
+  getStandardMetrics: (characteristics: T) => StandardDistributionMetrics;
 
   pdf: (x: number, characteristics: T) => number;
   cdf: (x: number, characteristics: T) => number;

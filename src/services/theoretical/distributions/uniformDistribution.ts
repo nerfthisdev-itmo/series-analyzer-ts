@@ -1,5 +1,8 @@
 import { jStat } from "jstat";
-import type { TheoreticalDistribution } from "../theoreticalTypes";
+import type {
+  StandardDistributionMetrics,
+  TheoreticalDistribution,
+} from "../theoreticalTypes";
 import type { AbstractSeries } from "../../AbstractSeries";
 
 export type UniformDistributionCharacteristics = {
@@ -39,6 +42,18 @@ export const uniform: TheoreticalDistribution<UniformDistributionCharacteristics
       return {
         left: { a, b, n },
         right: { a, b, n },
+      };
+    },
+
+    getStandardMetrics: (
+      chars: UniformDistributionCharacteristics,
+    ): StandardDistributionMetrics => {
+      const mean = (chars.a + chars.b) / 2;
+      const variance = (chars.b - chars.a) ** 2 / 12;
+      return {
+        mean: mean,
+        variance: variance,
+        sigma: Math.sqrt(variance),
       };
     },
 

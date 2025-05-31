@@ -1,5 +1,8 @@
 import { jStat } from "jstat";
-import type { TheoreticalDistribution } from "../theoreticalTypes";
+import type {
+  StandardDistributionMetrics,
+  TheoreticalDistribution,
+} from "../theoreticalTypes";
 import type { AbstractSeries } from "../../AbstractSeries";
 
 export type LaplaceDistributionCharacteristics = {
@@ -49,6 +52,16 @@ export const laplace: TheoreticalDistribution<LaplaceDistributionCharacteristics
           b: characteristics.b,
           n: characteristics.n,
         },
+      };
+    },
+
+    getStandardMetrics: (
+      chars: LaplaceDistributionCharacteristics,
+    ): StandardDistributionMetrics => {
+      return {
+        mean: chars.mu,
+        variance: 2 * chars.b ** 2,
+        sigma: Math.SQRT2 * chars.b,
       };
     },
 

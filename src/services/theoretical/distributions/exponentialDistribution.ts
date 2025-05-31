@@ -2,6 +2,7 @@ import { jStat } from "jstat";
 import type { AbstractSeries } from "@/services/AbstractSeries";
 import type {
   DistributionCharacteristics,
+  StandardDistributionMetrics,
   TheoreticalDistribution,
 } from "../theoreticalTypes";
 
@@ -57,6 +58,18 @@ export const exponential: TheoreticalDistribution<ExponentialDistributionCharact
           n: characteristics.n,
           lambda: upperLambda,
         },
+      };
+    },
+
+    getStandardMetrics: (
+      chars: ExponentialDistributionCharacteristics,
+    ): StandardDistributionMetrics => {
+      const mean = 1 / chars.lambda;
+      const variance = 1 / chars.lambda ** 2;
+      return {
+        mean: mean,
+        variance: variance,
+        sigma: Math.sqrt(variance),
       };
     },
 
