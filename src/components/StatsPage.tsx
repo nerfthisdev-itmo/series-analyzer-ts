@@ -1,10 +1,11 @@
+import MeanVarTestCard from "./ui/MeanVarTestCard";
 import StatsTextRenderer from "@/components/ui/StatsTextRenderer";
 import SplitTTestCard from "@/components/ui/SplitTTestCard"; // ⬅️ НОВЫЙ импорт
 import { useVariationSeries } from "@/context/VariationSeriesContext";
 import { Card, CardContent } from "@/components/ui/card";
 
 const StatsPage = () => {
-  const { seriesA, seriesB } = useVariationSeries();
+  const { seriesA, seriesB, distsA, distsB } = useVariationSeries();
 
   if (!seriesA || !seriesB) {
     return (
@@ -46,6 +47,18 @@ const StatsPage = () => {
           title='t-тест: Ряд B (половины)'
           series={seriesB}
           alpha={0.05}
+        />
+      </div>
+      <div className='gap-6 grid grid-cols-1 md:grid-cols-2'>
+        <MeanVarTestCard
+          title='μ & σ²: Ряд A'
+          series={seriesA}
+          distType={distsA[0]}
+        />
+        <MeanVarTestCard
+          title='μ & σ²: Ряд B'
+          series={seriesB}
+          distType={distsB[0]}
         />
       </div>
     </div>
