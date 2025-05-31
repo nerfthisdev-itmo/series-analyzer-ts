@@ -83,16 +83,17 @@ export function getBestDistributionByKS(
   const results = getKSTestForEveryDistributionType(series);
 
   // Filter out invalid results (NaN pValues)
-  const validResults = results.filter(
-    (item) => !isNaN(item.result.ksStatistic) && !isNaN(item.result.pValue),
-  );
+  const validResults = results
+    .filter(
+      (item) => !isNaN(item.result.ksStatistic) && !isNaN(item.result.pValue),
+    )
+    .filter((result) => result.result.pValue >= 0.05);
 
   if (validResults.length === 0) {
     console.warn("No valid distributions available for K-S test.");
     return null;
   }
 
-  // Sort by descending pValue (best fit first)
-  validResults.sort((a, b) => b.result.pValue - a.result.pValue);
+  validResults.sort((a, b) => b.result.ksStatistic - a.result.ksStatistic);
   return validResults[0];
 }

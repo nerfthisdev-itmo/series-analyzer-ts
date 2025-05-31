@@ -233,8 +233,7 @@ export function getBestDistributionTypeByPearson(
   const results = getPearsonForEveryDistributionType(series);
 
   // Filter only distributions with p-value ≥ 0.05
-  // const validResults = results.filter((result) => result.result.pValue >= 0.05);
-  const validResults = results;
+  const validResults = results.filter((result) => result.result.pValue >= 0.05);
 
   if (validResults.length === 0) {
     console.warn("No distribution passed the Chi-Squared test.");
@@ -242,7 +241,7 @@ export function getBestDistributionTypeByPearson(
   }
 
   // Select best by highest p-value
-  validResults.sort((a, b) => b.result.pValue - a.result.pValue);
+  validResults.sort((a, b) => b.result.chiSquared - a.result.chiSquared);
 
   return validResults[0];
 }
