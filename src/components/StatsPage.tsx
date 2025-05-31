@@ -1,4 +1,5 @@
 import StatsTextRenderer from "@/components/ui/StatsTextRenderer";
+import SplitTTestCard from "@/components/ui/SplitTTestCard"; // ⬅️ НОВЫЙ импорт
 import { useVariationSeries } from "@/context/VariationSeriesContext";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -16,6 +17,8 @@ const StatsPage = () => {
   return (
     <div className='space-y-6 p-6'>
       <h1 className='font-bold text-2xl'>Статистические характеристики</h1>
+
+      {/* ───────── 1. таблицы сравнения эмпирика-vs-теория ───────── */}
       <div className='gap-6 grid grid-cols-1 md:grid-cols-2'>
         <Card>
           <CardContent className='space-y-4 p-4'>
@@ -30,6 +33,20 @@ const StatsPage = () => {
             <StatsTextRenderer useSeries='B' />
           </CardContent>
         </Card>
+      </div>
+
+      {/* ───────── 2. t-тест «первая половина vs вторая» ───────── */}
+      <div className='gap-6 grid grid-cols-1 md:grid-cols-2'>
+        <SplitTTestCard
+          title='t-тест: Ряд A (половины)'
+          series={seriesA}
+          alpha={0.05} // можно опустить, по-умолчанию 0.05
+        />
+        <SplitTTestCard
+          title='t-тест: Ряд B (половины)'
+          series={seriesB}
+          alpha={0.05}
+        />
       </div>
     </div>
   );

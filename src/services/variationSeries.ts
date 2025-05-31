@@ -43,6 +43,10 @@ export class VariationSeries extends AbstractSeries {
     return Math.sqrt(this.variance);
   }
 
+  get sampleVariance(): number {
+    return this.variance * (this.n / (this.n - 1));
+  }
+
   get mode(): number {
     const freqMap = this.getStatisticalSeries();
     let max = -Infinity;
