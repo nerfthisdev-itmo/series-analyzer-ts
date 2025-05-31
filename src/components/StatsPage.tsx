@@ -20,17 +20,14 @@ const StatsPage = () => {
         <Card>
           <CardContent className='space-y-4 p-4'>
             <h2 className='font-semibold text-xl text-center'>Ряд A</h2>
-            <StatsTextRenderer distributions={["binomial", "uniform"]} />
+            <StatsTextRenderer useSeries='A' />
           </CardContent>
         </Card>
 
         <Card>
           <CardContent className='space-y-4 p-4'>
             <h2 className='font-semibold text-xl text-center'>Ряд B</h2>
-            <StatsTextRenderer
-              distributions={["normal", "laplace"]}
-              useSeries='B'
-            />
+            <StatsTextRenderer useSeries='B' />
           </CardContent>
         </Card>
       </div>
