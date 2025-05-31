@@ -2,13 +2,18 @@
 
 import { CartesianGrid, ComposedChart, Line, XAxis } from "recharts";
 
+import { TheoreticalDistributionData } from "./ui/TheoreticalDistributionData";
 import type { ChartConfig } from "@/components/ui/chart";
 import type { VariationSeries } from "@/services/variationSeries";
 import type { DistributionType } from "@/services/theoretical/theoreticalTypes";
+import type { PearsonResult } from "@/services/theoretical/pearsonsCriteria";
+import type { KSTestResult } from "@/services/theoretical/kolmogorovCriteria";
+import type { SomeTheoreticalDistribution } from "@/services/theoretical/getTheoreticalDistribution";
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -19,7 +24,7 @@ import {
 } from "@/components/ui/chart";
 import { getTheoreticalDistribution } from "@/services/theoretical/getTheoreticalDistribution";
 import { calculateDiscreteTheoreticalFrequencies } from "@/services/theoretical/theoreticalFrequencies";
-import { getBestDistributionTypeByPearson } from "@/services/theoretical/pearsonsCriteria";
+import { getBestDistributionType } from "@/services/theoretical/getBestDistribution";
 
 const chartConfig = {
   number_of_occurrences: {
@@ -50,13 +55,26 @@ export function Polygon({
 }) {
   const data = new Array<PolygonGraphEntry | PolygonGraphWithTheoreticalValuesEntry>();
 
+  let characteristics: SomeTheoreticalDistribution | undefined = undefined;
+  let bestDistributionResult: {
+    type: DistributionType;
+    result: PearsonResult;
+  } | {
+    type: DistributionType;
+    result: KSTestResult;
+  } | undefined = undefined;
+  let resolvedDistributionType: DistributionType | undefined;
+
   if (distributionType == "auto") {
-    distributionType = getBestDistributionTypeByPearson(variationSeries)?.type
+    bestDistributionResult = getBestDistributionType(variationSeries);
+    resolvedDistributionType = bestDistributionResult?.type;
+  } else {
+    resolvedDistributionType = distributionType;
   }
 
-  if (distributionType != undefined) {
-    const theory = getTheoreticalDistribution(distributionType);
-    const characteristics = theory.getCharacteristicsFromEmpiricalData(variationSeries);
+  if (resolvedDistributionType != undefined) {
+    const theory = getTheoreticalDistribution(resolvedDistributionType);
+    characteristics = theory.getCharacteristicsFromEmpiricalData(variationSeries);
 
     const theoreticalFrequencies = Object.values(
       calculateDiscreteTheoreticalFrequencies(
@@ -140,6 +158,15 @@ export function Polygon({
           </ComposedChart>
         </ChartContainer>
       </CardContent>
+      {resolvedDistributionType && characteristics && (
+        <CardFooter className="border-t">
+          <TheoreticalDistributionData
+            resolvedDistributionType={resolvedDistributionType}
+            characteristics={characteristics}
+            bestDistributionResult={bestDistributionResult}>
+          </TheoreticalDistributionData>
+        </CardFooter>
+      )}
     </Card>
   );
 }
