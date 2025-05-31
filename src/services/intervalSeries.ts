@@ -89,6 +89,10 @@ export class IntervalVariationSeries extends AbstractSeries {
     return total / this._n;
   }
 
+  get sampleVariance(): number {
+    return this.variance * (this.n / (this.n - 1));
+  }
+
   get standardDeviation(): number {
     return Math.sqrt(this.variance);
   }

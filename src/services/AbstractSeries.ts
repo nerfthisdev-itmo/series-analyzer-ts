@@ -5,7 +5,7 @@ export abstract class AbstractSeries {
   protected _max: number;
 
   constructor(data: Array<number>) {
-    this.data = [...data].sort((a, b) => a - b);
+    this.data = [...data];
     this._n = this.data.length;
     this._min = Math.min(...data);
     this._max = Math.max(...data);
