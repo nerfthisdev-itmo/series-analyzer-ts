@@ -7,13 +7,6 @@
 import React from "react";
 
 import type { DistributionType } from "@/services/theoretical/theoreticalTypes";
-import type { BinomialDistributionCharacteristics } from "@/services/theoretical/distributions/binomialDistribution";
-import type { GeometricDistributionCharacteristics } from "@/services/theoretical/distributions/geometricDistribution";
-import type { LaplaceDistributionCharacteristics } from "@/services/theoretical/distributions/laplaceDistribution";
-import type { NormalDistributionCharacteristics } from "@/services/theoretical/distributions/normalDistribution";
-import type { UniformDistributionCharacteristics } from "@/services/theoretical/distributions/uniformDistribution";
-import type { ExponentialDistributionCharacteristics } from "@/services/theoretical/distributions/exponentialDistribution";
-import type { PoissonDistributionCharacteristics } from "@/services/theoretical/distributions/poissonDistribution";
 import { getTheoreticalDistribution } from "@/services/theoretical/getTheoreticalDistribution";
 import { useVariationSeries } from "@/context/VariationSeriesContext";
 
@@ -41,54 +34,6 @@ const StatsTextRenderer: React.FC<Props> = ({
     return <p>Данные выборки не найдены</p>;
   }
 
-  /* ───────── helpers ───────── */
-
-  /** вычисляем mean / variance / sd для каждого распределения */
-  const buildMetrics = (
-    type: DistributionType,
-    chars: any,
-  ): { mean: number; variance: number; sd: number } => {
-    switch (type) {
-      case "normal": {
-        const c = chars as NormalDistributionCharacteristics;
-        return { mean: c.mu, variance: c.sigma ** 2, sd: c.sigma };
-      }
-      case "binomial": {
-        const c = chars as BinomialDistributionCharacteristics;
-        const v = c.n * c.p * (1 - c.p);
-        return { mean: c.n * c.p, variance: v, sd: Math.sqrt(v) };
-      }
-      case "geometric": {
-        const c = chars as GeometricDistributionCharacteristics;
-        const mean = 1 / c.p;
-        const variance = (1 - c.p) / c.p ** 2;
-        return { mean, variance, sd: Math.sqrt(variance) };
-      }
-      case "laplace": {
-        const c = chars as LaplaceDistributionCharacteristics; // { mu, b }
-        return { mean: c.mu, variance: 2 * c.b ** 2, sd: Math.SQRT2 * c.b };
-      }
-      case "uniform": {
-        const c = chars as UniformDistributionCharacteristics; // { a, b }
-        const mean = (c.a + c.b) / 2;
-        const variance = (c.b - c.a) ** 2 / 12;
-        return { mean, variance, sd: Math.sqrt(variance) };
-      }
-      case "exponential": {
-        const c = chars as ExponentialDistributionCharacteristics; // { lambda }
-        const mean = 1 / c.lambda;
-        const variance = 1 / c.lambda ** 2;
-        return { mean, variance, sd: Math.sqrt(variance) };
-      }
-      case "poisson": {
-        const c = chars as PoissonDistributionCharacteristics; // { lambda }
-        return { mean: c.lambda, variance: c.lambda, sd: Math.sqrt(c.lambda) };
-      }
-      default:
-        throw new Error("Unsupported distribution");
-    }
-  };
-
   /** css-класс для ячейки «|Δ|» */
   const diffClass = (d: number) =>
     d > diffThreshold ? "text-red-600 dark:text-red-400" : "";
@@ -98,12 +43,12 @@ const StatsTextRenderer: React.FC<Props> = ({
   const theories = pair.map((d) => {
     const dist = getTheoreticalDistribution(d);
     const chars = dist.getCharacteristicsFromEmpiricalData(series);
-    const base = buildMetrics(d, chars);
+    const base = dist.getStandardMetrics(chars)
     return {
       type: d,
       mean: base.mean,
       variance: base.variance,
-      sd: base.sd,
+      sd: base.sigma,
       skewness: dist.getTheoreticalSkewness(chars),
       kurtosis: dist.getTheoreticalKurtosis(chars),
     };
@@ -161,7 +106,7 @@ const StatsTextRenderer: React.FC<Props> = ({
           {rows.map((r) => (
             <tr
               key={r.label}
-              className='even:bg-gray-50 dark:even:bg-neutral-900'
+              className='dark:even:bg-neutral-900 even:bg-gray-50'
             >
               <td className='px-3 py-1'>{r.label}</td>
               <td className='px-3 py-1 text-right'>{r.emp.toFixed(4)}</td>
