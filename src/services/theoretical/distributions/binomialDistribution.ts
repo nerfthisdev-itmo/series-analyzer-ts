@@ -1,5 +1,8 @@
 import { jStat } from "jstat";
-import type { TheoreticalDistribution } from "../theoreticalTypes";
+import type {
+  StandardDistributionMetrics,
+  TheoreticalDistribution,
+} from "../theoreticalTypes";
 import type { AbstractSeries } from "../../AbstractSeries";
 
 export type BinomialDistributionCharacteristics = {
@@ -58,6 +61,17 @@ export const binomial: TheoreticalDistribution<BinomialDistributionCharacteristi
           n: characteristics.n,
           p: rightP,
         },
+      };
+    },
+
+    getStandardMetrics: (
+      chars: BinomialDistributionCharacteristics,
+    ): StandardDistributionMetrics => {
+      const variance = chars.n * chars.p * (1 - chars.p);
+      return {
+        mean: chars.n * chars.p,
+        variance: variance,
+        sigma: Math.sqrt(variance),
       };
     },
 

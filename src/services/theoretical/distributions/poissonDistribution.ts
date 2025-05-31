@@ -1,6 +1,7 @@
 import { jStat } from "jstat";
 import type {
   DistributionCharacteristics,
+  StandardDistributionMetrics,
   TheoreticalDistribution,
 } from "../theoreticalTypes";
 import type { AbstractSeries } from "../../AbstractSeries";
@@ -55,6 +56,16 @@ export const poisson: TheoreticalDistribution<PoissonDistributionCharacteristics
           n: characteristics.n,
           lambda: upperLambda,
         },
+      };
+    },
+
+    getStandardMetrics: (
+      chars: PoissonDistributionCharacteristics,
+    ): StandardDistributionMetrics => {
+      return {
+        mean: chars.lambda,
+        variance: chars.lambda,
+        sigma: Math.sqrt(chars.lambda),
       };
     },
 

@@ -2,6 +2,7 @@ import { jStat } from "jstat";
 import { studentCoefficient } from "../../seriesMath";
 import type {
   DistributionCharacteristics,
+  StandardDistributionMetrics,
   TheoreticalDistribution,
 } from "../theoreticalTypes";
 import type { AbstractSeries } from "../../AbstractSeries";
@@ -19,7 +20,7 @@ export const normal: TheoreticalDistribution<NormalDistributionCharacteristics> 
       return {
         n: series.n,
         mu: series.mean,
-        sigma: series.sampleStandardDeviation,
+        sigma: series.standardDeviation,
       };
     },
 
@@ -70,6 +71,16 @@ export const normal: TheoreticalDistribution<NormalDistributionCharacteristics> 
           mu: rightMean,
           sigma: rightVariance,
         },
+      };
+    },
+
+    getStandardMetrics: (
+      chars: NormalDistributionCharacteristics,
+    ): StandardDistributionMetrics => {
+      return {
+        mean: chars.mu,
+        variance: chars.sigma ** 2,
+        sigma: chars.sigma,
       };
     },
 
