@@ -1,9 +1,16 @@
+/* ──────────────────────────────────────────────────────────────
+ * StatsTextRenderer.tsx
+ * Таблица сравнения эмпирических и теоретических характеристик.
+ * Всегда берёт выбор распределений (distsA / distsB) из VariationSeriesContext.
+ * ────────────────────────────────────────────────────────────── */
+
 import React from "react";
+
+import type { DistributionType } from "@/services/theoretical/theoreticalTypes";
 import type { BinomialDistributionCharacteristics } from "@/services/theoretical/distributions/binomialDistribution";
 import type { GeometricDistributionCharacteristics } from "@/services/theoretical/distributions/geometricDistribution";
 import type { LaplaceDistributionCharacteristics } from "@/services/theoretical/distributions/laplaceDistribution";
 import type { NormalDistributionCharacteristics } from "@/services/theoretical/distributions/normalDistribution";
-import type { DistributionType } from "@/services/theoretical/theoreticalTypes";
 import type { UniformDistributionCharacteristics } from "@/services/theoretical/distributions/uniformDistribution";
 import type { ExponentialDistributionCharacteristics } from "@/services/theoretical/distributions/exponentialDistribution";
 import type { PoissonDistributionCharacteristics } from "@/services/theoretical/distributions/poissonDistribution";
@@ -11,24 +18,32 @@ import { getTheoreticalDistribution } from "@/services/theoretical/getTheoretica
 import { useVariationSeries } from "@/context/VariationSeriesContext";
 
 type Props = {
-  distributions: [DistributionType, DistributionType];
+  /** какой ряд рендерим: A или B (по-умолчанию A) */
   useSeries?: "A" | "B";
+  /** порог для подсветки абсолютного расхождения |emp-theo| */
   diffThreshold?: number;
 };
 
+/* ────────────────────────────────────────────────────────────── */
+
 const StatsTextRenderer: React.FC<Props> = ({
-  distributions,
   useSeries = "A",
   diffThreshold = 0.1,
 }) => {
-  const { seriesA, seriesB } = useVariationSeries();
-  const s = useSeries === "A" ? seriesA : seriesB;
+  /* --- достаём всё необходимое из контекста --- */
+  const { seriesA, seriesB, distsA, distsB } = useVariationSeries();
 
-  if (!s || s.initial_data.length === 0) {
+  const series = useSeries === "A" ? seriesA : seriesB;
+  const pair: [DistributionType, DistributionType] =
+    useSeries === "A" ? distsA : distsB;
+
+  if (!series || series.initial_data.length === 0) {
     return <p>Данные выборки не найдены</p>;
   }
 
-  /* ------ helpers (buildMetrics / getDiffClass) ------ */
+  /* ───────── helpers ───────── */
+
+  /** вычисляем mean / variance / sd для каждого распределения */
   const buildMetrics = (
     type: DistributionType,
     chars: any,
@@ -50,41 +65,42 @@ const StatsTextRenderer: React.FC<Props> = ({
         return { mean, variance, sd: Math.sqrt(variance) };
       }
       case "laplace": {
-        const c = chars as LaplaceDistributionCharacteristics; // {mu,b}
+        const c = chars as LaplaceDistributionCharacteristics; // { mu, b }
         return { mean: c.mu, variance: 2 * c.b ** 2, sd: Math.SQRT2 * c.b };
       }
       case "uniform": {
-        const c = chars as UniformDistributionCharacteristics;
+        const c = chars as UniformDistributionCharacteristics; // { a, b }
         const mean = (c.a + c.b) / 2;
-        const variance = ((c.b - c.a) ** 2) / 12;
-        return { mean, variance, sd: Math.sqrt(variance), };
+        const variance = (c.b - c.a) ** 2 / 12;
+        return { mean, variance, sd: Math.sqrt(variance) };
       }
       case "exponential": {
-        const c = chars as ExponentialDistributionCharacteristics;
+        const c = chars as ExponentialDistributionCharacteristics; // { lambda }
         const mean = 1 / c.lambda;
-        const variance = 1 / (c.lambda ** 2);
-        return { mean, variance, sd: Math.sqrt(variance), };
+        const variance = 1 / c.lambda ** 2;
+        return { mean, variance, sd: Math.sqrt(variance) };
       }
       case "poisson": {
-        const c = chars as PoissonDistributionCharacteristics;
-        return { mean: c.lambda, variance: c.lambda, sd: Math.sqrt(c.lambda), };
+        const c = chars as PoissonDistributionCharacteristics; // { lambda }
+        return { mean: c.lambda, variance: c.lambda, sd: Math.sqrt(c.lambda) };
       }
       default:
-        throw new Error("unsupported distribution");
+        throw new Error("Unsupported distribution");
     }
   };
 
-  const getDiffClass = (d: number) =>
+  /** css-класс для ячейки «|Δ|» */
+  const diffClass = (d: number) =>
     d > diffThreshold ? "text-red-600 dark:text-red-400" : "";
 
-  const theories = distributions.map((d) => {
+  /* ───────── готовим теорию для выбранной пары ───────── */
+
+  const theories = pair.map((d) => {
     const dist = getTheoreticalDistribution(d);
-    const chars = dist.getCharacteristicsFromEmpiricalData(s);
+    const chars = dist.getCharacteristicsFromEmpiricalData(series);
     const base = buildMetrics(d, chars);
     return {
       type: d,
-      dist,
-      chars,
       mean: base.mean,
       variance: base.variance,
       sd: base.sd,
@@ -93,27 +109,30 @@ const StatsTextRenderer: React.FC<Props> = ({
     };
   });
 
+  /* ───────── строки таблицы ───────── */
+
   const rows = [
-    { label: "Мат. ожидание (μ)", emp: s.mean, key: "mean" as const },
-    { label: "Дисперсия (D)", emp: s.variance, key: "variance" as const },
+    { label: "Мат. ожидание (μ)", emp: series.mean, key: "mean" as const },
+    { label: "Дисперсия (D)", emp: series.variance, key: "variance" as const },
     {
       label: "СКО (σ)",
-      emp: s.sampleStandardDeviation,
+      emp: series.sampleStandardDeviation,
       key: "sd" as const,
     },
     {
       label: "Асимметрия (A)",
-      emp: s.getNthMoment(3),
+      emp: series.getNthMoment(3),
       key: "skewness" as const,
     },
     {
       label: "Эксцесс (E)",
-      emp: s.getNthMoment(4),
+      emp: series.getNthMoment(4),
       key: "kurtosis" as const,
     },
   ];
 
-  /* --------------- рендер ---------------- */
+  /* ───────── рендер ───────── */
+
   return (
     <div className='overflow-x-auto'>
       <table className='min-w-full text-sm border-collapse'>
@@ -142,10 +161,11 @@ const StatsTextRenderer: React.FC<Props> = ({
           {rows.map((r) => (
             <tr
               key={r.label}
-              className='dark:even:bg-neutral-900 even:bg-gray-50'
+              className='even:bg-gray-50 dark:even:bg-neutral-900'
             >
               <td className='px-3 py-1'>{r.label}</td>
               <td className='px-3 py-1 text-right'>{r.emp.toFixed(4)}</td>
+
               {theories.map((t) => {
                 const theo = t[r.key];
                 const diff = Math.abs(r.emp - theo);
@@ -154,7 +174,7 @@ const StatsTextRenderer: React.FC<Props> = ({
                     <td className='px-3 py-1 text-right'>{theo.toFixed(4)}</td>
                     <td
                       className={
-                        "px-3 py-1 text-right font-medium " + getDiffClass(diff)
+                        "px-3 py-1 text-right font-medium " + diffClass(diff)
                       }
                     >
                       {diff.toFixed(4)}
