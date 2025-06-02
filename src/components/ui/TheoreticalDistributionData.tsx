@@ -3,7 +3,10 @@ import { TestResultBadge } from "./TestResultBadge";
 import { Badge } from "./badge";
 import type { PearsonResult } from "@/services/statistical-tests/pearson-test/pearsonTest";
 import type { KSTestResult } from "@/services/statistical-tests/kolmogorov-smirnov-test/ksTest";
-import type { DistributionType, SomeTheoreticalDistribution } from "@/services/types/distributions";
+import type {
+  DistributionType,
+  SomeTheoreticalDistribution,
+} from "@/services/types/distributions";
 
 export function TheoreticalDistributionData({
   resolvedDistributionType,
@@ -13,9 +16,9 @@ export function TheoreticalDistributionData({
   resolvedDistributionType: DistributionType | undefined;
   characteristics: SomeTheoreticalDistribution | undefined;
   bestDistributionResult:
-  | { type: DistributionType; result: PearsonResult }
-  | { type: DistributionType; result: KSTestResult }
-  | undefined;
+    | { type: DistributionType; result: PearsonResult }
+    | { type: DistributionType; result: KSTestResult }
+    | undefined;
 }) {
   return (
     <div className='space-y-2 w-full'>
