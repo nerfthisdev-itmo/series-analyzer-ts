@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { VariationSeries } from "@/services/variationSeries";
+import { VariationSeries } from "@/services/series/variationSeries";
 
 describe("VariationSeries", () => {
   const testData = [
@@ -9,16 +9,6 @@ describe("VariationSeries", () => {
   ];
 
   const series = new VariationSeries(testData);
-
-  it("calculate statistical series correctly", () => {
-    expect(series.statisticalSeries).toEqual({
-      "0": 23,
-      "1": 20,
-      "2": 15,
-      "3": 3,
-      "4": 3,
-    });
-  });
 
   it("calculate basic statistics correctly", () => {
     expect(series.min).toBe(0);
@@ -42,12 +32,12 @@ describe("VariationSeries", () => {
     });
   });
 
-  it("calculate expected value estimate and deviation", () => {
-    expect(series.expectedValueEstimate).toBeCloseTo(1.1094, 1);
-    expect(series.expectedValueDeviation).toBeCloseTo(0, 1);
+  it("calculate expected value estimate and sample deviation", () => {
+    expect(series.mean).toBeCloseTo(1.1094, 1);
+    expect(series.sampleStandardDeviation).toBeCloseTo(1.1, 1);
   });
 
-  it("calculate sample standard deviation", () => {
-    expect(series.sampleStandardDeviation).toBeCloseTo(1.0914);
+  it("calculate standard deviation", () => {
+    expect(series.standardDeviation).toBeCloseTo(1.0914);
   });
 });

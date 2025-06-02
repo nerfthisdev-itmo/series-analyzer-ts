@@ -1,19 +1,12 @@
 "use client";
 
-import {
-  Bar,
-  CartesianGrid,
-  ComposedChart,
-  LabelList,
-  Line,
-  XAxis,
-} from "recharts";
+import { CartesianGrid, ComposedChart, Line, XAxis } from "recharts";
 
 import { TheoreticalDistributionData } from "./ui/TheoreticalDistributionData";
 import type { ChartConfig } from "@/components/ui/chart";
-import type { IntervalVariationSeries } from "@/services/series/intervalSeries";
-import type { KSTestResult } from "@/services/statistical-tests/kolmogorov-smirnov-test/ksTest";
+import type { VariationSeries } from "@/services/series/variationSeries";
 import type { PearsonResult } from "@/services/statistical-tests/pearson-test/pearsonTest";
+import type { KSTestResult } from "@/services/statistical-tests/kolmogorov-smirnov-test/ksTest";
 import type {
   DistributionType,
   SomeTheoreticalDistribution,
@@ -33,7 +26,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { getBestDistributionType } from "@/services/distributions/getBestDistribution";
-import { calculateContinuousTheoreticalFrequencies } from "@/services/distributions/theoreticalFrequencies";
+import { calculateDiscreteTheoreticalFrequencies } from "@/services/distributions/theoreticalFrequencies";
 
 const chartConfig = {
   number_of_occurrences: {
@@ -46,25 +39,26 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-type HistogramEntry = {
-  bin_center: number;
+type PolygonGraphEntry = {
+  sample_value: number;
   number_of_occurrences: number;
 };
 
-type HistogramWithTheoreticalValuesEntry = HistogramEntry & {
-  theoretical_frequency: number;
+type PolygonGraphWithTheoreticalValuesEntry = PolygonGraphEntry & {
+  theoretical_value: number;
 };
 
-export function Histogram({
-  intervalVariationSeries,
+export function Polygon({
+  variationSeries,
   distributionType,
 }: {
-  intervalVariationSeries: IntervalVariationSeries;
+  variationSeries: VariationSeries;
   distributionType?: "auto" | DistributionType;
 }) {
-  const chartData = new Array<
-    HistogramWithTheoreticalValuesEntry | HistogramEntry
+  const data = new Array<
+    PolygonGraphEntry | PolygonGraphWithTheoreticalValuesEntry
   >();
+
   let characteristics: SomeTheoreticalDistribution | undefined = undefined;
   let bestDistributionResult:
     | {
@@ -79,7 +73,7 @@ export function Histogram({
   let resolvedDistributionType: DistributionType | undefined;
 
   if (distributionType == "auto") {
-    bestDistributionResult = getBestDistributionType(intervalVariationSeries);
+    bestDistributionResult = getBestDistributionType(variationSeries);
     resolvedDistributionType = bestDistributionResult?.type;
   } else {
     resolvedDistributionType = distributionType;
@@ -87,39 +81,33 @@ export function Histogram({
 
   if (resolvedDistributionType != undefined) {
     const theory = getTheoreticalDistribution(resolvedDistributionType);
+    characteristics =
+      theory.getCharacteristicsFromEmpiricalData(variationSeries);
 
-    characteristics = theory.getCharacteristicsFromEmpiricalData(
-      intervalVariationSeries,
-    );
-
-    const theoretical_frequencies = Object.values(
-      calculateContinuousTheoreticalFrequencies(
+    const theoreticalFrequencies = Object.values(
+      calculateDiscreteTheoreticalFrequencies(
         characteristics,
         theory,
-        intervalVariationSeries.intervalBorders,
+        Object.keys(variationSeries.getStatisticalSeries()).map(parseFloat),
       ),
     );
 
-    Object.entries(intervalVariationSeries.getStatisticalSeries()).forEach(
-      ([bin_center_str, number_of_occurrences]: [string, number], index) => {
-        const bin_center = parseFloat(bin_center_str);
-
-        chartData.push({
-          bin_center,
+    Object.entries(variationSeries.getStatisticalSeries()).forEach(
+      ([sample_value, number_of_occurrences], index) => {
+        data.push({
+          sample_value: parseFloat(sample_value),
           number_of_occurrences,
-          theoretical_frequency: theoretical_frequencies[index],
-        } satisfies HistogramWithTheoreticalValuesEntry);
+          theoretical_value: theoreticalFrequencies[index],
+        } satisfies PolygonGraphWithTheoreticalValuesEntry);
       },
     );
   } else {
-    Object.entries(intervalVariationSeries.getStatisticalSeries()).forEach(
-      ([bin_center_str, number_of_occurrences]: [string, number]) => {
-        const bin_center = parseFloat(bin_center_str);
-
-        chartData.push({
-          bin_center,
+    Object.entries(variationSeries.getStatisticalSeries()).forEach(
+      ([sample_value, number_of_occurrences]) => {
+        data.push({
+          sample_value: parseFloat(sample_value),
           number_of_occurrences,
-        } satisfies HistogramEntry);
+        } satisfies PolygonGraphEntry);
       },
     );
   }
@@ -127,49 +115,52 @@ export function Histogram({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Histogram</CardTitle>
+        <CardTitle>Polygon chart</CardTitle>
         <CardDescription>
-          Constructed by counting number of elements inside each interval
+          Constructed by counting a number of occurrences of each value
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer config={chartConfig} className='w-full min-h-[200px]'>
           <ComposedChart
             accessibilityLayer
-            data={chartData}
+            data={data}
             margin={{
-              top: 20,
+              left: 12,
+              right: 12,
             }}
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey='bin_center'
+              type='number'
+              dataKey='sample_value'
               tickLine={false}
-              tickMargin={10}
               axisLine={false}
+              tickMargin={8}
+              // tickFormatter={(value) => value.slice(0, 3)}
             />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            <Bar
+            <Line
               dataKey='number_of_occurrences'
-              fill='var(--color-number_of_occurrences)'
-              radius={8}
-            >
-              <LabelList
-                position='top'
-                offset={12}
-                className='fill-foreground'
-                fontSize={12}
-              />
-            </Bar>
+              type='linear'
+              stroke='var(--color-number_of_occurrences)'
+              strokeWidth={2}
+              dot={{
+                fill: "var(--color-number_of_occurrences)",
+              }}
+              activeDot={{
+                r: 6,
+              }}
+            />
 
             {distributionType != undefined ? (
               <Line
-                dataKey='theoretical_frequency'
-                stroke='var(--color-theoretical_frequency)'
+                dataKey='theoretical_value'
                 type='natural'
+                stroke='var(--color-theoretical_frequency)'
                 strokeWidth={2}
                 dot={false}
               />

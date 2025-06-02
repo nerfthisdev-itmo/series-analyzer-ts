@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
   onSubmit: (a: Array<number>, b: Array<number>) => void;
@@ -7,6 +7,13 @@ interface Props {
 export const DataInput = ({ onSubmit }: Props) => {
   const [rawA, setRawA] = useState("");
   const [rawB, setRawB] = useState("");
+
+  useEffect(() => {
+    const savedA = localStorage.getItem("inputA");
+    const savedB = localStorage.getItem("inputB");
+    if (savedA) setRawA(savedA);
+    if (savedB) setRawB(savedB);
+  }, []);
 
   const parseInput = (text: string): Array<number> => {
     return text
@@ -65,10 +72,27 @@ export const DataInput = ({ onSubmit }: Props) => {
       </div>
 
       <button
-        onClick={() => onSubmit(parseInput(rawA), parseInput(rawB))}
+        onClick={() => {
+          const parsedA = parseInput(rawA);
+          const parsedB = parseInput(rawB);
+          onSubmit(parsedA, parsedB);
+          localStorage.setItem("inputA", rawA);
+          localStorage.setItem("inputB", rawB);
+        }}
         className='px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700'
       >
         Построить
+      </button>
+      <button
+        className='ml-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700'
+        onClick={() => {
+          localStorage.clear();
+          setRawA("");
+          setRawB("");
+          location.reload();
+        }}
+      >
+        Сбросить данные
       </button>
     </div>
   );

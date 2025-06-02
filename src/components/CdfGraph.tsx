@@ -2,7 +2,7 @@
 
 import { Activity } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
-import type { VariationSeries } from "@/services/variationSeries";
+import type { VariationSeries } from "@/services/series/variationSeries";
 
 import type { ChartConfig } from "@/components/ui/chart";
 import {

@@ -1,36 +1,52 @@
-import { DataInput } from "./ui/DataInput";
 import { CdfGraph } from "./CdfGraph";
 import { CumulativeGraph } from "./CumulativeGraph";
 import { OgiveGraph } from "./OgiveGraph";
-import { HistogramWithTheoreticalValues } from "./HistogramWithTheoreticalValues";
-import { PolygonGraphWithTheoreticalValues } from "./PolygonGraphWithTheoreticalValues";
-import { VariationSeries } from "@/services/variationSeries";
+import { Histogram } from "./Histogram";
+import { Polygon } from "./Polygon";
+import DistributionPairSelect from "./ui/DistributionPairSelect";
+import { DataInput } from "./ui/DataInput";
+import { VariationSeries } from "@/services/series/variationSeries";
+import { IntervalVariationSeries } from "@/services/series/intervalSeries";
 import { useVariationSeries } from "@/context/VariationSeriesContext";
-import { IntervalVariationSeries } from "@/services/intervalSeries";
 
 const MainPage = () => {
-  const { seriesA, seriesB, setSeries } = useVariationSeries();
+  const { seriesA, seriesB, setSeries, distsA, distsB, setDistsA, setDistsB } =
+    useVariationSeries();
 
+  /** обработчик ввода чисел */
   const handleSubmit = (a: Array<number>, b: Array<number>) => {
-    const varA = new VariationSeries(a);
-    const varB = new IntervalVariationSeries(b);
-    setSeries(varA, varB);
+    setSeries(new VariationSeries(a), new IntervalVariationSeries(b));
   };
 
   return (
     <div className='space-y-6 p-6'>
       <DataInput onSubmit={handleSubmit} />
+
+      <div className='flex gap-6'>
+        <DistributionPairSelect
+          label='Гипотезы для ряда A'
+          value={distsA}
+          onChange={setDistsA}
+        />
+        <DistributionPairSelect
+          label='Гипотезы для ряда B'
+          value={distsB}
+          onChange={setDistsB}
+        />
+      </div>
+
+      {/* графики показываем только когда есть данные */}
       {seriesA && seriesB && (
         <div className='flex gap-3 min-w-full'>
-          <div className='w-1/2'>
-            <PolygonGraphWithTheoreticalValues
-              variationSeries={seriesA}
-              distribution='binomial'
-            />
+          <div className='gap-3 w-1/2'>
+            <Polygon variationSeries={seriesA} distributionType='auto' />
             <CdfGraph variationSeries={seriesA} />
           </div>
-          <div className='w-1/2'>
-            <HistogramWithTheoreticalValues intervalVariationSeries={seriesB} />
+          <div className='gap-3 w-1/2'>
+            <Histogram
+              intervalVariationSeries={seriesB}
+              distributionType='auto'
+            />
             <CumulativeGraph intervalVariationSeries={seriesB} />
             <OgiveGraph intervalVariationSeries={seriesB} />
           </div>
@@ -39,4 +55,5 @@ const MainPage = () => {
     </div>
   );
 };
+
 export default MainPage;
