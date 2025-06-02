@@ -4,11 +4,14 @@ import { CartesianGrid, ComposedChart, Line, XAxis } from "recharts";
 
 import { TheoreticalDistributionData } from "./ui/TheoreticalDistributionData";
 import type { ChartConfig } from "@/components/ui/chart";
-import type { VariationSeries } from "@/services/variationSeries";
-import type { DistributionType } from "@/services/theoretical/theoreticalTypes";
-import type { PearsonResult } from "@/services/theoretical/pearsonsCriteria";
-import type { KSTestResult } from "@/services/theoretical/kolmogorovCriteria";
-import type { SomeTheoreticalDistribution } from "@/services/theoretical/getTheoreticalDistribution";
+import type { VariationSeries } from "@/services/series/variationSeries";
+import type { PearsonResult } from "@/services/statistical-tests/pearson-test/pearsonTest";
+import type { KSTestResult } from "@/services/statistical-tests/kolmogorov-smirnov-test/ksTest";
+import type {
+  DistributionType,
+  SomeTheoreticalDistribution,
+} from "@/services/types/distributions";
+import { getTheoreticalDistribution } from "@/services/types/distributions";
 import {
   Card,
   CardContent,
@@ -22,9 +25,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { getTheoreticalDistribution } from "@/services/theoretical/getTheoreticalDistribution";
-import { calculateDiscreteTheoreticalFrequencies } from "@/services/theoretical/theoreticalFrequencies";
-import { getBestDistributionType } from "@/services/theoretical/getBestDistribution";
+import { getBestDistributionType } from "@/services/distributions/getBestDistribution";
+import { calculateDiscreteTheoreticalFrequencies } from "@/services/distributions/theoreticalFrequencies";
 
 const chartConfig = {
   number_of_occurrences: {
@@ -60,13 +62,13 @@ export function Polygon({
   let characteristics: SomeTheoreticalDistribution | undefined = undefined;
   let bestDistributionResult:
     | {
-        type: DistributionType;
-        result: PearsonResult;
-      }
+      type: DistributionType;
+      result: PearsonResult;
+    }
     | {
-        type: DistributionType;
-        result: KSTestResult;
-      }
+      type: DistributionType;
+      result: KSTestResult;
+    }
     | undefined = undefined;
   let resolvedDistributionType: DistributionType | undefined;
 
@@ -135,7 +137,7 @@ export function Polygon({
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              // tickFormatter={(value) => value.slice(0, 3)}
+            // tickFormatter={(value) => value.slice(0, 3)}
             />
             <ChartTooltip
               cursor={false}

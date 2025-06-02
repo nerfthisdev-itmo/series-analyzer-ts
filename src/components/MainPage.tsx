@@ -5,8 +5,8 @@ import { Histogram } from "./Histogram";
 import { Polygon } from "./Polygon";
 import DistributionPairSelect from "./ui/DistributionPairSelect";
 import { DataInput } from "./ui/DataInput";
-import { VariationSeries } from "@/services/variationSeries";
-import { IntervalVariationSeries } from "@/services/intervalSeries";
+import { VariationSeries } from "@/services/series/variationSeries";
+import { IntervalVariationSeries } from "@/services/series/intervalSeries";
 import { useVariationSeries } from "@/context/VariationSeriesContext";
 
 const MainPage = () => {

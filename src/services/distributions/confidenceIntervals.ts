@@ -3,7 +3,7 @@ import { jStat } from "jstat";
 import type {
   DistributionCharacteristics,
   TheoreticalDistribution,
-} from "./theoreticalTypes";
+} from "../types/distributions";
 
 export type TestResult = {
   statistic: number;

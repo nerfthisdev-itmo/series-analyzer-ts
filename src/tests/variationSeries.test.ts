@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { VariationSeries } from "@/services/variationSeries";
+import { VariationSeries } from "@/services/series/variationSeries";
 
 describe("VariationSeries", () => {
   const testData = [

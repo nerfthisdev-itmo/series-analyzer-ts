@@ -1,6 +1,6 @@
 import { Badge } from "./badge";
-import type { KSTestResult } from "@/services/theoretical/kolmogorovCriteria";
-import type { PearsonResult } from "@/services/theoretical/pearsonsCriteria";
+import type { PearsonResult } from "@/services/statistical-tests/pearson-test/pearsonTest";
+import type { KSTestResult } from "@/services/statistical-tests/kolmogorov-smirnov-test/ksTest";
 
 export function TestResultBadge({
   result,

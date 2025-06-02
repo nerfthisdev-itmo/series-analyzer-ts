@@ -1,5 +1,5 @@
 import { Badge } from "./badge";
-import type { SomeTheoreticalDistribution } from "@/services/theoretical/getTheoreticalDistribution";
+import type { SomeTheoreticalDistribution } from "@/services/types/distributions";
 
 export function DistributionBadges({
   parameters,

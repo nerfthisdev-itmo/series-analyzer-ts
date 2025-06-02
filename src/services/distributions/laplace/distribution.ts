@@ -2,8 +2,8 @@ import { jStat } from "jstat";
 import type {
   StandardDistributionMetrics,
   TheoreticalDistribution,
-} from "../theoreticalTypes";
-import type { AbstractSeries } from "../../AbstractSeries";
+} from "../../types/distributions";
+import type { AbstractSeries } from "../../series/AbstractSeries";
 
 export type LaplaceDistributionCharacteristics = {
   mu: number;
@@ -29,30 +29,6 @@ export const laplace: TheoreticalDistribution<LaplaceDistributionCharacteristics
 
     getTheoreticalKurtosis: () => {
       return 3;
-    },
-
-    getConfidenceIntervals: (
-      gamma: number,
-      characteristics: LaplaceDistributionCharacteristics,
-    ): {
-      left: LaplaceDistributionCharacteristics;
-      right: LaplaceDistributionCharacteristics;
-    } => {
-      const z = jStat.normal.inv((1 + gamma) / 2, 0, 1);
-      const margin = (z * characteristics.b) / Math.sqrt(characteristics.n);
-
-      return {
-        left: {
-          mu: characteristics.mu - margin,
-          b: characteristics.b,
-          n: characteristics.n,
-        },
-        right: {
-          mu: characteristics.mu + margin,
-          b: characteristics.b,
-          n: characteristics.n,
-        },
-      };
     },
 
     getStandardMetrics: (

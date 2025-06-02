@@ -1,10 +1,10 @@
 import { jStat } from "jstat";
-import type { AbstractSeries } from "@/services/AbstractSeries";
+import type { AbstractSeries } from "@/services/series/AbstractSeries";
 import type {
   DistributionCharacteristics,
   StandardDistributionMetrics,
   TheoreticalDistribution,
-} from "../theoreticalTypes";
+} from "../../types/distributions";
 
 export type ExponentialDistributionCharacteristics =
   DistributionCharacteristics & {
@@ -32,33 +32,6 @@ export const exponential: TheoreticalDistribution<ExponentialDistributionCharact
       _: ExponentialDistributionCharacteristics,
     ): number => {
       return 2;
-    },
-
-    getConfidenceIntervals: (
-      gamma: number,
-      characteristics: ExponentialDistributionCharacteristics,
-    ): {
-      left: ExponentialDistributionCharacteristics;
-      right: ExponentialDistributionCharacteristics;
-    } => {
-      const alpha = 1 - gamma;
-      const sumXi = characteristics.n / characteristics.lambda;
-      const df = 2 * characteristics.n;
-      const chi2Lower = jStat.chisquare.inv(alpha / 2, df);
-      const chi2Upper = jStat.chisquare.inv(1 - alpha / 2, df);
-      const lowerLambda = chi2Lower / (2 * sumXi);
-      const upperLambda = chi2Upper / (2 * sumXi);
-
-      return {
-        left: {
-          n: characteristics.n,
-          lambda: lowerLambda,
-        },
-        right: {
-          n: characteristics.n,
-          lambda: upperLambda,
-        },
-      };
     },
 
     getStandardMetrics: (

@@ -2,7 +2,7 @@ import React from "react";
 import type {
   DistributionPair,
   DistributionType,
-} from "@/services/theoretical/theoreticalTypes";
+} from "@/services/types/distributions";
 
 /** Список всех доступных распределений */
 const ALL: Array<DistributionType> = [
@@ -37,14 +37,13 @@ const DistributionPairSelect: React.FC<Props> = ({
 
   return (
     <div className='flex flex-col gap-1'>
-      <span className='text-xs font-medium text-zinc-500'>{label}</span>
+      <span className='font-medium text-zinc-500 text-xs'>{label}</span>
 
       {/* первый select */}
       <select
         value={value[0]}
         onChange={handle(0)}
-        className='rounded-md border px-2 py-1 text-sm
-                   dark:bg-neutral-800 dark:border-neutral-700'
+        className='dark:bg-neutral-800 px-2 py-1 border dark:border-neutral-700 rounded-md text-sm'
       >
         {ALL.map((d) => (
           <option key={d} value={d}>
@@ -57,8 +56,7 @@ const DistributionPairSelect: React.FC<Props> = ({
       <select
         value={value[1]}
         onChange={handle(1)}
-        className='rounded-md border px-2 py-1 text-sm
-                   dark:bg-neutral-800 dark:border-neutral-700'
+        className='dark:bg-neutral-800 px-2 py-1 border dark:border-neutral-700 rounded-md text-sm'
       >
         {ALL.map((d) => (
           <option key={d} value={d}>

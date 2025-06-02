@@ -6,8 +6,8 @@
 
 import React from "react";
 
-import type { DistributionType } from "@/services/theoretical/theoreticalTypes";
-import { getTheoreticalDistribution } from "@/services/theoretical/getTheoreticalDistribution";
+import type { DistributionType } from "@/services/types/distributions";
+import { getTheoreticalDistribution } from "@/services/types/distributions";
 import { useVariationSeries } from "@/context/VariationSeriesContext";
 
 type Props = {

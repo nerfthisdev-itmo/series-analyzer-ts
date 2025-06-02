@@ -1,7 +1,7 @@
 import type {
   DistributionCharacteristics,
   TheoreticalDistribution,
-} from "./theoreticalTypes";
+} from "../types/distributions";
 
 export function calculateContinuousTheoreticalFrequencies<
   T extends DistributionCharacteristics,

@@ -10,7 +10,7 @@ import {
 } from "recharts";
 
 import type { ChartConfig } from "@/components/ui/chart";
-import type { IntervalVariationSeries } from "@/services/intervalSeries";
+import type { IntervalVariationSeries } from "@/services/series/intervalSeries";
 import {
   Card,
   CardContent,

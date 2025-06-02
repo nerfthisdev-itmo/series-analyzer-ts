@@ -2,8 +2,8 @@ import { jStat } from "jstat";
 import type {
   StandardDistributionMetrics,
   TheoreticalDistribution,
-} from "../theoreticalTypes";
-import type { AbstractSeries } from "../../AbstractSeries";
+} from "../../types/distributions";
+import type { AbstractSeries } from "../../series/AbstractSeries";
 
 export type UniformDistributionCharacteristics = {
   a: number;
@@ -29,20 +29,6 @@ export const uniform: TheoreticalDistribution<UniformDistributionCharacteristics
 
     getTheoreticalKurtosis: () => {
       return 9 / 5; // Non-excess kurtosis for uniform distribution
-    },
-
-    getConfidenceIntervals: (
-      gamma: number,
-      { a, b, n }: UniformDistributionCharacteristics,
-    ): {
-      left: UniformDistributionCharacteristics;
-      right: UniformDistributionCharacteristics;
-    } => {
-      // doesnt really apply here idk
-      return {
-        left: { a, b, n },
-        right: { a, b, n },
-      };
     },
 
     getStandardMetrics: (

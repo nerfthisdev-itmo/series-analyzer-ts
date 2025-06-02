@@ -1,10 +1,10 @@
 // src/components/ui/SplitTTestCard.tsx
 import React from "react";
-import type { IntervalVariationSeries } from "@/services/intervalSeries";
-import type { VariationSeries } from "@/services/variationSeries";
+import type { IntervalVariationSeries } from "@/services/series/intervalSeries";
+import type { VariationSeries } from "@/services/series/variationSeries";
 import { Card, CardContent } from "@/components/ui/card";
-import { splitSeries } from "@/services/theoretical/ttest/splitSeries";
-import { twoSampleTTest } from "@/services/theoretical/ttest/twoSampleTTest";
+import { splitSeries } from "@/services/statistical-tests/ttest/splitSeries";
+import { twoSampleTTest } from "@/services/statistical-tests/ttest/twoSampleTTest";
 
 type Props = {
   title: string; // «Ряд A» / «Ряд B»
@@ -24,9 +24,9 @@ const SplitTTestCard: React.FC<Props> = ({ title, series, alpha = 0.05 }) => {
   return (
     <Card>
       <CardContent className='space-y-3 p-4'>
-        <h3 className='text-lg font-semibold text-center'>{title}</h3>
+        <h3 className='font-semibold text-lg text-center'>{title}</h3>
 
-        <div className='text-sm font-mono'>
+        <div className='font-mono text-sm'>
           <div>
             n₁ = {s1.n}, n₂ = {s2.n}
           </div>
@@ -40,7 +40,7 @@ const SplitTTestCard: React.FC<Props> = ({ title, series, alpha = 0.05 }) => {
           <div>p = {p.toFixed(4)}</div>
         </div>
 
-        <p className='text-center font-medium'>{verdict}</p>
+        <p className='font-medium text-center'>{verdict}</p>
       </CardContent>
     </Card>
   );

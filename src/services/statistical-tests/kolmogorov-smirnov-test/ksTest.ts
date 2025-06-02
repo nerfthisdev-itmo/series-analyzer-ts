@@ -1,10 +1,11 @@
-import { getAllTheoreticalDistributions } from "./getTheoreticalDistribution";
-import type { AbstractSeries } from "../AbstractSeries";
+import { approximateKSPValue } from "./approx";
+import type { AbstractSeries } from "@/services/series/AbstractSeries";
 import type {
   DistributionCharacteristics,
   DistributionType,
   TheoreticalDistribution,
-} from "./theoreticalTypes";
+} from "@/services/types/distributions";
+import { getAllTheoreticalDistributions } from "@/services/types/distributions";
 
 export type KSTestResult = {
   ksStatistic: number;
@@ -42,24 +43,6 @@ export function KolmogorovSmirnovCharacteristic<
   const pValue = approximateKSPValue(lambda);
 
   return { ksStatistic: D, pValue };
-}
-
-function approximateKSPValue(lambda: number): number {
-  // Handle perfect fit case
-  if (lambda === 0) {
-    return 1;
-  }
-
-  const maxK = 50;
-  let sum = 0;
-
-  for (let k = 1; k <= maxK; k++) {
-    const sign = k % 2 === 1 ? 1 : -1;
-    const exponent = -2 * k * k * lambda * lambda;
-    sum += sign * Math.exp(exponent);
-  }
-
-  return 2 * sum;
 }
 
 export function getKSTestForEveryDistributionType(

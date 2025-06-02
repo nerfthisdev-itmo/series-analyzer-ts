@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { IntervalVariationSeries } from "@/services/intervalSeries";
+import { IntervalVariationSeries } from "@/services/series/intervalSeries";
 
 describe("IntervalVariationSeries", () => {
   const testData = [

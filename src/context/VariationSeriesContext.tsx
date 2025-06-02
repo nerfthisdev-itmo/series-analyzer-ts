@@ -7,9 +7,9 @@ import {
 } from "react";
 import type { ReactNode } from "react";
 
-import type { DistributionPair } from "@/services/theoretical/theoreticalTypes";
-import { VariationSeries } from "@/services/variationSeries";
-import { IntervalVariationSeries } from "@/services/intervalSeries";
+import type { DistributionPair } from "@/services/types/distributions";
+import { VariationSeries } from "@/services/series/variationSeries";
+import { IntervalVariationSeries } from "@/services/series/intervalSeries";
 
 type VariationSeriesContextType = {
   seriesA: VariationSeries | null;

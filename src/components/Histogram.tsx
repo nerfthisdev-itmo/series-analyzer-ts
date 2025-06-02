@@ -11,11 +11,14 @@ import {
 
 import { TheoreticalDistributionData } from "./ui/TheoreticalDistributionData";
 import type { ChartConfig } from "@/components/ui/chart";
-import type { IntervalVariationSeries } from "@/services/intervalSeries";
-import type { DistributionType } from "@/services/theoretical/theoreticalTypes";
-import type { PearsonResult } from "@/services/theoretical/pearsonsCriteria";
-import type { KSTestResult } from "@/services/theoretical/kolmogorovCriteria";
-import type { SomeTheoreticalDistribution } from "@/services/theoretical/getTheoreticalDistribution";
+import type { IntervalVariationSeries } from "@/services/series/intervalSeries";
+import type { KSTestResult } from "@/services/statistical-tests/kolmogorov-smirnov-test/ksTest";
+import type { PearsonResult } from "@/services/statistical-tests/pearson-test/pearsonTest";
+import type {
+  DistributionType,
+  SomeTheoreticalDistribution,
+} from "@/services/types/distributions";
+import { getTheoreticalDistribution } from "@/services/types/distributions";
 import {
   Card,
   CardContent,
@@ -29,9 +32,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { getTheoreticalDistribution } from "@/services/theoretical/getTheoreticalDistribution";
-import { calculateContinuousTheoreticalFrequencies } from "@/services/theoretical/theoreticalFrequencies";
-import { getBestDistributionType } from "@/services/theoretical/getBestDistribution";
+import { getBestDistributionType } from "@/services/distributions/getBestDistribution";
+import { calculateContinuousTheoreticalFrequencies } from "@/services/distributions/theoreticalFrequencies";
 
 const chartConfig = {
   number_of_occurrences: {
@@ -66,13 +68,13 @@ export function Histogram({
   let characteristics: SomeTheoreticalDistribution | undefined = undefined;
   let bestDistributionResult:
     | {
-        type: DistributionType;
-        result: PearsonResult;
-      }
+      type: DistributionType;
+      result: PearsonResult;
+    }
     | {
-        type: DistributionType;
-        result: KSTestResult;
-      }
+      type: DistributionType;
+      result: KSTestResult;
+    }
     | undefined = undefined;
   let resolvedDistributionType: DistributionType | undefined;
 

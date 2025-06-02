@@ -1,14 +1,14 @@
 // src/components/ui/MeanVarTestCard.tsx
 import React from "react";
-import type { DistributionType } from "@/services/theoretical/theoreticalTypes";
-import type { VariationSeries } from "@/services/variationSeries";
-import type { IntervalVariationSeries } from "@/services/intervalSeries";
+import type { VariationSeries } from "@/services/series/variationSeries";
+import type { IntervalVariationSeries } from "@/services/series/intervalSeries";
+import type { DistributionType } from "@/services/types/distributions";
+import { getTheoreticalDistribution } from "@/services/types/distributions";
 import { Card, CardContent } from "@/components/ui/card";
-import { getTheoreticalDistribution } from "@/services/theoretical/getTheoreticalDistribution";
 import {
   testMean,
   testVariance,
-} from "@/services/theoretical/confidenceIntervals";
+} from "@/services/distributions/confidenceIntervals";
 
 type Props = {
   title: string;

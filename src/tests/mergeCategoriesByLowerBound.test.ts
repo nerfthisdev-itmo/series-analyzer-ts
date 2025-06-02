@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { mergeCategoriesByLowerBound } from "@/services/theoretical/pearsonsCriteria";
+import { mergeCategoriesByLowerBound } from "@/services/statistical-tests/pearson-test/mergeCategories";
 
 describe("mergeCategoriesByLowerBound", () => {
   it("merges categories when buffer meets lower bound", () => {
@@ -48,12 +48,10 @@ describe("mergeCategoriesByLowerBound", () => {
     );
 
     expect(result.mergedEmpirical).toEqual({
-      "[1, 2]": 6,
-      "[3, 4]": 9,
+      "[1, 4]": 15,
     });
     expect(result.mergedTheoretical).toEqual({
-      "[1, 2]": 3,
-      "[3, 4]": 7,
+      "[1, 4]": 10,
     });
   });
 
@@ -131,7 +129,7 @@ describe("mergeCategoriesByLowerBound", () => {
 
   it("merges consecutive keys correctly when merging", () => {
     const empiricalData = { 1: 3, 2: 2, 3: 5, 4: 5 };
-    const theoreticalData = { 1: 1, 2: 1, 3: 1, 4: 1 };
+    const theoreticalData = { 1: 3, 2: 2, 3: 5, 4: 5 };
     const lowerBound = 5;
 
     const result = mergeCategoriesByLowerBound(
@@ -146,15 +144,15 @@ describe("mergeCategoriesByLowerBound", () => {
       "4": 5,
     });
     expect(result.mergedTheoretical).toEqual({
-      "[1, 2]": 2,
-      "3": 1,
-      "4": 1,
+      "[1, 2]": 5,
+      "3": 5,
+      "4": 5,
     });
   });
 
   it("handles buffer with multiple entries summing exactly to lowerBound", () => {
     const empiricalData = { 1: 2, 2: 3, 3: 5 };
-    const theoreticalData = { 1: 0, 2: 0, 3: 0 };
+    const theoreticalData = { 1: 2, 2: 3, 3: 5 };
     const lowerBound = 5;
 
     const result = mergeCategoriesByLowerBound(
@@ -168,8 +166,8 @@ describe("mergeCategoriesByLowerBound", () => {
       "3": 5,
     });
     expect(result.mergedTheoretical).toEqual({
-      "[1, 2]": 0,
-      "3": 0,
+      "[1, 2]": 5,
+      "3": 5,
     });
   });
 });

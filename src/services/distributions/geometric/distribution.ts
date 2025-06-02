@@ -3,8 +3,8 @@ import { jStat } from "jstat";
 import type {
   StandardDistributionMetrics,
   TheoreticalDistribution,
-} from "../theoreticalTypes";
-import type { AbstractSeries } from "../../AbstractSeries";
+} from "../../types/distributions";
+import type { AbstractSeries } from "../../series/AbstractSeries";
 
 export type GeometricDistributionCharacteristics = {
   p: number;
@@ -30,23 +30,6 @@ export const geometric: TheoreticalDistribution<GeometricDistributionCharacteris
 
     getTheoreticalKurtosis: ({ p }) => {
       return 6 + p ** 2 / (1 - p);
-    },
-
-    getConfidenceIntervals: (
-      gamma: number,
-      { p, n }: GeometricDistributionCharacteristics,
-    ): {
-      left: GeometricDistributionCharacteristics;
-      right: GeometricDistributionCharacteristics;
-    } => {
-      const z = jStat.normal.inv(1 - (1 - gamma) / 2, 0, 1);
-      const se = Math.sqrt((1 - p) / (n * p ** 2)); // стандартная ошибка оценки p
-      const delta = z * se;
-
-      return {
-        left: { p: Math.max(p - delta, 0.001), n },
-        right: { p: Math.min(p + delta, 0.999), n },
-      };
     },
 
     getStandardMetrics: (

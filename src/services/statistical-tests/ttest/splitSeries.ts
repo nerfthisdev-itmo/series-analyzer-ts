@@ -1,5 +1,5 @@
-import type { IntervalVariationSeries } from "@/services/intervalSeries";
-import { VariationSeries } from "@/services/variationSeries";
+import type { IntervalVariationSeries } from "@/services/series/intervalSeries";
+import { VariationSeries } from "@/services/series/variationSeries";
 
 /** Делим исходный массив данных на две равные (или почти равные) части */
 export function splitSeries(

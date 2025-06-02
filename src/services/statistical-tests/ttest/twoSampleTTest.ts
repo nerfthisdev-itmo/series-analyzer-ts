@@ -1,6 +1,6 @@
 // src/utils/twoSampleTTest.ts
 import { jStat } from "jstat";
-import type { VariationSeries } from "@/services/variationSeries";
+import type { VariationSeries } from "@/services/series/variationSeries";
 
 export type TTestResult = {
   t: number;

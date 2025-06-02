@@ -1,21 +1,52 @@
-import { binomial } from "./distributions/binomialDistribution";
-import { normal } from "./distributions/normalDistribution";
-import { laplace } from "./distributions/laplaceDistribution";
-import { geometric } from "./distributions/geometricDistribution";
-import { uniform } from "./distributions/uniformDistribution";
-import { poisson } from "./distributions/poissonDistribution";
-import { exponential } from "./distributions/exponentialDistribution";
-import type { ExponentialDistributionCharacteristics } from "./distributions/exponentialDistribution";
-import type { PoissonDistributionCharacteristics } from "./distributions/poissonDistribution";
-import type { UniformDistributionCharacteristics } from "./distributions/uniformDistribution";
-import type { GeometricDistributionCharacteristics } from "./distributions/geometricDistribution";
-import type { LaplaceDistributionCharacteristics } from "./distributions/laplaceDistribution";
-import type { NormalDistributionCharacteristics } from "./distributions/normalDistribution";
-import type { BinomialDistributionCharacteristics } from "./distributions/binomialDistribution";
-import type {
-  DistributionType,
-  TheoreticalDistribution,
-} from "./theoreticalTypes";
+import { binomial } from "../distributions/binomial/distribution";
+import { exponential } from "../distributions/exponential/distribution";
+import { geometric } from "../distributions/geometric/distribution";
+import { laplace } from "../distributions/laplace/distribution";
+import { normal } from "../distributions/normal/distribution";
+import { poisson } from "../distributions/poisson/distribution";
+import { uniform } from "../distributions/uniform/distribution";
+import type { UniformDistributionCharacteristics } from "../distributions/uniform/distribution";
+import type { PoissonDistributionCharacteristics } from "../distributions/poisson/distribution";
+import type { LaplaceDistributionCharacteristics } from "../distributions/laplace/distribution";
+import type { NormalDistributionCharacteristics } from "../distributions/normal/distribution";
+import type { GeometricDistributionCharacteristics } from "../distributions/geometric/distribution";
+import type { ExponentialDistributionCharacteristics } from "../distributions/exponential/distribution";
+import type { BinomialDistributionCharacteristics } from "../distributions/binomial/distribution";
+import type { AbstractSeries } from "../series/AbstractSeries";
+
+export type DistributionType =
+  | "normal"
+  | "binomial"
+  | "poisson"
+  | "laplace"
+  | "geometric"
+  | "uniform"
+  | "exponential";
+
+export type DistributionPair = [DistributionType, DistributionType];
+
+export type DistributionCharacteristics = {
+  n: number;
+};
+
+export type StandardDistributionMetrics = {
+  mean: number;
+  variance: number;
+  sigma: number;
+};
+
+export type TheoreticalDistribution<T extends DistributionCharacteristics> = {
+  getCharacteristicsFromEmpiricalData: (series: AbstractSeries) => T;
+
+  getTheoreticalKurtosis: (characteristics: T) => number;
+
+  getTheoreticalSkewness: (characteristics: T) => number;
+
+  getStandardMetrics: (characteristics: T) => StandardDistributionMetrics;
+
+  pdf: (x: number, characteristics: T) => number;
+  cdf: (x: number, characteristics: T) => number;
+};
 
 export type SomeTheoreticalDistribution =
   | NormalDistributionCharacteristics
