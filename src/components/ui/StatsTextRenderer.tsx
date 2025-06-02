@@ -43,7 +43,7 @@ const StatsTextRenderer: React.FC<Props> = ({
   const theories = pair.map((d) => {
     const dist = getTheoreticalDistribution(d);
     const chars = dist.getCharacteristicsFromEmpiricalData(series);
-    const base = dist.getStandardMetrics(chars)
+    const base = dist.getStandardMetrics(chars);
     return {
       type: d,
       mean: base.mean,

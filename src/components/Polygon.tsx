@@ -53,16 +53,21 @@ export function Polygon({
   variationSeries: VariationSeries;
   distributionType?: "auto" | DistributionType;
 }) {
-  const data = new Array<PolygonGraphEntry | PolygonGraphWithTheoreticalValuesEntry>();
+  const data = new Array<
+    PolygonGraphEntry | PolygonGraphWithTheoreticalValuesEntry
+  >();
 
   let characteristics: SomeTheoreticalDistribution | undefined = undefined;
-  let bestDistributionResult: {
-    type: DistributionType;
-    result: PearsonResult;
-  } | {
-    type: DistributionType;
-    result: KSTestResult;
-  } | undefined = undefined;
+  let bestDistributionResult:
+    | {
+        type: DistributionType;
+        result: PearsonResult;
+      }
+    | {
+        type: DistributionType;
+        result: KSTestResult;
+      }
+    | undefined = undefined;
   let resolvedDistributionType: DistributionType | undefined;
 
   if (distributionType == "auto") {
@@ -74,14 +79,15 @@ export function Polygon({
 
   if (resolvedDistributionType != undefined) {
     const theory = getTheoreticalDistribution(resolvedDistributionType);
-    characteristics = theory.getCharacteristicsFromEmpiricalData(variationSeries);
+    characteristics =
+      theory.getCharacteristicsFromEmpiricalData(variationSeries);
 
     const theoreticalFrequencies = Object.values(
       calculateDiscreteTheoreticalFrequencies(
         characteristics,
         theory,
-        Object.keys(variationSeries.getStatisticalSeries()).map(parseFloat)
-      )
+        Object.keys(variationSeries.getStatisticalSeries()).map(parseFloat),
+      ),
     );
 
     Object.entries(variationSeries.getStatisticalSeries()).forEach(
@@ -124,12 +130,12 @@ export function Polygon({
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              type="number"
+              type='number'
               dataKey='sample_value'
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-            // tickFormatter={(value) => value.slice(0, 3)}
+              // tickFormatter={(value) => value.slice(0, 3)}
             />
             <ChartTooltip
               cursor={false}
@@ -148,23 +154,27 @@ export function Polygon({
               }}
             />
 
-            {distributionType != undefined ? <Line
-              dataKey='theoretical_value'
-              type='natural'
-              stroke='var(--color-theoretical_frequency)'
-              strokeWidth={2}
-              dot={false}
-            /> : <></>}
+            {distributionType != undefined ? (
+              <Line
+                dataKey='theoretical_value'
+                type='natural'
+                stroke='var(--color-theoretical_frequency)'
+                strokeWidth={2}
+                dot={false}
+              />
+            ) : (
+              <></>
+            )}
           </ComposedChart>
         </ChartContainer>
       </CardContent>
       {resolvedDistributionType && characteristics && (
-        <CardFooter className="border-t">
+        <CardFooter className='border-t'>
           <TheoreticalDistributionData
             resolvedDistributionType={resolvedDistributionType}
             characteristics={characteristics}
-            bestDistributionResult={bestDistributionResult}>
-          </TheoreticalDistributionData>
+            bestDistributionResult={bestDistributionResult}
+          ></TheoreticalDistributionData>
         </CardFooter>
       )}
     </Card>

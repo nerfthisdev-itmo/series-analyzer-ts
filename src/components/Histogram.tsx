@@ -55,20 +55,25 @@ type HistogramWithTheoreticalValuesEntry = HistogramEntry & {
 
 export function Histogram({
   intervalVariationSeries,
-  distributionType
+  distributionType,
 }: {
   intervalVariationSeries: IntervalVariationSeries;
-  distributionType?: "auto" | DistributionType
+  distributionType?: "auto" | DistributionType;
 }) {
-  const chartData = new Array<HistogramWithTheoreticalValuesEntry | HistogramEntry>();
+  const chartData = new Array<
+    HistogramWithTheoreticalValuesEntry | HistogramEntry
+  >();
   let characteristics: SomeTheoreticalDistribution | undefined = undefined;
-  let bestDistributionResult: {
-    type: DistributionType;
-    result: PearsonResult;
-  } | {
-    type: DistributionType;
-    result: KSTestResult;
-  } | undefined = undefined;
+  let bestDistributionResult:
+    | {
+        type: DistributionType;
+        result: PearsonResult;
+      }
+    | {
+        type: DistributionType;
+        result: KSTestResult;
+      }
+    | undefined = undefined;
   let resolvedDistributionType: DistributionType | undefined;
 
   if (distributionType == "auto") {
@@ -79,16 +84,18 @@ export function Histogram({
   }
 
   if (resolvedDistributionType != undefined) {
-    const theory = getTheoreticalDistribution(resolvedDistributionType)
+    const theory = getTheoreticalDistribution(resolvedDistributionType);
 
-    characteristics = theory.getCharacteristicsFromEmpiricalData(intervalVariationSeries);
+    characteristics = theory.getCharacteristicsFromEmpiricalData(
+      intervalVariationSeries,
+    );
 
     const theoretical_frequencies = Object.values(
       calculateContinuousTheoreticalFrequencies(
         characteristics,
         theory,
-        intervalVariationSeries.intervalBorders
-      )
+        intervalVariationSeries.intervalBorders,
+      ),
     );
 
     Object.entries(intervalVariationSeries.getStatisticalSeries()).forEach(
@@ -114,7 +121,6 @@ export function Histogram({
       },
     );
   }
-
 
   return (
     <Card>
@@ -157,23 +163,27 @@ export function Histogram({
               />
             </Bar>
 
-            {distributionType != undefined ? <Line
-              dataKey='theoretical_frequency'
-              stroke='var(--color-theoretical_frequency)'
-              type='natural'
-              strokeWidth={2}
-              dot={false}
-            /> : <></>}
+            {distributionType != undefined ? (
+              <Line
+                dataKey='theoretical_frequency'
+                stroke='var(--color-theoretical_frequency)'
+                type='natural'
+                strokeWidth={2}
+                dot={false}
+              />
+            ) : (
+              <></>
+            )}
           </ComposedChart>
         </ChartContainer>
       </CardContent>
       {resolvedDistributionType && characteristics && (
-        <CardFooter className="border-t">
+        <CardFooter className='border-t'>
           <TheoreticalDistributionData
             resolvedDistributionType={resolvedDistributionType}
             characteristics={characteristics}
-            bestDistributionResult={bestDistributionResult}>
-          </TheoreticalDistributionData>
+            bestDistributionResult={bestDistributionResult}
+          ></TheoreticalDistributionData>
         </CardFooter>
       )}
     </Card>

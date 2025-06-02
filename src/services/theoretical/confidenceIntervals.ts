@@ -20,20 +20,41 @@ export function testMean<T extends DistributionCharacteristics>(
 ): TestResult {
   const { mean: x_hat, sigma: s } = theory.getStandardMetrics(characteristics);
   const n = characteristics.n;
+  const alpha = 0.05;
 
+  // Рассчет статистики
   const z = (x_hat - a0) / (s / Math.sqrt(n));
-  const criticalValue = jStat.normal.inv(1 - 0.05 / 2, 0, 1);
-  const reject = Math.abs(z) > criticalValue;
-  const pValue = 2 * (1 - jStat.normal.cdf(Math.abs(z), 0, 1));
 
-  // Calculate confidence interval for the mean
+  // Определение критического значения и p-value в зависимости от размера выборки
+  let criticalValue: number;
+  let pValue: number;
+
+  if (n <= 30) {
+    // t-распределение Стьюдента для малых выборок
+    const df = n - 1; // степени свободы
+    criticalValue = jStat.studentt.inv(1 - alpha / 2, df);
+    pValue = 2 * (1 - jStat.studentt.cdf(Math.abs(z), df));
+  } else {
+    // Нормальное распределение для больших выборок
+    criticalValue = jStat.normal.inv(1 - alpha / 2, 0, 1);
+    pValue = 2 * (1 - jStat.normal.cdf(Math.abs(z), 0, 1));
+  }
+
+  const reject = Math.abs(z) > criticalValue;
+
   const marginOfError = criticalValue * (s / Math.sqrt(n));
   const confidenceInterval: [number, number] = [
     x_hat - marginOfError,
     x_hat + marginOfError,
   ];
 
-  return { statistic: z, criticalValue, reject, pValue, confidenceInterval };
+  return {
+    statistic: z,
+    criticalValue,
+    reject,
+    pValue,
+    confidenceInterval,
+  };
 }
 
 // Проверка гипотезы о дисперсии (хи-квадрат тест)

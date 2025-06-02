@@ -1,9 +1,7 @@
 import { getBestDistributionTypeByPearson } from "./pearsonsCriteria";
+import { getBestDistributionByKS } from "./kolmogorovCriteria";
+import type { KSTestResult } from "./kolmogorovCriteria";
 import type { PearsonResult } from "./pearsonsCriteria";
-import {
-  getBestDistributionByKS,
-  type KSTestResult,
-} from "./kolmogorovCriteria";
 import type { AbstractSeries } from "../AbstractSeries";
 import type { DistributionType } from "./theoreticalTypes";
 
