@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   CartesianGrid,
@@ -8,10 +8,10 @@ import {
   Scatter,
   Tooltip,
   XAxis,
-  YAxis
-} from "recharts"
+  YAxis,
+} from "recharts";
 
-import type { VariationSeries } from "@/services/series/variationSeries"
+import type { VariationSeries } from "@/services/series/variationSeries";
 import type { ChartConfig } from "@/components/ui/chart";
 import {
   Card,
@@ -20,12 +20,10 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import {
-  ChartContainer,
-} from "@/components/ui/chart"
+} from "@/components/ui/card";
+import { ChartContainer } from "@/components/ui/chart";
 
-export const description = "Scatter plot with linear regression line"
+export const description = "Scatter plot with linear regression line";
 
 type RegressionCoefficients = {
   slope: number;
@@ -35,7 +33,7 @@ type RegressionCoefficients = {
 export type ChartDataPoint = {
   x: number;
   y: number;
-  type: 'data' | 'regression';
+  type: "data" | "regression";
 };
 
 export const chartConfig = {
@@ -47,7 +45,7 @@ export const chartConfig = {
     label: "Regression Line",
     color: "var(--chart-2)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
 export function ScatterRegressionChart({
   X,
@@ -66,7 +64,7 @@ export function ScatterRegressionChart({
   const chartData: Array<ChartDataPoint> = X.initial_data.map((xVal, i) => ({
     x: xVal,
     y: Y.initial_data[i],
-    type: 'data'
+    type: "data",
   }));
 
   const yMin = Y.min;
@@ -74,40 +72,48 @@ export function ScatterRegressionChart({
 
   // Calculate regression points
   const regressionLine = [
-    { x: X.min, y: regressionCoefficients.slope * X.min + regressionCoefficients.intercept },
-    { x: X.max, y: regressionCoefficients.slope * X.max + regressionCoefficients.intercept },
+    {
+      x: X.min,
+      y:
+        regressionCoefficients.slope * X.min + regressionCoefficients.intercept,
+    },
+    {
+      x: X.max,
+      y:
+        regressionCoefficients.slope * X.max + regressionCoefficients.intercept,
+    },
   ];
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (!active || !payload || !payload.length) return null;
 
-    const dataPoint = payload.find((p: any) => p.payload.type === 'data');
+    const dataPoint = payload.find((p: any) => p.payload.type === "data");
     if (!dataPoint) return null;
 
     const point = dataPoint.payload;
 
     return (
-      <div className="bg-background shadow-sm p-2 border rounded-md w-[180px]">
+      <div className='bg-background shadow-sm p-2 border rounded-md w-[180px]'>
         {/* X Value Entry */}
-        <div className="flex items-center gap-2">
+        <div className='flex items-center gap-2'>
           <div
-            className="rounded-[2px] w-2.5 h-2.5 shrink-0"
+            className='rounded-[2px] w-2.5 h-2.5 shrink-0'
             style={{ backgroundColor: `var(--chart-1)` }}
           />
-          <span className="font-medium text-sm">{xAxisLabel}</span>
-          <div className="flex items-baseline gap-0.5 ml-auto font-mono font-medium tabular-nums text-foreground">
+          <span className='font-medium text-sm'>{xAxisLabel}</span>
+          <div className='flex items-baseline gap-0.5 ml-auto font-mono font-medium tabular-nums text-foreground'>
             {point.x.toFixed(2)}
           </div>
         </div>
 
         {/* Y Value Entry */}
-        <div className="flex items-center gap-2 mt-1.5">
+        <div className='flex items-center gap-2 mt-1.5'>
           <div
-            className="rounded-[2px] w-2.5 h-2.5 shrink-0"
+            className='rounded-[2px] w-2.5 h-2.5 shrink-0'
             style={{ backgroundColor: `var(--chart-1)` }}
           />
-          <span className="font-medium text-sm">{yAxisLabel}</span>
-          <div className="flex items-baseline gap-0.5 ml-auto font-mono font-medium tabular-nums text-foreground">
+          <span className='font-medium text-sm'>{yAxisLabel}</span>
+          <div className='flex items-baseline gap-0.5 ml-auto font-mono font-medium tabular-nums text-foreground'>
             {point.y.toFixed(2)}
           </div>
         </div>
@@ -124,10 +130,10 @@ export function ScatterRegressionChart({
       <CardContent>
         <ChartContainer config={chartConfig} className='w-full min-h-[200px]'>
           <ComposedChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <CartesianGrid strokeDasharray='3 3' vertical={false} />
             <XAxis
-              type="number"
-              dataKey="x"
+              type='number'
+              dataKey='x'
               name={xAxisLabel}
               axisLine={false}
               tickLine={false}
@@ -137,8 +143,8 @@ export function ScatterRegressionChart({
             />
 
             <YAxis
-              type="number"
-              dataKey="y"
+              type='number'
+              dataKey='y'
               name={yAxisLabel}
               axisLine={false}
               tickLine={false}
@@ -149,22 +155,22 @@ export function ScatterRegressionChart({
 
             {/* Data Points */}
             <Scatter
-              name="Data Points"
+              name='Data Points'
               data={chartData}
-              fill="hsl(var(--chart-1))"
-              shape="circle"
+              fill='hsl(var(--chart-1))'
+              shape='circle'
               r={6}
             />
 
             {/* Regression Line */}
             <Line
               data={regressionLine}
-              dataKey="y"
-              stroke="hsl(var(--chart-2))"
+              dataKey='y'
+              stroke='hsl(var(--chart-2))'
               strokeWidth={2}
               dot={false}
               isAnimationActive={false}
-              name="Regression Line"
+              name='Regression Line'
             />
 
             {/* Tooltip */}
@@ -172,17 +178,18 @@ export function ScatterRegressionChart({
           </ComposedChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          <span className="inline-flex items-center gap-1">
-            <span className="bg-[var(--chart-2)] rounded-full w-3 h-3" />
-            y = {regressionCoefficients.slope.toFixed(2)}x + {regressionCoefficients.intercept.toFixed(2)}
+      <CardFooter className='flex flex-col items-start gap-2 text-sm'>
+        <div className='flex gap-2 font-medium leading-none'>
+          <span className='inline-flex items-center gap-1'>
+            <span className='bg-[var(--chart-2)] rounded-full w-3 h-3' />y ={" "}
+            {regressionCoefficients.slope.toFixed(2)}x +{" "}
+            {regressionCoefficients.intercept.toFixed(2)}
           </span>
         </div>
-        <div className="text-muted-foreground leading-none">
+        <div className='text-muted-foreground leading-none'>
           Showing {chartData.length} data points with regression line
         </div>
       </CardFooter>
-    </Card >
-  )
+    </Card>
+  );
 }
