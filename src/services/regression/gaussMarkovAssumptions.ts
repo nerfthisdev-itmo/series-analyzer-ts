@@ -1,4 +1,4 @@
-import type { AbstractSeries } from "../AbstractSeries";
+import type { AbstractSeries } from "../series/AbstractSeries";
 
 export function analyzeResiduals(residuals: AbstractSeries) {
   const meanResidual = residuals.mean;

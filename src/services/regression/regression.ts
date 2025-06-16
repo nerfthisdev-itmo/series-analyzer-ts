@@ -1,5 +1,5 @@
 import { covariance, pearsonCorrelation } from "./correlation";
-import type { AbstractSeries } from "../AbstractSeries";
+import type { AbstractSeries } from "../series/AbstractSeries";
 
 interface RegressionResult {
   b: number; // Intercept
