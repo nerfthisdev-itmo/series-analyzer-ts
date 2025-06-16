@@ -17,5 +17,6 @@ export function pearsonCorrelation(
   Y: AbstractSeries,
 ): number {
   const cov = covariance(X, Y);
-  return cov / (X.standardDeviation * Y.standardDeviation);
+  // use corrected one for it to not be biased
+  return cov / (X.sampleStandardDeviation * Y.sampleStandardDeviation);
 }
