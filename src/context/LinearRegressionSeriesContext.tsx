@@ -1,9 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 
 import { VariationSeries } from "@/services/series/variationSeries";
@@ -15,7 +10,7 @@ type LinearRegressionSeriesContextType = {
   setSeries: (
     x: VariationSeries,
     y: VariationSeries,
-    z: VariationSeries
+    z: VariationSeries,
   ) => void;
 };
 
@@ -35,7 +30,7 @@ export const LinearRegressionSeriesProvider = ({
   const setSeries = (
     x: VariationSeries,
     y: VariationSeries,
-    z: VariationSeries
+    z: VariationSeries,
   ) => {
     setSeriesX(x);
     setSeriesY(y);
@@ -79,7 +74,7 @@ export const useLinearRegressionSeries = () => {
   const ctx = useContext(LinearRegressionSeriesContext);
   if (!ctx) {
     throw new Error(
-      "useLinearRegressionSeries must be used within a LinearRegressionSeriesProvider"
+      "useLinearRegressionSeries must be used within a LinearRegressionSeriesProvider",
     );
   }
   return ctx;

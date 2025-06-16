@@ -30,7 +30,7 @@ export const LinearRegressionDataInput = ({ onSubmit }: Props) => {
   // File upload handler
   const handleFileUpload = (
     e: React.ChangeEvent<HTMLInputElement>,
-    setter: (value: string) => void
+    setter: (value: string) => void,
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -43,63 +43,63 @@ export const LinearRegressionDataInput = ({ onSubmit }: Props) => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className='space-y-4'>
       {/* Input for X */}
       <div>
-        <label className="block font-bold">Данные X:</label>
+        <label className='block font-bold'>Данные X:</label>
         <textarea
           value={rawX}
           onChange={(e) => setRawX(e.target.value)}
-          className="p-2 border rounded w-full"
+          className='p-2 border rounded w-full'
           rows={3}
-          placeholder="Пример: 1, 2, 3 или 1 2 3"
+          placeholder='Пример: 1, 2, 3 или 1 2 3'
         />
         <input
-          type="file"
-          accept=".txt,.json"
+          type='file'
+          accept='.txt,.json'
           onChange={(e) => handleFileUpload(e, setRawX)}
-          className="mt-1"
+          className='mt-1'
         />
       </div>
 
       {/* Input for Y */}
       <div>
-        <label className="block font-bold">Данные Y:</label>
+        <label className='block font-bold'>Данные Y:</label>
         <textarea
           value={rawY}
           onChange={(e) => setRawY(e.target.value)}
-          className="p-2 border rounded w-full"
+          className='p-2 border rounded w-full'
           rows={3}
-          placeholder="Пример: 4, 5, 6 или 4 5 6"
+          placeholder='Пример: 4, 5, 6 или 4 5 6'
         />
         <input
-          type="file"
-          accept=".txt,.json"
+          type='file'
+          accept='.txt,.json'
           onChange={(e) => handleFileUpload(e, setRawY)}
-          className="mt-1"
+          className='mt-1'
         />
       </div>
 
       {/* Input for Z */}
       <div>
-        <label className="block font-bold">Данные Z:</label>
+        <label className='block font-bold'>Данные Z:</label>
         <textarea
           value={rawZ}
           onChange={(e) => setRawZ(e.target.value)}
-          className="p-2 border rounded w-full"
+          className='p-2 border rounded w-full'
           rows={3}
-          placeholder="Пример: 7, 8, 9 или 7 8 9"
+          placeholder='Пример: 7, 8, 9 или 7 8 9'
         />
         <input
-          type="file"
-          accept=".txt,.json"
+          type='file'
+          accept='.txt,.json'
           onChange={(e) => handleFileUpload(e, setRawZ)}
-          className="mt-1"
+          className='mt-1'
         />
       </div>
 
       {/* Submit & Reset Buttons */}
-      <div className="flex gap-2">
+      <div className='flex gap-2'>
         <button
           onClick={() => {
             const parsedX = parseInput(rawX);
@@ -112,8 +112,8 @@ export const LinearRegressionDataInput = ({ onSubmit }: Props) => {
             localStorage.setItem("inputY", rawY);
             localStorage.setItem("inputZ", rawZ);
           }}
-          type="button"
-          className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white"
+          type='button'
+          className='bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white'
         >
           Построить
         </button>
@@ -128,8 +128,8 @@ export const LinearRegressionDataInput = ({ onSubmit }: Props) => {
             setRawZ("");
             location.reload();
           }}
-          type="button"
-          className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-white"
+          type='button'
+          className='bg-red-600 hover:bg-red-700 px-4 py-2 rounded text-white'
         >
           Сбросить данные
         </button>
