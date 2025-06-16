@@ -37,4 +37,7 @@ export abstract class AbstractSeries {
   abstract get median(): number;
   abstract get cumulativeValues(): Array<number>;
   abstract get sampleStandardDeviation(): number;
+  abstract getNthMoment(order: number): number;
+  abstract get skewness(): number;
+  abstract get kurtosis(): number;
 }
