@@ -2,8 +2,8 @@ import { covariance, pearsonCorrelation } from "./correlation";
 import type { AbstractSeries } from "../AbstractSeries";
 
 interface RegressionResult {
-  a: number; // Intercept
-  b: number; // Slope
+  b: number; // Intercept
+  k: number; // Slope
   r: number; // Correlation
   R2: number; // Determination
   mae: number; // Mean Approximation Error
@@ -19,10 +19,10 @@ export function linearRegression(
   const meanX = X.mean;
   const meanY = Y.mean;
   const cov = covariance(X, Y);
-  const b = cov / X.variance;
-  const a = meanY - b * meanX;
+  const k = cov / X.variance;
+  const b = meanY - k * meanX;
 
-  const predictedY = X.initial_data.map((xi) => a + b * xi);
+  const predictedY = X.initial_data.map((xi) => b + k * xi);
   const residuals = Y.initial_data.map((yi, i) => yi - predictedY[i]);
 
   const r = pearsonCorrelation(X, Y);
@@ -36,7 +36,7 @@ export function linearRegression(
       X.n) *
     100;
 
-  const elasticity = b * (meanX / meanY);
+  const elasticity = k * (meanX / meanY);
 
-  return { a, b, r, R2, mae, elasticity, residuals };
+  return { b, k, r, R2, mae, elasticity, residuals };
 }
