@@ -123,55 +123,53 @@ export function ScatterRegressionChart({
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className='w-full min-h-[200px]'>
-          <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis
-                type="number"
-                dataKey="x"
-                name={xAxisLabel}
-                axisLine={false}
-                tickLine={false}
-                tick={{ fontSize: 12 }}
-                tickFormatter={(value) => value.toFixed(2)}
-                domain={[X.min, X.max]}
-              />
+          <ComposedChart data={chartData}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <XAxis
+              type="number"
+              dataKey="x"
+              name={xAxisLabel}
+              axisLine={false}
+              tickLine={false}
+              tick={{ fontSize: 12 }}
+              tickFormatter={(value) => value.toFixed(2)}
+              domain={[X.min, X.max]}
+            />
 
-              <YAxis
-                type="number"
-                dataKey="y"
-                name={yAxisLabel}
-                axisLine={false}
-                tickLine={false}
-                tick={{ fontSize: 12 }}
-                tickFormatter={(value) => value.toFixed(2)}
-                domain={[yMin, yMax]}
-              />
+            <YAxis
+              type="number"
+              dataKey="y"
+              name={yAxisLabel}
+              axisLine={false}
+              tickLine={false}
+              tick={{ fontSize: 12 }}
+              tickFormatter={(value) => value.toFixed(2)}
+              domain={[yMin, yMax]}
+            />
 
-              {/* Regression Line */}
-              <Line
-                data={regressionLine}
-                dataKey="y"
-                stroke="hsl(var(--chart-2))"
-                strokeWidth={2}
-                dot={false}
-                isAnimationActive={false}
-                name="Regression Line"
-              />
+            {/* Data Points */}
+            <Scatter
+              name="Data Points"
+              data={chartData}
+              fill="hsl(var(--chart-1))"
+              shape="circle"
+              r={6}
+            />
 
-              {/* Data Points */}
-              <Scatter
-                name="Data Points"
-                data={chartData}
-                fill="hsl(var(--chart-1))"
-                shape="circle"
-                r={6}
-              />
+            {/* Regression Line */}
+            <Line
+              data={regressionLine}
+              dataKey="y"
+              stroke="hsl(var(--chart-2))"
+              strokeWidth={2}
+              dot={false}
+              isAnimationActive={false}
+              name="Regression Line"
+            />
 
-              {/* Tooltip */}
-              <Tooltip content={<CustomTooltip />} />
-            </ComposedChart>
-          </ResponsiveContainer>
+            {/* Tooltip */}
+            <Tooltip content={<CustomTooltip />} />
+          </ComposedChart>
         </ChartContainer>
       </CardContent>
       <CardFooter className="flex flex-col items-start gap-2 text-sm">
@@ -185,6 +183,6 @@ export function ScatterRegressionChart({
           Showing {chartData.length} data points with regression line
         </div>
       </CardFooter>
-    </Card>
+    </Card >
   )
 }
