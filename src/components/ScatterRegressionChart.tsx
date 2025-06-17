@@ -4,15 +4,16 @@ import {
   CartesianGrid,
   ComposedChart,
   Line,
-  ResponsiveContainer,
   Scatter,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
 
+import { LinearRegressionFooter } from "./ui/LinearRegressionFooter";
 import type { VariationSeries } from "@/services/series/variationSeries";
 import type { ChartConfig } from "@/components/ui/chart";
+import type { RegressionResult } from "@/services/regression/regression";
 import {
   Card,
   CardContent,
@@ -22,13 +23,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ChartContainer } from "@/components/ui/chart";
+import { allRegressionTests } from "@/services/regression/tests/allRegressionTests";
 
 export const description = "Scatter plot with linear regression line";
-
-type RegressionCoefficients = {
-  slope: number;
-  intercept: number;
-};
 
 export type ChartDataPoint = {
   x: number;
@@ -50,13 +47,13 @@ export const chartConfig = {
 export function ScatterRegressionChart({
   X,
   Y,
-  regressionCoefficients,
+  regressionResult,
   xAxisLabel = "X",
   yAxisLabel = "Y",
 }: {
   X: VariationSeries;
   Y: VariationSeries;
-  regressionCoefficients: RegressionCoefficients;
+  regressionResult: RegressionResult;
   xAxisLabel?: string;
   yAxisLabel?: string;
 }) {
@@ -74,15 +71,15 @@ export function ScatterRegressionChart({
   const regressionLine = [
     {
       x: X.min,
-      y:
-        regressionCoefficients.slope * X.min + regressionCoefficients.intercept,
+      y: regressionResult.k * X.min + regressionResult.b,
     },
     {
       x: X.max,
-      y:
-        regressionCoefficients.slope * X.max + regressionCoefficients.intercept,
+      y: regressionResult.k * X.max + regressionResult.b,
     },
   ];
+
+  const tests = allRegressionTests(X, Y, regressionResult);
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (!active || !payload || !payload.length) return null;
@@ -178,17 +175,22 @@ export function ScatterRegressionChart({
           </ComposedChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className='flex flex-col items-start gap-2 text-sm'>
+      <CardFooter className='flex flex-col items-start gap-2 border-t text-sm'>
         <div className='flex gap-2 font-medium leading-none'>
           <span className='inline-flex items-center gap-1'>
             <span className='bg-[var(--chart-2)] rounded-full w-3 h-3' />y ={" "}
-            {regressionCoefficients.slope.toFixed(2)}x +{" "}
-            {regressionCoefficients.intercept.toFixed(2)}
+            {regressionResult.k.toFixed(2)}x + {regressionResult.b.toFixed(2)}
           </span>
         </div>
         <div className='text-muted-foreground leading-none'>
           Showing {chartData.length} data points with regression line
         </div>
+        <LinearRegressionFooter
+          coefficientTest={tests.coefficientTest}
+          modelTest={tests.fTest}
+          correlationTest={tests.correlationTest}
+          regressionResult={regressionResult}
+        ></LinearRegressionFooter>
       </CardFooter>
     </Card>
   );

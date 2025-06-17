@@ -12,16 +12,16 @@ export function allRegressionTests(
   Y: AbstractSeries,
   regressionResult: RegressionResult,
 ): {
-  correlationTests: RegressionCoefficientsTestResult;
+  coefficientTest: RegressionCoefficientsTestResult;
   fTest: FTestResult;
   correlationTest: CorrelationTestResult;
 } {
-  const correlationTests = testRegressionCoefficients(X, Y, regressionResult);
+  const coefficientTest = testRegressionCoefficients(X, Y, regressionResult);
   const fTest = testRegressionModel(X, Y, regressionResult);
   const correlationTest = testPearsonCorrelation(X, Y, regressionResult.r);
 
   return {
-    correlationTests,
+    coefficientTest,
     fTest,
     correlationTest,
   };

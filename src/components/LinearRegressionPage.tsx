@@ -19,24 +19,15 @@ export function LinearRegressionPage() {
     );
   };
 
-  let kCoefficientXZ = 0;
-  let bCoefficientXZ = 0;
-
-  let kCoefficientYZ = 0;
-  let bCoefficientYZ = 0;
+  let resultXZ;
+  let resultYZ;
 
   if (seriesX && seriesZ) {
-    const { k, b } = linearRegression(seriesX, seriesZ);
-
-    kCoefficientXZ = k;
-    bCoefficientXZ = b;
+    resultXZ = linearRegression(seriesX, seriesZ);
   }
 
   if (seriesY && seriesZ) {
-    const { k, b } = linearRegression(seriesY, seriesZ);
-
-    kCoefficientYZ = k;
-    bCoefficientYZ = b;
+    resultYZ = linearRegression(seriesY, seriesZ);
   }
 
   return (
@@ -44,31 +35,25 @@ export function LinearRegressionPage() {
       <h2 className='font-bold text-xl'>Ввод данных для регрессии</h2>
       <LinearRegressionDataInput onSubmit={handleSubmit} />
       <div className='flex gap-3 min-w-full'>
-        {seriesX && seriesZ && (
+        {seriesX && seriesZ && resultXZ && (
           <div className='gap-3 w-1/2'>
             <ScatterRegressionChart
               X={seriesX}
               Y={seriesZ}
               xAxisLabel='X'
               yAxisLabel='Z'
-              regressionCoefficients={{
-                slope: kCoefficientXZ,
-                intercept: bCoefficientXZ,
-              }}
+              regressionResult={resultXZ}
             ></ScatterRegressionChart>
           </div>
         )}
-        {seriesY && seriesZ && (
+        {seriesY && seriesZ && resultYZ && (
           <div className='gap-3 w-1/2'>
             <ScatterRegressionChart
               X={seriesY}
               Y={seriesZ}
               xAxisLabel='Y'
               yAxisLabel='Z'
-              regressionCoefficients={{
-                slope: kCoefficientYZ,
-                intercept: bCoefficientYZ,
-              }}
+              regressionResult={resultYZ}
             ></ScatterRegressionChart>
           </div>
         )}
