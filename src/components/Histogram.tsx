@@ -68,13 +68,13 @@ export function Histogram({
   let characteristics: SomeTheoreticalDistribution | undefined = undefined;
   let bestDistributionResult:
     | {
-        type: DistributionType;
-        result: PearsonResult;
-      }
+      type: DistributionType;
+      result: PearsonResult;
+    }
     | {
-        type: DistributionType;
-        result: KSTestResult;
-      }
+      type: DistributionType;
+      result: KSTestResult;
+    }
     | undefined = undefined;
   let resolvedDistributionType: DistributionType | undefined;
 
