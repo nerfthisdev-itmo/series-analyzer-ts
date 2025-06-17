@@ -1,4 +1,5 @@
 import { ScatterRegressionChart } from "./regression/ScatterRegressionChart";
+import { ResidualsGraph } from "./regression/ResidualsGraph";
 import { LinearRegressionDataInput } from "@/components/regression/LinearRegressionDataInput";
 import { useLinearRegressionSeries } from "@/context/LinearRegressionSeriesContext";
 import { linearRegression } from "@/services/regression/regression";
@@ -44,6 +45,7 @@ export function LinearRegressionPage() {
               yAxisLabel='Z'
               regressionResult={resultXZ}
             ></ScatterRegressionChart>
+            <ResidualsGraph residuals={resultXZ.residuals}></ResidualsGraph>
           </div>
         )}
         {seriesY && seriesZ && resultYZ && (
@@ -55,6 +57,7 @@ export function LinearRegressionPage() {
               yAxisLabel='Z'
               regressionResult={resultYZ}
             ></ScatterRegressionChart>
+            <ResidualsGraph residuals={resultYZ.residuals}></ResidualsGraph>
           </div>
         )}
       </div>

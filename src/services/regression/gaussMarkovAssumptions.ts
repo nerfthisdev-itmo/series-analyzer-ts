@@ -1,6 +1,15 @@
 import type { AbstractSeries } from "../series/AbstractSeries";
 
-export function analyzeResiduals(residuals: AbstractSeries) {
+export type GaussMarkovResidualsResult = {
+  zeroMean: boolean;
+  skewness: number;
+  kurtosis: number;
+  durbinWatson: number;
+};
+
+export function analyzeResiduals(
+  residuals: AbstractSeries,
+): GaussMarkovResidualsResult {
   const meanResidual = residuals.mean;
   const zeroMean = Math.abs(meanResidual) < 1e-6;
 

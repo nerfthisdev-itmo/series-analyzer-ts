@@ -2,7 +2,6 @@ import { covariance, pearsonCorrelation } from "./correlation";
 
 import type { AbstractSeries } from "../series/AbstractSeries";
 
-
 export interface RegressionResult {
   b: number; // Intercept
   k: number; // Slope
@@ -10,7 +9,7 @@ export interface RegressionResult {
   R2: number; // Determination
   mae: number; // Mean Approximation Error
   elasticity: number;
-  residuals: Array<number>;
+  residuals: Array<{ x: number; y: number }>;
 }
 
 export function linearRegression(
@@ -25,13 +24,13 @@ export function linearRegression(
   const b = meanY - k * meanX;
 
   const predictedY = X.initial_data.map((xi) => b + k * xi);
-  const residuals = Y.initial_data.map((yi, i) => yi - predictedY[i]);
+  const residualsValues = Y.initial_data.map((yi, i) => yi - predictedY[i]);
 
   const r = pearsonCorrelation(X, Y);
   const R2 = r * r;
 
   const mae =
-    (residuals.reduce(
+    (residualsValues.reduce(
       (sum, res, i) => sum + Math.abs(res / Y.initial_data[i]),
       0,
     ) /
@@ -39,6 +38,12 @@ export function linearRegression(
     100;
 
   const elasticity = k * (meanX / meanY);
+
+  const residuals: Array<{ x: number; y: number }> = [];
+
+  residualsValues.forEach((element, index) => {
+    residuals.push({ x: X.initial_data[index], y: element });
+  });
 
   return { b, k, r, R2, mae, elasticity, residuals };
 }
