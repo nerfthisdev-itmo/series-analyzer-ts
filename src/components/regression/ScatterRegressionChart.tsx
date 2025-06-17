@@ -186,9 +186,9 @@ export function ScatterRegressionChart({
           Showing {chartData.length} data points with regression line
         </div>
         <LinearRegressionFooter
-          coefficientTest={tests.coefficientTest}
-          modelTest={tests.fTest}
-          correlationTest={tests.correlationTest}
+          // coefficientTest={tests.coefficientTest}
+          // modelTest={tests.fTest}
+          // correlationTest={tests.correlationTest}
           regressionResult={regressionResult}
         ></LinearRegressionFooter>
       </CardFooter>
