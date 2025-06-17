@@ -1,5 +1,5 @@
+import { Badge } from "../badge";
 import { RegressionBadges } from "./RegressionBadges";
-import { Badge } from "./badge";
 import type { RegressionCoefficientsTestResult } from "@/services/regression/tests/testRegressionCoefficients";
 import type { FTestResult } from "@/services/regression/tests/testRegressionModel";
 import type { CorrelationTestResult } from "@/services/regression/tests/testPearsonCorrelation";

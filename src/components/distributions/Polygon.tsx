@@ -2,7 +2,7 @@
 
 import { CartesianGrid, ComposedChart, Line, XAxis } from "recharts";
 
-import { TheoreticalDistributionData } from "./ui/TheoreticalDistributionData";
+import { TheoreticalDistributionData } from "../ui/distributions/TheoreticalDistributionData";
 import type { ChartConfig } from "@/components/ui/chart";
 import type { VariationSeries } from "@/services/series/variationSeries";
 import type { PearsonResult } from "@/services/statistical-tests/pearson-test/pearsonTest";
@@ -62,13 +62,13 @@ export function Polygon({
   let characteristics: SomeTheoreticalDistribution | undefined = undefined;
   let bestDistributionResult:
     | {
-        type: DistributionType;
-        result: PearsonResult;
-      }
+      type: DistributionType;
+      result: PearsonResult;
+    }
     | {
-        type: DistributionType;
-        result: KSTestResult;
-      }
+      type: DistributionType;
+      result: KSTestResult;
+    }
     | undefined = undefined;
   let resolvedDistributionType: DistributionType | undefined;
 
@@ -137,7 +137,7 @@ export function Polygon({
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              // tickFormatter={(value) => value.slice(0, 3)}
+            // tickFormatter={(value) => value.slice(0, 3)}
             />
             <ChartTooltip
               cursor={false}

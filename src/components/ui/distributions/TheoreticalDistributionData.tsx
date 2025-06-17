@@ -1,6 +1,6 @@
 import { DistributionBadges } from "./DistributionBadges";
-import { TestResultBadge } from "./TestResultBadge";
-import { Badge } from "./badge";
+import { TestResultBadge } from "./tests/TestResultBadge";
+import { Badge } from "../badge";
 import type { PearsonResult } from "@/services/statistical-tests/pearson-test/pearsonTest";
 import type { KSTestResult } from "@/services/statistical-tests/kolmogorov-smirnov-test/ksTest";
 import type {
@@ -16,9 +16,9 @@ export function TheoreticalDistributionData({
   resolvedDistributionType: DistributionType | undefined;
   characteristics: SomeTheoreticalDistribution | undefined;
   bestDistributionResult:
-    | { type: DistributionType; result: PearsonResult }
-    | { type: DistributionType; result: KSTestResult }
-    | undefined;
+  | { type: DistributionType; result: PearsonResult }
+  | { type: DistributionType; result: KSTestResult }
+  | undefined;
 }) {
   return (
     <div className='space-y-2 w-full'>

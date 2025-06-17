@@ -1,6 +1,6 @@
-import MeanVarTestCard from "./ui/MeanVarTestCard";
-import StatsTextRenderer from "@/components/ui/StatsTextRenderer";
-import SplitTTestCard from "@/components/ui/SplitTTestCard"; // ⬅️ НОВЫЙ импорт
+import MeanVarTestCard from "./ui/distributions/tests/MeanVarTestCard";
+import StatsTextRenderer from "@/components/ui/distributions/StatsTextRenderer";
+import SplitTTestCard from "@/components/ui/distributions/tests/SplitTTestCard"; // ⬅️ НОВЫЙ импорт
 import { useVariationSeries } from "@/context/VariationSeriesContext";
 import { Card, CardContent } from "@/components/ui/card";
 

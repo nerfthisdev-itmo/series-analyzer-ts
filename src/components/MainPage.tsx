@@ -1,10 +1,10 @@
-import { CdfGraph } from "./CdfGraph";
-import { CumulativeGraph } from "./CumulativeGraph";
-import { OgiveGraph } from "./OgiveGraph";
-import { Histogram } from "./Histogram";
-import { Polygon } from "./Polygon";
-import DistributionPairSelect from "./ui/DistributionPairSelect";
+import { CdfGraph } from "./distributions/CdfGraph";
+import { CumulativeGraph } from "./distributions/CumulativeGraph";
+import { OgiveGraph } from "./distributions/OgiveGraph";
+import { Histogram } from "./distributions/Histogram";
+import DistributionPairSelect from "./ui/distributions/DistributionPairSelect";
 import { DataInput } from "./ui/DataInput";
+import { Polygon } from "./distributions/Polygon";
 import { VariationSeries } from "@/services/series/variationSeries";
 import { IntervalVariationSeries } from "@/services/series/intervalSeries";
 import { useVariationSeries } from "@/context/VariationSeriesContext";

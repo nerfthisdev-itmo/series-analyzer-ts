@@ -1,5 +1,5 @@
-import { ScatterRegressionChart } from "./ScatterRegressionChart";
-import { LinearRegressionDataInput } from "@/components/LinearRegressionDataInput";
+import { ScatterRegressionChart } from "./regression/ScatterRegressionChart";
+import { LinearRegressionDataInput } from "@/components/regression/LinearRegressionDataInput";
 import { useLinearRegressionSeries } from "@/context/LinearRegressionSeriesContext";
 import { linearRegression } from "@/services/regression/regression";
 import { VariationSeries } from "@/services/series/variationSeries";
