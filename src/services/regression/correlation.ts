@@ -1,4 +1,4 @@
-import type { AbstractSeries } from "../AbstractSeries";
+import type { AbstractSeries } from "../series/AbstractSeries";
 
 // TODO: fix this for interval series to use intervals instead of this cheap hack
 export function covariance(X: AbstractSeries, Y: AbstractSeries): number {

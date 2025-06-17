@@ -1,7 +1,13 @@
 import { covariance, pearsonCorrelation } from "./correlation";
-import type { AbstractSeries } from "../AbstractSeries";
+import { testRegressionCoefficients } from "./tests/testRegressionCoefficients";
+import { testRegressionModel } from "./tests/testRegressionModel";
+import { testPearsonCorrelation } from "./tests/testPearsonCorrelation";
+import type { AbstractSeries } from "../series/AbstractSeries";
+import type { RegressionCoeffitientsTestResult } from "./tests/testRegressionCoefficients";
+import type { FTestResult } from "./tests/testRegressionModel";
+import type { CorrelationTestResult } from "./tests/testPearsonCorrelation";
 
-interface RegressionResult {
+export interface RegressionResult {
   b: number; // Intercept
   k: number; // Slope
   r: number; // Correlation
