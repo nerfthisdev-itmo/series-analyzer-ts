@@ -3,7 +3,7 @@ import { testRegressionCoefficients } from "./tests/testRegressionCoefficients";
 import { testRegressionModel } from "./tests/testRegressionModel";
 import { testPearsonCorrelation } from "./tests/testPearsonCorrelation";
 import type { AbstractSeries } from "../series/AbstractSeries";
-import type { RegressionTestResult } from "./tests/testRegressionCoefficients";
+import type { RegressionCoeffitientsTestResult } from "./tests/testRegressionCoefficients";
 import type { FTestResult } from "./tests/testRegressionModel";
 import type { CorrelationTestResult } from "./tests/testPearsonCorrelation";
 
@@ -20,11 +20,7 @@ export interface RegressionResult {
 export function linearRegression(
   X: AbstractSeries,
   Y: AbstractSeries,
-): RegressionResult & {
-  tTests: RegressionTestResult;
-  fTest: FTestResult;
-  correlationTest: CorrelationTestResult;
-} {
+): RegressionResult {
   if (X.n !== Y.n) throw new Error("Series must have the same length");
   const meanX = X.mean;
   const meanY = Y.mean;
@@ -48,16 +44,5 @@ export function linearRegression(
 
   const elasticity = k * (meanX / meanY);
 
-  const result = { b, k, r, R2, mae, elasticity, residuals };
-
-  const tTests = testRegressionCoefficients(X, Y, result);
-  const fTest = testRegressionModel(X, Y, result);
-  const correlationTest = testPearsonCorrelation(X, Y, r);
-
-  return {
-    ...result,
-    tTests,
-    fTest,
-    correlationTest,
-  };
+  return { b, k, r, R2, mae, elasticity, residuals };
 }

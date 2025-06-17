@@ -2,7 +2,7 @@ import { jStat } from "jstat";
 import type { AbstractSeries } from "@/services/series/AbstractSeries";
 import type { RegressionResult } from "../regression";
 
-export type RegressionTestResult = {
+export type RegressionCoefficientsTestResult = {
   k_tStat: number;
   k_pValue: number;
   b_tStat: number;
@@ -14,7 +14,7 @@ export function testRegressionCoefficients(
   X: AbstractSeries,
   Y: AbstractSeries,
   regression: RegressionResult,
-): RegressionTestResult {
+): RegressionCoefficientsTestResult {
   const n = X.n;
   const residuals = regression.residuals;
 

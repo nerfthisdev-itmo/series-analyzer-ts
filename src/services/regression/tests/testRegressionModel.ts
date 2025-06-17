@@ -32,7 +32,7 @@ export function testRegressionModel(
 
   // F-статистика
   const fStat = ssr / 1 / (sse / (n - 2));
-  const pValue = 1 - jStat.snecdf(fStat, 1, n - 2); // F-распределение
+  const pValue = 1 - jStat.ftest(fStat, 1, n - 2); // F-распределение
 
   return {
     fStat,
