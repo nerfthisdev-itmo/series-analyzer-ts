@@ -1,11 +1,7 @@
 import { covariance, pearsonCorrelation } from "./correlation";
-import { testRegressionCoefficients } from "./tests/testRegressionCoefficients";
-import { testRegressionModel } from "./tests/testRegressionModel";
-import { testPearsonCorrelation } from "./tests/testPearsonCorrelation";
+
 import type { AbstractSeries } from "../series/AbstractSeries";
-import type { RegressionCoeffitientsTestResult } from "./tests/testRegressionCoefficients";
-import type { FTestResult } from "./tests/testRegressionModel";
-import type { CorrelationTestResult } from "./tests/testPearsonCorrelation";
+
 
 export interface RegressionResult {
   b: number; // Intercept
