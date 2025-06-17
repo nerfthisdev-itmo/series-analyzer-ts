@@ -16,9 +16,9 @@ export function TheoreticalDistributionData({
   resolvedDistributionType: DistributionType | undefined;
   characteristics: SomeTheoreticalDistribution | undefined;
   bestDistributionResult:
-  | { type: DistributionType; result: PearsonResult }
-  | { type: DistributionType; result: KSTestResult }
-  | undefined;
+    | { type: DistributionType; result: PearsonResult }
+    | { type: DistributionType; result: KSTestResult }
+    | undefined;
 }) {
   return (
     <div className='space-y-2 w-full'>
