@@ -1,4 +1,4 @@
-import { Badge } from "./badge";
+import { Badge } from "../../badge";
 import type { PearsonResult } from "@/services/statistical-tests/pearson-test/pearsonTest";
 import type { KSTestResult } from "@/services/statistical-tests/kolmogorov-smirnov-test/ksTest";
 

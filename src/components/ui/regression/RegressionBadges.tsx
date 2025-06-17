@@ -1,14 +1,16 @@
-import { Badge } from "./badge";
-import type { SomeTheoreticalDistribution } from "@/services/types/distributions";
+import { Badge } from "../badge";
+import type { RegressionResult } from "@/services/regression/regression";
 
-export function DistributionBadges({
+export function RegressionBadges({
   parameters,
 }: {
-  parameters: SomeTheoreticalDistribution;
+  parameters: RegressionResult;
 }) {
+  const { residuals, ...params } = parameters;
+
   return (
     <div className='flex flex-wrap gap-1.5'>
-      {Object.entries(parameters).map(([key, value]) => (
+      {Object.entries(params).map(([key, value]) => (
         <Badge
           key={key}
           variant='secondary'
