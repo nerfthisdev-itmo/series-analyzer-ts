@@ -12,6 +12,12 @@ interface RegressionData {
 
 interface Regression3DPlotProps {
   regressionData: RegressionData;
+  /** Custom name for the first predictor variable (X1) */
+  x1Name?: string;
+  /** Custom name for the second predictor variable (X2) */
+  x2Name?: string;
+  /** Custom name for the response variable (Y) */
+  yName?: string;
 }
 
 // Custom hook to detect theme changes
@@ -38,7 +44,12 @@ const useThemeObserver = () => {
 };
 
 
-export const Regression3DPlot: React.FC<Regression3DPlotProps> = ({ regressionData }) => {
+export const Regression3DPlot: React.FC<Regression3DPlotProps> = ({
+  regressionData,
+  x1Name = 'X1',
+  x2Name = 'X2',
+  yName = 'Y'
+}) => {
   const isDarkMode = useThemeObserver();
   const { X1, X2, Y, coefficients } = regressionData;
   const b0 = coefficients.intercept
@@ -61,7 +72,6 @@ export const Regression3DPlot: React.FC<Regression3DPlotProps> = ({ regressionDa
   const zGrid = x2Grid.map(x2 =>
     x1Grid.map(x1 => b0 + b1 * x1 + b2 * x2)
   );
-
 
   // Get current theme colors
   let themeColors = {
@@ -89,9 +99,6 @@ export const Regression3DPlot: React.FC<Regression3DPlotProps> = ({ regressionDa
     };
   }
 
-  console.log(themeColors)
-
-
   // Prepare traces
   const traces: Array<Data> = [
     // Regression plane
@@ -100,14 +107,13 @@ export const Regression3DPlot: React.FC<Regression3DPlotProps> = ({ regressionDa
       x: x1Grid,
       y: x2Grid,
       z: zGrid,
-
       opacity: 0.4,
       name: 'Regression Plane',
       showscale: false,
       showlegend: true,
       hoverinfo: 'skip'
     },
-    // Observed data points
+    // Observed data points with custom hover info
     {
       type: 'scatter3d',
       mode: 'markers',
@@ -124,32 +130,37 @@ export const Regression3DPlot: React.FC<Regression3DPlotProps> = ({ regressionDa
         }
       },
       name: 'Observed Data',
-      hoverinfo: 'x+y+z+name'
+      // Custom hover template using variable names
+      hovertemplate:
+        `<b>${x1Name}</b>: %{x:.4f}<br>` +
+        `<b>${x2Name}</b>: %{y:.4f}<br>` +
+        `<b>${yName}</b>: %{z:.4f}<br>` +
+        `<extra></extra>`
     }
   ];
 
-  // Define layout
+  // Define layout with simplified axis names
   const layout: Partial<Layout> = {
     paper_bgcolor: themeColors.background,
     font: { color: themeColors.foreground },
     scene: {
       bgcolor: themeColors.background,
       xaxis: {
-        title: { text: 'X1 Variable', font: { color: themeColors.foreground } },
+        title: { text: x1Name, font: { color: themeColors.foreground } },
         gridcolor: themeColors.border,
         linecolor: themeColors.border,
         tickfont: { color: themeColors.foreground },
         zerolinecolor: themeColors.border
       },
       yaxis: {
-        title: { text: 'X2 Variable', font: { color: themeColors.foreground } },
+        title: { text: x2Name, font: { color: themeColors.foreground } },
         gridcolor: themeColors.border,
         linecolor: themeColors.border,
         tickfont: { color: themeColors.foreground },
         zerolinecolor: themeColors.border
       },
       zaxis: {
-        title: { text: 'Y Response', font: { color: themeColors.foreground } },
+        title: { text: yName, font: { color: themeColors.foreground } },
         gridcolor: themeColors.border,
         linecolor: themeColors.border,
         tickfont: { color: themeColors.foreground },
@@ -177,10 +188,10 @@ export const Regression3DPlot: React.FC<Regression3DPlotProps> = ({ regressionDa
       style={{
         backgroundColor: themeColors.background
       }}
-      key={isDarkMode ? 'dark' : 'light'} // Force re-render on theme change
+      key={isDarkMode ? 'dark' : 'light'}
     >
       <Plot
-        key={isDarkMode ? 'dark' : 'light'} // Forces Plot to re-mount on theme change
+        key={isDarkMode ? 'dark' : 'light'}
         data={traces}
         layout={layout}
         style={{ width: '100%', height: '600px' }}

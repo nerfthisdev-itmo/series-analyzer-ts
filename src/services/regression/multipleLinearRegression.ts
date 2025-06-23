@@ -4,13 +4,13 @@ import { inv, multiply, transpose } from "mathjs";
 import { covariance } from "./correlation";
 import type { AbstractSeries } from "../series/AbstractSeries";
 
-export interface MultipleRegressionCoefficients {
+export type MultipleRegressionCoefficients = {
   intercept: number;
   x1: number;
   x2: number;
-}
+};
 
-interface MultipleRegressionResult {
+export type MultipleRegressionResult = {
   coefficients: MultipleRegressionCoefficients;
   R2: number;
   adjR2: number;
@@ -19,8 +19,8 @@ interface MultipleRegressionResult {
   tStats: MultipleRegressionCoefficients;
   tPValues: MultipleRegressionCoefficients;
   vif: { x1: number; x2: number };
-  residuals: Array<number>;
-}
+  residuals: Array<{ x1: number; x2: number; y: number }>;
+};
 
 export function multipleLinearRegression(
   X1: AbstractSeries,
@@ -116,7 +116,13 @@ export function multipleLinearRegression(
       x2: tPValueX2,
     },
     vif: { x1: vifX1, x2: vifX2 },
-    residuals,
+    residuals: residuals.map((_, i) => {
+      return {
+        x1: X1.initial_data[i],
+        x2: X2.initial_data[i],
+        y: Y.initial_data[i],
+      };
+    }),
   };
 }
 

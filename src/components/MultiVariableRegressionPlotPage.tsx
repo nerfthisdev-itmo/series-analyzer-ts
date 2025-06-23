@@ -1,4 +1,5 @@
-import { Regression3DPlot } from "./regression/Regression3DPlot";
+import { Regression3DPlot } from "./regression/3d/Regression3DPlot";
+import { RegressionBadges } from "./regression/RegressionBadges";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLinearRegressionSeries } from "@/context/LinearRegressionSeriesContext";
 import { multipleLinearRegression } from "@/services/regression/multipleLinearRegression";
@@ -34,7 +35,11 @@ export function MultiVariableRegressionPlotPage() {
             X2: seriesY.initial_data,
             Y: seriesZ.initial_data,
             coefficients: result.coefficients,
-          }} />
+          }}
+            x1Name="X"
+            x2Name="Y"
+            yName="Z"
+          />
         </div>
       </CardContent>
 
@@ -44,20 +49,10 @@ export function MultiVariableRegressionPlotPage() {
           <span className="font-mono">{equation}</span>
         </div>
 
-        <div className="gap-x-6 gap-y-2 grid grid-cols-2 w-full max-w-md">
-          <div className="flex items-center gap-2">
-            <span>R²</span>
-            <span className="ml-auto font-mono">{result.R2.toFixed(4)}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span>Adjusted R²</span>
-            <span className="ml-auto font-mono">{result.adjR2.toFixed(4)}</span>
-          </div>
-        </div>
-
         <div className="mt-2 text-muted-foreground text-sm">
           Showing {n} data point{n !== 1 ? 's' : ''}
         </div>
+        <RegressionBadges parameters={result} ></RegressionBadges>
       </CardFooter>
     </Card>
   );
