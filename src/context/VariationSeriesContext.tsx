@@ -46,6 +46,12 @@ export const VariationSeriesProvider = ({
 
   /* сохранить ряды */
   const setSeries = (a: VariationSeries, b: IntervalVariationSeries) => {
+    // Validate both series are non-empty
+    if (a.initial_data.length === 0 || b.initial_data.length === 0) {
+      alert("Cannot save empty data sets!");
+      return;
+    }
+
     setSeriesA(a);
     setSeriesB(b);
     localStorage.setItem("seriesA", JSON.stringify(a.initial_data));

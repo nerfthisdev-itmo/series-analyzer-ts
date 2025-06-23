@@ -33,6 +33,15 @@ export const LinearRegressionSeriesProvider = ({
     y: VariationSeries,
     z: VariationSeries,
   ) => {
+    if (
+      x.initial_data.length === 0 ||
+      y.initial_data.length === 0 ||
+      z.initial_data.length === 0
+    ) {
+      alert("Cannot save empty data sets!");
+      return;
+    }
+
     setSeriesX(x);
     setSeriesY(y);
     setSeriesZ(z);
