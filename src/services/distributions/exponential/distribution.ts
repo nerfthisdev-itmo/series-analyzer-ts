@@ -49,13 +49,13 @@ export const exponential: TheoreticalDistribution<ExponentialDistributionCharact
 
     pdf: function (
       x: number,
-      { n, lambda }: ExponentialDistributionCharacteristics,
+      { lambda }: ExponentialDistributionCharacteristics,
     ): number {
       return jStat.exponential.pdf(x, lambda);
     },
     cdf: function (
       x: number,
-      { n, lambda }: ExponentialDistributionCharacteristics,
+      { lambda }: ExponentialDistributionCharacteristics,
     ): number {
       return jStat.exponential.cdf(x, lambda);
     },

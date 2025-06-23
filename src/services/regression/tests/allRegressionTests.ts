@@ -16,9 +16,9 @@ export function allRegressionTests(
   fTest: FTestResult;
   correlationTest: CorrelationTestResult;
 } {
-  const coefficientTest = testRegressionCoefficients(X, Y, regressionResult);
+  const coefficientTest = testRegressionCoefficients(X, regressionResult);
   const fTest = testRegressionModel(X, Y, regressionResult);
-  const correlationTest = testPearsonCorrelation(X, Y, regressionResult.r);
+  const correlationTest = testPearsonCorrelation(X, regressionResult.r);
 
   return {
     coefficientTest,

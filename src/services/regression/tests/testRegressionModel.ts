@@ -23,10 +23,7 @@ export function testRegressionModel(
   );
 
   // SSR (Sum of Squares due to Regression)
-  const ssr = predictedY.reduce(
-    (sum, yPred, i) => sum + (yPred - Y.mean) ** 2,
-    0,
-  );
+  const ssr = predictedY.reduce((sum, yPred) => sum + (yPred - Y.mean) ** 2, 0);
 
   // SSE (Sum of Squared Errors)
   const sse = regression.residuals

@@ -11,7 +11,6 @@ export type CorrelationTestResult = {
 
 export function testPearsonCorrelation(
   X: AbstractSeries,
-  Y: AbstractSeries,
   correlation: number,
 ): CorrelationTestResult {
   const n = X.n;

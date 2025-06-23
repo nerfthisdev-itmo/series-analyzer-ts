@@ -53,10 +53,7 @@ export const uniform: TheoreticalDistribution<UniformDistributionCharacteristics
       return (x - a) / (b - a);
     },
 
-    pdf: (
-      x: number,
-      { a, b, n }: UniformDistributionCharacteristics,
-    ): number => {
+    pdf: (x: number, { a, b }: UniformDistributionCharacteristics): number => {
       if (x < a || x > b) return 0;
       return 1 / (b - a);
     },

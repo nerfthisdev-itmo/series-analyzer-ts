@@ -45,7 +45,7 @@ export const geometric: TheoreticalDistribution<GeometricDistributionCharacteris
       };
     },
 
-    cdf: (x: number, { n, p }): number => {
+    cdf: (x: number, { p }): number => {
       if (x <= 0) {
         return 0;
       }
@@ -55,7 +55,7 @@ export const geometric: TheoreticalDistribution<GeometricDistributionCharacteris
       return 1 - Math.pow(1 - p, x_floor);
     },
 
-    pdf: (x: number, { n, p }): number => {
+    pdf: (x: number, { p }): number => {
       const k = Math.floor(x);
 
       return Math.pow(1 - p, k) * p;

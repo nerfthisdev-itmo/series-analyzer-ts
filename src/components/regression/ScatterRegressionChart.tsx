@@ -81,7 +81,6 @@ export function ScatterRegressionChart({
 
   const tests = allRegressionTests(X, Y, regressionResult);
 
-
   const CustomTooltip = ({ active, payload }: any) => {
     if (!active || !payload || !payload.length) return null;
 
