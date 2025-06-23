@@ -12,33 +12,39 @@ export function Navbar() {
         <div className='flex space-x-4'>
           <Link
             to='/'
-            className={`px-3 py-2 rounded-md ${
-              pathname === "/"
-                ? "bg-gray-100 dark:bg-gray-800"
-                : "hover:bg-gray-100 dark:hover:bg-gray-800"
-            }`}
+            className={`px-3 py-2 rounded-md ${pathname === "/"
+              ? "bg-gray-100 dark:bg-gray-800"
+              : "hover:bg-gray-100 dark:hover:bg-gray-800"
+              }`}
           >
             main page
           </Link>
           <Link
             to='/stats'
-            className={`px-3 py-2 rounded-md ${
-              pathname === "/stats"
-                ? "bg-gray-100 dark:bg-gray-800"
-                : "hover:bg-gray-100 dark:hover:bg-gray-800"
-            }`}
+            className={`px-3 py-2 rounded-md ${pathname === "/stats"
+              ? "bg-gray-100 dark:bg-gray-800"
+              : "hover:bg-gray-100 dark:hover:bg-gray-800"
+              }`}
           >
             stats
           </Link>
           <Link
             to='/linear-regression'
-            className={`px-3 py-2 rounded-md ${
-              pathname === "/linear-regression"
-                ? "bg-gray-100 dark:bg-gray-800"
-                : "hover:bg-gray-100 dark:hover:bg-gray-800"
-            }`}
+            className={`px-3 py-2 rounded-md ${pathname === "/linear-regression"
+              ? "bg-gray-100 dark:bg-gray-800"
+              : "hover:bg-gray-100 dark:hover:bg-gray-800"
+              }`}
           >
             linear regression
+          </Link>
+          <Link
+            to='/multi-variable-regression'
+            className={`px-3 py-2 rounded-md ${pathname === "/multi-variable-regression"
+              ? "bg-gray-100 dark:bg-gray-800"
+              : "hover:bg-gray-100 dark:hover:bg-gray-800"
+              }`}
+          >
+            multi variable regression
           </Link>
         </div>
         <ThemeToggle />
