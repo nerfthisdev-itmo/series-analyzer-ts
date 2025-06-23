@@ -5,6 +5,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { getDefaultA, getDefaultB } from "./DefaultData";
 import type { ReactNode } from "react";
 
 import type { DistributionPair } from "@/services/types/distributions";
@@ -58,21 +59,35 @@ export const VariationSeriesProvider = ({
     const sa = localStorage.getItem("distsA");
     const sb = localStorage.getItem("distsB");
 
-    if (storedA && storedB) {
-      try {
-        setSeriesA(new VariationSeries(JSON.parse(storedA)));
-        setSeriesB(new IntervalVariationSeries(JSON.parse(storedB)));
-      } catch (e) {
-        console.warn("Не удалось загрузить ряды", e);
-      }
-    }
+    // Загрузка распределений
     if (sa && sb) {
       try {
         setDistsA(JSON.parse(sa));
         setDistsB(JSON.parse(sb));
       } catch {
-        /* ignore */
+        /* игнорируем ошибки */
       }
+    }
+
+    // Создаём демо-данные если нет сохранений
+    const createDefaultSeries = () => {
+      const discreteData = getDefaultA();
+      const intervalData = getDefaultB();
+      const defaultDiscrete = new VariationSeries(discreteData);
+      const defaultInterval = new IntervalVariationSeries(intervalData);
+      setSeries(defaultDiscrete, defaultInterval);
+    };
+
+    if (storedA && storedB) {
+      try {
+        setSeriesA(new VariationSeries(JSON.parse(storedA)));
+        setSeriesB(new IntervalVariationSeries(JSON.parse(storedB)));
+      } catch (e) {
+        console.warn("Ошибка загрузки рядов, используются демо-данные", e);
+        createDefaultSeries();
+      }
+    } else {
+      createDefaultSeries(); // Первый вход - создаём демо
     }
   }, []);
 

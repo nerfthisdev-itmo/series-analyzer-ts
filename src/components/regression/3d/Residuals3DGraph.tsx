@@ -17,7 +17,7 @@ import {
 type Residual3D = {
   x1: number;
   x2: number;
-  y: number;  // Residual value
+  y: number; // Residual value
 };
 
 interface Residuals3DGraphProps {
@@ -31,26 +31,27 @@ export function Residuals3DGraph({
   residuals,
   xName = "X",
   yName = "Y",
-  zName = "Residual Value"
+  zName = "Residual Value",
 }: Residuals3DGraphProps) {
-
   const gaussMarkov = analyzeResiduals(
-    new VariationSeries(residuals.map(r => r.y))
+    new VariationSeries(residuals.map((r) => r.y)),
   );
 
   // Prepare plot data
-  const plotData: Array<Data> = [{
-    x: residuals.map(r => r.x1),
-    y: residuals.map(r => r.x2),
-    z: residuals.map(r => r.y),
-    type: 'scatter3d',
-    mode: 'markers',
-    marker: {
-      size: 5,
-      color: "hsl(var(--chart-1))",
-      opacity: 0.8,
+  const plotData: Array<Data> = [
+    {
+      x: residuals.map((r) => r.x1),
+      y: residuals.map((r) => r.x2),
+      z: residuals.map((r) => r.y),
+      type: "scatter3d",
+      mode: "markers",
+      marker: {
+        size: 5,
+        color: "hsl(var(--chart-1))",
+        opacity: 0.8,
+      },
     },
-  }];
+  ];
 
   // Prepare layout
   const plotLayout: Partial<Layout> = {
@@ -61,13 +62,13 @@ export function Residuals3DGraph({
       yaxis: { title: { text: yName } },
       zaxis: { title: { text: zName } },
       camera: {
-        eye: { x: 1.5, y: -1.5, z: 0.8 }
-      }
-    }
+        eye: { x: 1.5, y: -1.5, z: 0.8 },
+      },
+    },
   };
 
   return (
-    <Card className="w-full">
+    <Card className='w-full'>
       <CardHeader>
         <CardTitle>3D Residuals Visualization</CardTitle>
         <CardDescription>
@@ -75,15 +76,15 @@ export function Residuals3DGraph({
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="min-h-[400px]">
+      <CardContent className='min-h-[400px]'>
         <Base3DPlot
           data={plotData}
           layout={plotLayout}
-          style={{ width: '100%', height: '400px' }}
+          style={{ width: "100%", height: "400px" }}
         />
       </CardContent>
 
-      <CardFooter className="flex flex-col items-start gap-4">
+      <CardFooter className='flex flex-col items-start gap-4'>
         <GaussMarkovAssumptionsBadges parameters={gaussMarkov} />
       </CardFooter>
     </Card>

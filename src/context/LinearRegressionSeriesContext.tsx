@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { getDefaultX, getDefaultY, getDefaultZ } from "./DefaultData";
 import type { ReactNode } from "react";
 
 import { VariationSeries } from "@/services/series/variationSeries";
@@ -45,14 +46,25 @@ export const LinearRegressionSeriesProvider = ({
     const storedY = localStorage.getItem("seriesY");
     const storedZ = localStorage.getItem("seriesZ");
 
+    // Функция создания демо-данных
+    const createDefaultSeries = () => {
+      const defaultX = new VariationSeries(getDefaultX());
+      const defaultY = new VariationSeries(getDefaultY());
+      const defaultZ = new VariationSeries(getDefaultZ());
+      setSeries(defaultX, defaultY, defaultZ);
+    };
+
     if (storedX && storedY && storedZ) {
       try {
         setSeriesX(new VariationSeries(JSON.parse(storedX)));
         setSeriesY(new VariationSeries(JSON.parse(storedY)));
         setSeriesZ(new VariationSeries(JSON.parse(storedZ)));
       } catch (e) {
-        console.warn("Failed to load series from localStorage", e);
+        console.warn("Ошибка загрузки рядов, используются демо-данные", e);
+        createDefaultSeries();
       }
+    } else {
+      createDefaultSeries(); // Первый вход - создаём демо
     }
   }, []);
 
