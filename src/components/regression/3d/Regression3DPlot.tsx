@@ -89,10 +89,6 @@ export const Regression3DPlot: React.FC<Regression3DPlotProps> = ({
   // Layout customizations specific to this plot
   const layoutOverrides: Partial<Layout> = {
     margin: { t: 0, b: 0, l: 0, r: 0 },
-    legend: {
-      x: 0.8,
-      y: 0.9
-    },
     scene: {
       xaxis: { title: { text: x1Name } },
       yaxis: { title: { text: x2Name } },

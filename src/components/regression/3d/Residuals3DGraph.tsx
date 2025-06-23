@@ -55,7 +55,7 @@ export function Residuals3DGraph({
   // Prepare layout
   const plotLayout: Partial<Layout> = {
     autosize: true,
-    margin: { t: 20, b: 20, l: 20, r: 20 },
+    margin: { t: 0, b: 0, l: 0, r: 0 },
     scene: {
       xaxis: { title: { text: xName } },
       yaxis: { title: { text: yName } },
