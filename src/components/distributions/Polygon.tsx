@@ -2,7 +2,7 @@
 
 import { CartesianGrid, ComposedChart, Line, XAxis } from "recharts";
 
-import { TheoreticalDistributionData } from "./ui/TheoreticalDistributionData";
+import { TheoreticalDistributionData } from "../ui/distributions/TheoreticalDistributionData";
 import type { ChartConfig } from "@/components/ui/chart";
 import type { VariationSeries } from "@/services/series/variationSeries";
 import type { PearsonResult } from "@/services/statistical-tests/pearson-test/pearsonTest";

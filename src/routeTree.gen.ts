@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from "./routes/__root";
 import { Route as StatsImport } from "./routes/stats";
+import { Route as LinearRegressionImport } from "./routes/linear-regression";
 import { Route as IndexImport } from "./routes/index";
 
 // Create/Update Routes
@@ -19,6 +20,12 @@ import { Route as IndexImport } from "./routes/index";
 const StatsRoute = StatsImport.update({
   id: "/stats",
   path: "/stats",
+  getParentRoute: () => rootRoute,
+} as any);
+
+const LinearRegressionRoute = LinearRegressionImport.update({
+  id: "/linear-regression",
+  path: "/linear-regression",
   getParentRoute: () => rootRoute,
 } as any);
 
@@ -39,6 +46,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof IndexImport;
       parentRoute: typeof rootRoute;
     };
+    "/linear-regression": {
+      id: "/linear-regression";
+      path: "/linear-regression";
+      fullPath: "/linear-regression";
+      preLoaderRoute: typeof LinearRegressionImport;
+      parentRoute: typeof rootRoute;
+    };
     "/stats": {
       id: "/stats";
       path: "/stats";
@@ -53,36 +67,41 @@ declare module "@tanstack/react-router" {
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
+  "/linear-regression": typeof LinearRegressionRoute;
   "/stats": typeof StatsRoute;
 }
 
 export interface FileRoutesByTo {
   "/": typeof IndexRoute;
+  "/linear-regression": typeof LinearRegressionRoute;
   "/stats": typeof StatsRoute;
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute;
   "/": typeof IndexRoute;
+  "/linear-regression": typeof LinearRegressionRoute;
   "/stats": typeof StatsRoute;
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/" | "/stats";
+  fullPaths: "/" | "/linear-regression" | "/stats";
   fileRoutesByTo: FileRoutesByTo;
-  to: "/" | "/stats";
-  id: "__root__" | "/" | "/stats";
+  to: "/" | "/linear-regression" | "/stats";
+  id: "__root__" | "/" | "/linear-regression" | "/stats";
   fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
+  LinearRegressionRoute: typeof LinearRegressionRoute;
   StatsRoute: typeof StatsRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LinearRegressionRoute: LinearRegressionRoute,
   StatsRoute: StatsRoute,
 };
 
@@ -97,11 +116,15 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/linear-regression",
         "/stats"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/linear-regression": {
+      "filePath": "linear-regression.tsx"
     },
     "/stats": {
       "filePath": "stats.tsx"

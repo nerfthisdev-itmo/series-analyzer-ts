@@ -9,7 +9,7 @@ import {
   XAxis,
 } from "recharts";
 
-import { TheoreticalDistributionData } from "./ui/TheoreticalDistributionData";
+import { TheoreticalDistributionData } from "../ui/distributions/TheoreticalDistributionData";
 import type { ChartConfig } from "@/components/ui/chart";
 import type { IntervalVariationSeries } from "@/services/series/intervalSeries";
 import type { KSTestResult } from "@/services/statistical-tests/kolmogorov-smirnov-test/ksTest";

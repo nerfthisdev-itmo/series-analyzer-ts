@@ -8,6 +8,7 @@ import { routeTree } from "./routeTree.gen";
 import "./styles.css";
 import reportWebVitals from "./reportWebVitals.ts";
 import { VariationSeriesProvider } from "./context/VariationSeriesContext.tsx";
+import { LinearRegressionSeriesProvider } from "./context/LinearRegressionSeriesContext.tsx";
 
 // Create a new router instance
 const router = createRouter({
@@ -32,9 +33,11 @@ if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <VariationSeriesProvider>
-        <RouterProvider router={router} />
-      </VariationSeriesProvider>
+      <LinearRegressionSeriesProvider>
+        <VariationSeriesProvider>
+          <RouterProvider router={router} />
+        </VariationSeriesProvider>
+      </LinearRegressionSeriesProvider>
     </StrictMode>,
   );
 }
