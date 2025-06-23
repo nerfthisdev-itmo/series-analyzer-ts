@@ -1,16 +1,14 @@
-import { Badge } from "../badge";
-import type { GaussMarkovResidualsResult } from "@/services/regression/gaussMarkovAssumptions";
+import { Badge } from "../ui/badge";
+import type { SomeTheoreticalDistribution } from "@/services/types/distributions";
 
-export function GaussMarkovAssumptionsBadges({
+export function DistributionBadges({
   parameters,
 }: {
-  parameters: GaussMarkovResidualsResult;
+  parameters: SomeTheoreticalDistribution;
 }) {
-  const { ...params } = parameters;
-
   return (
     <div className='flex flex-wrap gap-1.5'>
-      {Object.entries(params).map(([key, value]) => (
+      {Object.entries(parameters).map(([key, value]) => (
         <Badge
           key={key}
           variant='secondary'
