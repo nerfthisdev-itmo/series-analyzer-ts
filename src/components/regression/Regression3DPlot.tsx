@@ -14,7 +14,7 @@ interface Regression3DPlotProps {
   regressionData: RegressionData;
 }
 
-const Regression3DPlot: React.FC<Regression3DPlotProps> = ({ regressionData }) => {
+export const Regression3DPlot: React.FC<Regression3DPlotProps> = ({ regressionData }) => {
   const { X1, X2, Y, coefficients } = regressionData;
   const b0 = coefficients.intercept
   const b1 = coefficients.x1
@@ -50,7 +50,7 @@ const Regression3DPlot: React.FC<Regression3DPlotProps> = ({ regressionData }) =
       opacity: 0.7,
       name: 'Regression Plane',
       showscale: false,
-      hoverinfo: 'none'
+      showlegend: true
     },
     // Observed data points
     {
@@ -71,7 +71,7 @@ const Regression3DPlot: React.FC<Regression3DPlotProps> = ({ regressionData }) =
 
   // Define layout with proper typing
   const layout: Partial<Layout> = {
-    title: { text: 'Multiple Linear Regression' }, // Correct title format
+    title: { text: 'Multiple Linear Regression' },
     autosize: true,
     scene: {
       xaxis: { title: { text: 'X1 Variable' } },
@@ -87,7 +87,7 @@ const Regression3DPlot: React.FC<Regression3DPlotProps> = ({ regressionData }) =
       x: 0.8,
       y: 0.9,
       bgcolor: 'rgba(255,255,255,0.5)'
-    }
+    },
   };
 
   return (
@@ -104,5 +104,3 @@ const Regression3DPlot: React.FC<Regression3DPlotProps> = ({ regressionData }) =
     />
   );
 };
-
-export default Regression3DPlot;

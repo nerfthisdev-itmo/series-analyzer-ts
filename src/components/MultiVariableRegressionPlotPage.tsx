@@ -1,39 +1,64 @@
-import Regression3DPlot from "./regression/Regression3DPlot";
+import { Regression3DPlot } from "./regression/Regression3DPlot";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLinearRegressionSeries } from "@/context/LinearRegressionSeriesContext";
 import { multipleLinearRegression } from "@/services/regression/multipleLinearRegression";
 
 export function MultiVariableRegressionPlotPage() {
   const { seriesX, seriesY, seriesZ } = useLinearRegressionSeries();
 
-  // After running your regression
   if (!seriesX || !seriesY || !seriesZ) {
-    return <div className='p-6 text-red-500'>
-      Данные отсутствуют или ряды пусты. Введите данные на странице "/linear-regression".
-    </div>
+    return (
+      <Card>
+        <CardContent className="p-6 text-red-500">
+          Данные отсутствуют или ряды пусты. Введите данные на странице "/linear-regression".
+        </CardContent>
+      </Card>
+    );
   }
 
   const result = multipleLinearRegression(seriesX, seriesY, seriesZ);
+  const n = seriesX.initial_data.length;
 
-  const plotData = {
-    X1: seriesX.initial_data,
-    X2: seriesY.initial_data,
-    Y: seriesZ.initial_data,
-    coefficients: result.coefficients,
-    residuals: result.residuals
-  };
+  const equation = `Y = ${result.coefficients.intercept.toFixed(2)} + ${result.coefficients.x1.toFixed(2)}X + ${result.coefficients.x2.toFixed(2)}Y`;
 
   return (
-    <div className="regression-container">
-      <h2>Regression Visualization</h2>
-      <Regression3DPlot regressionData={plotData} />
+    <Card className="flex flex-col h-full">
+      <CardHeader>
+        <CardTitle>Multi-Variable Regression Visualization</CardTitle>
+      </CardHeader>
 
-      <div className="stats-panel">
-        <p>R² = {result.R2.toFixed(4)}</p>
-        <p>Adjusted R² = {result.adjR2.toFixed(4)}</p>
-        <p>Equation: Y = {result.coefficients.intercept.toFixed(2)} +
-          {result.coefficients.x1.toFixed(2)}X₁ +
-          {result.coefficients.x2.toFixed(2)}X₂</p>
-      </div>
-    </div>
+      <CardContent className="flex-grow p-0 min-h-[500px]">
+        <div className="w-full h-full">
+          <Regression3DPlot regressionData={{
+            X1: seriesX.initial_data,
+            X2: seriesY.initial_data,
+            Y: seriesZ.initial_data,
+            coefficients: result.coefficients,
+          }} />
+        </div>
+      </CardContent>
+
+      <CardFooter className="flex flex-col items-start gap-3 pt-6 border-t">
+        <div className="flex gap-2 font-medium">
+          <span className="flex-shrink-0 bg-[var(--chart-2)] mt-1.5 rounded-full w-3 h-3" />
+          <span className="font-mono">{equation}</span>
+        </div>
+
+        <div className="gap-x-6 gap-y-2 grid grid-cols-2 w-full max-w-md">
+          <div className="flex items-center gap-2">
+            <span>R²</span>
+            <span className="ml-auto font-mono">{result.R2.toFixed(4)}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span>Adjusted R²</span>
+            <span className="ml-auto font-mono">{result.adjR2.toFixed(4)}</span>
+          </div>
+        </div>
+
+        <div className="mt-2 text-muted-foreground text-sm">
+          Showing {n} data point{n !== 1 ? 's' : ''}
+        </div>
+      </CardFooter>
+    </Card>
   );
 }
