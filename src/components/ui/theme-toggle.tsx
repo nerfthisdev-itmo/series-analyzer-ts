@@ -8,12 +8,12 @@ export function ThemeToggle() {
   useLayoutEffect(() => {
     // Проверяем сохраненную тему или системные настройки
     const savedTheme = localStorage.getItem("theme");
-    const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const systemPrefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)",
+    ).matches;
 
     // Определяем актуальную тему
-    const theme = savedTheme
-      ? savedTheme === "dark"
-      : systemPrefersDark;
+    const theme = savedTheme ? savedTheme === "dark" : systemPrefersDark;
 
     // Применяем тему
     document.documentElement.classList.toggle("dark", theme);
@@ -34,8 +34,8 @@ export function ThemeToggle() {
   if (isDark === null) {
     return (
       <button
-        className="hover:bg-gray-100 dark:hover:bg-gray-800 opacity-0 p-2 rounded-lg cursor-default"
-        aria-hidden="true"
+        className='hover:bg-gray-100 dark:hover:bg-gray-800 opacity-0 p-2 rounded-lg cursor-default'
+        aria-hidden='true'
       >
         -
       </button>
@@ -45,7 +45,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded-lg"
+      className='hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded-lg'
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
     >
       {isDark ? "🌙" : "☀️"}
