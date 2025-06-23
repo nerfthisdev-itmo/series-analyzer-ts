@@ -1,6 +1,6 @@
+import { Badge } from "../badge";
 import { DistributionBadges } from "./DistributionBadges";
 import { TestResultBadge } from "./tests/TestResultBadge";
-import { Badge } from "../badge";
 import type { PearsonResult } from "@/services/statistical-tests/pearson-test/pearsonTest";
 import type { KSTestResult } from "@/services/statistical-tests/kolmogorov-smirnov-test/ksTest";
 import type {
