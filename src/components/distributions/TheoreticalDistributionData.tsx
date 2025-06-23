@@ -1,4 +1,4 @@
-import { Badge } from "../badge";
+import { Badge } from "../ui/badge";
 import { DistributionBadges } from "./DistributionBadges";
 import { TestResultBadge } from "./tests/TestResultBadge";
 import type { PearsonResult } from "@/services/statistical-tests/pearson-test/pearsonTest";

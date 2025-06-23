@@ -1,4 +1,4 @@
-import { Badge } from "../badge";
+import { Badge } from "../ui/badge";
 import { RegressionBadges } from "./RegressionBadges";
 import type { RegressionCoefficientsTestResult } from "@/services/regression/tests/testRegressionCoefficients";
 import type { FTestResult } from "@/services/regression/tests/testRegressionModel";

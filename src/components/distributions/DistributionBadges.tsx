@@ -1,4 +1,4 @@
-import { Badge } from "../badge";
+import { Badge } from "../ui/badge";
 import type { SomeTheoreticalDistribution } from "@/services/types/distributions";
 
 export function DistributionBadges({
