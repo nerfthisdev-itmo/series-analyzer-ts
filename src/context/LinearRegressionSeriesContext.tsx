@@ -56,11 +56,25 @@ export const LinearRegressionSeriesProvider = ({
 
     if (storedX && storedY && storedZ) {
       try {
-        setSeriesX(new VariationSeries(JSON.parse(storedX)));
-        setSeriesY(new VariationSeries(JSON.parse(storedY)));
-        setSeriesZ(new VariationSeries(JSON.parse(storedZ)));
+        // Пробуем создать ряды из сохранённых данных
+        const parsedX = JSON.parse(storedX);
+        const parsedY = JSON.parse(storedY);
+        const parsedZ = JSON.parse(storedZ);
+
+        const loadedX = new VariationSeries(parsedX);
+        const loadedY = new VariationSeries(parsedY);
+        const loadedZ = new VariationSeries(parsedZ);
+
+        // Устанавливаем только если все создались успешно
+        setSeriesX(loadedX);
+        setSeriesY(loadedY);
+        setSeriesZ(loadedZ);
       } catch (e) {
         console.warn("Ошибка загрузки рядов, используются демо-данные", e);
+        // Удаляем повреждённые данные
+        localStorage.removeItem("seriesX");
+        localStorage.removeItem("seriesY");
+        localStorage.removeItem("seriesZ");
         createDefaultSeries();
       }
     } else {

@@ -1,7 +1,7 @@
 // src/context/VariationSeriesContext.tsx
 import {
   createContext,
-  useContext, // 👈 ДОБАВИЛИ
+  useContext,
   useEffect,
   useState,
 } from "react";
@@ -59,13 +59,14 @@ export const VariationSeriesProvider = ({
     const sa = localStorage.getItem("distsA");
     const sb = localStorage.getItem("distsB");
 
-    // Загрузка распределений
+    // Загрузка распределений с очисткой при ошибке
     if (sa && sb) {
       try {
         setDistsA(JSON.parse(sa));
         setDistsB(JSON.parse(sb));
       } catch {
-        /* игнорируем ошибки */
+        localStorage.removeItem("distsA");
+        localStorage.removeItem("distsB");
       }
     }
 
@@ -80,10 +81,20 @@ export const VariationSeriesProvider = ({
 
     if (storedA && storedB) {
       try {
-        setSeriesA(new VariationSeries(JSON.parse(storedA)));
-        setSeriesB(new IntervalVariationSeries(JSON.parse(storedB)));
+        // Пробуем создать ряды из сохранённых данных
+        const parsedA = JSON.parse(storedA);
+        const parsedB = JSON.parse(storedB);
+
+        const loadedA = new VariationSeries(parsedA);
+        const loadedB = new IntervalVariationSeries(parsedB);
+
+        setSeriesA(loadedA);
+        setSeriesB(loadedB);
       } catch (e) {
         console.warn("Ошибка загрузки рядов, используются демо-данные", e);
+        // Удаляем повреждённые данные
+        localStorage.removeItem("seriesA");
+        localStorage.removeItem("seriesB");
         createDefaultSeries();
       }
     } else {
