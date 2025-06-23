@@ -1,3 +1,4 @@
+// @ts-ignore types are not developed
 import { jStat } from "jstat";
 import { mergeCategoriesByLowerBound, parseKeyString } from "./mergeCategories";
 import type { AbstractSeries } from "@/services/series/AbstractSeries";

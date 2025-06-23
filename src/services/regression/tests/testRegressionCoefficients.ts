@@ -1,3 +1,4 @@
+// @ts-ignore types are not developed
 import { jStat } from "jstat";
 import type { AbstractSeries } from "@/services/series/AbstractSeries";
 import type { RegressionResult } from "../regression";

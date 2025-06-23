@@ -81,7 +81,6 @@ export function ScatterRegressionChart({
 
   const tests = allRegressionTests(X, Y, regressionResult);
 
-  console.log(tests)
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (!active || !payload || !payload.length) return null;
@@ -180,8 +179,9 @@ export function ScatterRegressionChart({
       <CardFooter className='flex flex-col items-start gap-2 border-t text-sm'>
         <div className='flex gap-2 font-medium leading-none'>
           <span className='inline-flex items-center gap-1'>
-            <span className='bg-[var(--chart-2)] rounded-full w-3 h-3' />{yAxisLabel} ={" "}
-            {regressionResult.k.toFixed(2)}{xAxisLabel} + {regressionResult.b.toFixed(2)}
+            <span className='bg-[var(--chart-2)] rounded-full w-3 h-3' />
+            {yAxisLabel} = {regressionResult.k.toFixed(2)}
+            {xAxisLabel} + {regressionResult.b.toFixed(2)}
           </span>
         </div>
         <div className='text-muted-foreground leading-none'>
