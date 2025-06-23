@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { getDefaultX, getDefaultY, getDefaultZ } from "./DefaultData";
 import type { ReactNode } from "react";
 
 import { VariationSeries } from "@/services/series/variationSeries";
@@ -32,6 +33,15 @@ export const LinearRegressionSeriesProvider = ({
     y: VariationSeries,
     z: VariationSeries,
   ) => {
+    if (
+      x.initial_data.length === 0 ||
+      y.initial_data.length === 0 ||
+      z.initial_data.length === 0
+    ) {
+      alert("Cannot save empty data sets!");
+      return;
+    }
+
     setSeriesX(x);
     setSeriesY(y);
     setSeriesZ(z);
@@ -45,14 +55,39 @@ export const LinearRegressionSeriesProvider = ({
     const storedY = localStorage.getItem("seriesY");
     const storedZ = localStorage.getItem("seriesZ");
 
+    // Функция создания демо-данных
+    const createDefaultSeries = () => {
+      const defaultX = new VariationSeries(getDefaultX());
+      const defaultY = new VariationSeries(getDefaultY());
+      const defaultZ = new VariationSeries(getDefaultZ());
+      setSeries(defaultX, defaultY, defaultZ);
+    };
+
     if (storedX && storedY && storedZ) {
       try {
-        setSeriesX(new VariationSeries(JSON.parse(storedX)));
-        setSeriesY(new VariationSeries(JSON.parse(storedY)));
-        setSeriesZ(new VariationSeries(JSON.parse(storedZ)));
+        // Пробуем создать ряды из сохранённых данных
+        const parsedX = JSON.parse(storedX);
+        const parsedY = JSON.parse(storedY);
+        const parsedZ = JSON.parse(storedZ);
+
+        const loadedX = new VariationSeries(parsedX);
+        const loadedY = new VariationSeries(parsedY);
+        const loadedZ = new VariationSeries(parsedZ);
+
+        // Устанавливаем только если все создались успешно
+        setSeriesX(loadedX);
+        setSeriesY(loadedY);
+        setSeriesZ(loadedZ);
       } catch (e) {
-        console.warn("Failed to load series from localStorage", e);
+        console.warn("Ошибка загрузки рядов, используются демо-данные", e);
+        // Удаляем повреждённые данные
+        localStorage.removeItem("seriesX");
+        localStorage.removeItem("seriesY");
+        localStorage.removeItem("seriesZ");
+        createDefaultSeries();
       }
+    } else {
+      createDefaultSeries(); // Первый вход - создаём демо
     }
   }, []);
 
