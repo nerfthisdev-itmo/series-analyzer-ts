@@ -7,9 +7,13 @@ import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: "/series-analyzer-ts",
+  base: "/series-analyzer-ts/",
   plugins: [
-    TanStackRouterVite({ autoCodeSplitting: true }),
+    TanStackRouterVite({
+      target: "react",
+      autoCodeSplitting: true,
+      apiBase: "/series-analyzer-ts/",
+    }),
     viteReact(),
     tailwindcss(),
   ],
