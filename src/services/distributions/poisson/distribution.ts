@@ -46,13 +46,13 @@ export const poisson: TheoreticalDistribution<PoissonDistributionCharacteristics
 
     pdf: function (
       x: number,
-      { n, lambda }: PoissonDistributionCharacteristics,
+      { lambda }: PoissonDistributionCharacteristics,
     ): number {
       return jStat.poisson.pdf(x, lambda);
     },
     cdf: function (
       x: number,
-      { n, lambda }: PoissonDistributionCharacteristics,
+      { lambda }: PoissonDistributionCharacteristics,
     ): number {
       return jStat.poisson.cdf(x, lambda);
     },

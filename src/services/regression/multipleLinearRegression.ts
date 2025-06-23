@@ -11,6 +11,7 @@ interface MultipleRegressionResult {
   fStat: number;
   fPValue: number;
   tStats: Array<number>; // t-статистики для коэффициентов
+  tPValues: Array<number>;
   vif: Array<number>; // Вариансы инфляции для анализа мультиколлинеарности
   residuals: Array<number>;
 }
@@ -49,10 +50,7 @@ export function multipleLinearRegression(
   // 4. Вычисление сумм квадратов
   const yMean = Y.mean;
   const SST = YVec.reduce((sum, yi) => sum + (yi - yMean) ** 2, 0); // Total Sum of Squares
-  const SSR = predicted.reduce(
-    (sum, yPred, i) => sum + (yPred - yMean) ** 2,
-    0,
-  ); // Regression Sum of Squares
+  const SSR = predicted.reduce((sum, yPred) => sum + (yPred - yMean) ** 2, 0); // Regression Sum of Squares
   const SSE = residuals.reduce((sum, r) => sum + r ** 2, 0); // Error Sum of Squares
 
   // 5. R² и скорректированный R²
@@ -86,6 +84,7 @@ export function multipleLinearRegression(
     fStat,
     fPValue,
     tStats,
+    tPValues,
     vif,
     residuals,
   };

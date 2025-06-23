@@ -13,7 +13,6 @@ export type RegressionCoefficientsTestResult = {
 
 export function testRegressionCoefficients(
   X: AbstractSeries,
-  Y: AbstractSeries,
   regression: RegressionResult,
 ): RegressionCoefficientsTestResult {
   const n = X.n;
