@@ -10,7 +10,7 @@ import {
   YAxis,
 } from "recharts";
 
-import { LinearRegressionFooter } from "../ui/regression/LinearRegressionFooter";
+import { LinearRegressionFooter } from "./LinearRegressionFooter";
 import type { VariationSeries } from "@/services/series/variationSeries";
 import type { ChartConfig } from "@/components/ui/chart";
 import type { RegressionResult } from "@/services/regression/regression";

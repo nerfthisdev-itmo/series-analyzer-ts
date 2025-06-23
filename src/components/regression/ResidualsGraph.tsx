@@ -2,7 +2,7 @@
 
 import { CartesianGrid, Scatter, ScatterChart, XAxis, YAxis } from "recharts";
 
-import { GaussMarkovAssumptionsBadges } from "../ui/regression/GaussMarkovAssumptionsBadges";
+import { GaussMarkovAssumptionsBadges } from "./GaussMarkovAssumptionsBadges";
 import type { ChartConfig } from "@/components/ui/chart";
 import {
   Card,

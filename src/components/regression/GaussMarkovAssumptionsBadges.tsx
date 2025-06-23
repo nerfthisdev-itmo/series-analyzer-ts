@@ -1,12 +1,12 @@
-import { Badge } from "../badge";
-import type { RegressionResult } from "@/services/regression/regression";
+import { Badge } from "../ui/badge";
+import type { GaussMarkovResidualsResult } from "@/services/regression/gaussMarkovAssumptions";
 
-export function RegressionBadges({
+export function GaussMarkovAssumptionsBadges({
   parameters,
 }: {
-  parameters: RegressionResult;
+  parameters: GaussMarkovResidualsResult;
 }) {
-  const { residuals, ...params } = parameters;
+  const { ...params } = parameters;
 
   return (
     <div className='flex flex-wrap gap-1.5'>
