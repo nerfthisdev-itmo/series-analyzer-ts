@@ -1,4 +1,5 @@
 import { MultiVariableRegressionPlotCard } from "./regression/3d/MultiVariableRegressionGraph";
+import { Residuals3DGraph } from "./regression/3d/Residuals3DGraph";
 import { useLinearRegressionSeries } from "@/context/LinearRegressionSeriesContext";
 import { multipleLinearRegression } from "@/services/regression/multipleLinearRegression";
 import { Card, CardContent } from "@/components/ui/card";
@@ -27,6 +28,7 @@ export function MultiVariableRegressionPlotPage() {
         X2={seriesY.initial_data}
         Y={seriesZ.initial_data}
         result={result} x1Name={"X"} x2Name={"Y"} yName={"Z"} />
+      <Residuals3DGraph residuals={result.residuals}></Residuals3DGraph>
     </div>
   );
 }

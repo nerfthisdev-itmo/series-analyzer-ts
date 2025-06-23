@@ -120,7 +120,7 @@ export function multipleLinearRegression(
       return {
         x1: X1.initial_data[i],
         x2: X2.initial_data[i],
-        y: Y.initial_data[i],
+        y: residuals[i],
       };
     }),
   };
