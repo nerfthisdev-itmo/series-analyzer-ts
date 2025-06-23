@@ -12,6 +12,7 @@ import { LinearRegressionSeriesProvider } from "./context/LinearRegressionSeries
 
 // Create a new router instance
 const router = createRouter({
+  basepath: "/series-analyzer-ts/",
   routeTree,
   context: {},
   defaultPreload: "intent",
