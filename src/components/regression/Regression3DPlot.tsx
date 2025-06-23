@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Plot from 'react-plotly.js';
 import type { Data, Layout } from 'plotly.js';
 import type { MultipleRegressionCoefficients } from '@/services/regression/multipleLinearRegression';
@@ -14,7 +14,32 @@ interface Regression3DPlotProps {
   regressionData: RegressionData;
 }
 
+// Custom hook to detect theme changes
+const useThemeObserver = () => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      setIsDarkMode(document.documentElement.classList.contains('dark'));
+    });
+
+    // Initial check
+    setIsDarkMode(document.documentElement.classList.contains('dark'));
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  return isDarkMode;
+};
+
+
 export const Regression3DPlot: React.FC<Regression3DPlotProps> = ({ regressionData }) => {
+  const isDarkMode = useThemeObserver();
   const { X1, X2, Y, coefficients } = regressionData;
   const b0 = coefficients.intercept
   const b1 = coefficients.x1
@@ -33,12 +58,41 @@ export const Regression3DPlot: React.FC<Regression3DPlotProps> = ({ regressionDa
     x2Range[0] + j * (x2Range[1] - x2Range[0]) / (gridSize - 1)
   );
 
-  // Generate regression plane grid (corrected)
   const zGrid = x2Grid.map(x2 =>
     x1Grid.map(x1 => b0 + b1 * x1 + b2 * x2)
   );
 
-  // Prepare traces with proper typing
+
+  // Get current theme colors
+  let themeColors = {
+    background: "#18181b",
+    foreground: "#fafafa",
+    border: "#09090b",
+    chart1: "#e1356f",
+    card: "#09090b"
+  };
+  if (isDarkMode) {
+    themeColors = {
+      background: "#18181b",
+      foreground: "#fafafa",
+      border: "#303032",
+      chart1: "#e1356f",
+      card: "#09090b"
+    }
+  } else {
+    themeColors = {
+      background: "#ffffff",
+      foreground: "#09090b",
+      border: "#a0a0a0",
+      chart1: "#e4497e",
+      card: "#fafafa"
+    };
+  }
+
+  console.log(themeColors)
+
+
+  // Prepare traces
   const traces: Array<Data> = [
     // Regression plane
     {
@@ -46,11 +100,12 @@ export const Regression3DPlot: React.FC<Regression3DPlotProps> = ({ regressionDa
       x: x1Grid,
       y: x2Grid,
       z: zGrid,
-      colorscale: 'Blues',
-      opacity: 0.7,
+
+      opacity: 0.4,
       name: 'Regression Plane',
       showscale: false,
-      showlegend: true
+      showlegend: true,
+      hoverinfo: 'skip'
     },
     // Observed data points
     {
@@ -61,46 +116,88 @@ export const Regression3DPlot: React.FC<Regression3DPlotProps> = ({ regressionDa
       z: Y,
       marker: {
         size: 5,
-        color: '#d62728',
-        opacity: 0.9
+        color: themeColors.chart1,
+        opacity: 0.9,
+        line: {
+          color: themeColors.foreground,
+          width: 0.5
+        }
       },
       name: 'Observed Data',
       hoverinfo: 'x+y+z+name'
     }
   ];
 
-  // Define layout with proper typing
+  // Define layout
   const layout: Partial<Layout> = {
-    title: { text: 'Multiple Linear Regression' },
-    autosize: true,
+    paper_bgcolor: themeColors.background,
+    font: { color: themeColors.foreground },
     scene: {
-      xaxis: { title: { text: 'X1 Variable' } },
-      yaxis: { title: { text: 'X2 Variable' } },
-      zaxis: { title: { text: 'Y Response' } },
+      bgcolor: themeColors.background,
+      xaxis: {
+        title: { text: 'X1 Variable', font: { color: themeColors.foreground } },
+        gridcolor: themeColors.border,
+        linecolor: themeColors.border,
+        tickfont: { color: themeColors.foreground },
+        zerolinecolor: themeColors.border
+      },
+      yaxis: {
+        title: { text: 'X2 Variable', font: { color: themeColors.foreground } },
+        gridcolor: themeColors.border,
+        linecolor: themeColors.border,
+        tickfont: { color: themeColors.foreground },
+        zerolinecolor: themeColors.border
+      },
+      zaxis: {
+        title: { text: 'Y Response', font: { color: themeColors.foreground } },
+        gridcolor: themeColors.border,
+        linecolor: themeColors.border,
+        tickfont: { color: themeColors.foreground },
+        zerolinecolor: themeColors.border
+      },
       camera: {
         eye: { x: 1.5, y: -1.5, z: 0.8 }
       }
     },
-    margin: { t: 40, b: 0, l: 0, r: 0 },
+    margin: { t: 0, b: 0, l: 0, r: 0 },
     showlegend: true,
     legend: {
       x: 0.8,
       y: 0.9,
-      bgcolor: 'rgba(255,255,255,0.5)'
+      bgcolor: themeColors.card,
+      bordercolor: themeColors.border,
+      borderwidth: 1,
+      font: { color: themeColors.foreground }
     },
   };
 
   return (
-    <Plot
-      data={traces}
-      layout={layout}
-      style={{ width: '100%', height: '600px' }}
-      config={{
-        responsive: true,
-        displayModeBar: true,
-        modeBarButtonsToRemove: ['lasso2d', 'select2d'],
-        displaylogo: false
+    <div
+      className="border border-r-0 border-l-0 rounded-xl"
+      style={{
+        backgroundColor: themeColors.background
       }}
-    />
+      key={isDarkMode ? 'dark' : 'light'} // Force re-render on theme change
+    >
+      <Plot
+        key={isDarkMode ? 'dark' : 'light'} // Forces Plot to re-mount on theme change
+        data={traces}
+        layout={layout}
+        style={{ width: '100%', height: '600px' }}
+        config={{
+          responsive: true,
+          displayModeBar: true,
+          modeBarButtonsToRemove: ['lasso2d', 'select2d'],
+          displaylogo: false,
+          toImageButtonOptions: {
+            format: 'svg',
+            filename: 'regression_plot',
+            height: 600,
+            width: 800,
+            scale: 2
+          }
+        }}
+      />
+    </div>
   );
 };

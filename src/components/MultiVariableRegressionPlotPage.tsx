@@ -38,7 +38,7 @@ export function MultiVariableRegressionPlotPage() {
         </div>
       </CardContent>
 
-      <CardFooter className="flex flex-col items-start gap-3 pt-6 border-t">
+      <CardFooter className="flex flex-col items-start gap-3">
         <div className="flex gap-2 font-medium">
           <span className="flex-shrink-0 bg-[var(--chart-2)] mt-1.5 rounded-full w-3 h-3" />
           <span className="font-mono">{equation}</span>
