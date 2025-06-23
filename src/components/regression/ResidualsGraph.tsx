@@ -2,6 +2,7 @@
 
 import { CartesianGrid, Scatter, ScatterChart, XAxis, YAxis } from "recharts";
 
+import { max, min } from "mathjs";
 import { GaussMarkovAssumptionsBadges } from "./GaussMarkovAssumptionsBadges";
 import type { ChartConfig } from "@/components/ui/chart";
 import {
@@ -36,6 +37,13 @@ export function ResidualsGraph({
     new VariationSeries(residuals.map((value) => value.y)),
   );
 
+  const xMin = min(residuals.map((value) => value.x));
+  const xMax = max(residuals.map((value) => value.x));
+
+  const xRange = xMax - xMin
+
+  const xDomain = [xMin - xRange * 0.1, xMax + xRange * 0.1]
+
   return (
     <Card>
       <CardHeader>
@@ -59,6 +67,7 @@ export function ResidualsGraph({
               tickLine={false}
               axisLine={false}
               tickMargin={8}
+              domain={xDomain}
             />
             <YAxis
               dataKey='y'

@@ -5,7 +5,7 @@ import type { RegressionResult } from "@/services/regression/regression";
 // Helper function to flatten objects recursively
 function flattenObject(
   obj: Record<string, any>,
-  prefix = ""
+  prefix = "",
 ): Record<string, any> {
   const result: Record<string, any> = {};
 

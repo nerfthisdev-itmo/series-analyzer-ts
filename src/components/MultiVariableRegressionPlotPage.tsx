@@ -9,10 +9,11 @@ export function MultiVariableRegressionPlotPage() {
 
   if (!seriesX || !seriesY || !seriesZ) {
     return (
-      <div className="h-full min-h-[500px]">
+      <div className='h-full min-h-[500px]'>
         <Card>
-          <CardContent className="p-6 text-red-500">
-            Данные отсутствуют или ряды пусты. Введите данные на странице "/linear-regression".
+          <CardContent className='p-6 text-red-500'>
+            Данные отсутствуют или ряды пусты. Введите данные на странице
+            "/linear-regression".
           </CardContent>
         </Card>
       </div>
@@ -22,12 +23,16 @@ export function MultiVariableRegressionPlotPage() {
   const result = multipleLinearRegression(seriesX, seriesY, seriesZ);
 
   return (
-    <div className="h-full min-h-[600px]">
+    <div className='h-full min-h-[600px]'>
       <MultiVariableRegressionPlotCard
         X1={seriesX.initial_data}
         X2={seriesY.initial_data}
         Y={seriesZ.initial_data}
-        result={result} x1Name={"X"} x2Name={"Y"} yName={"Z"} />
+        result={result}
+        x1Name={"X"}
+        x2Name={"Y"}
+        yName={"Z"}
+      />
       <Residuals3DGraph residuals={result.residuals}></Residuals3DGraph>
     </div>
   );
