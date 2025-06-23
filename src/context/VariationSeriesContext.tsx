@@ -1,10 +1,5 @@
 // src/context/VariationSeriesContext.tsx
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { getDefaultA, getDefaultB } from "./DefaultData";
 import type { ReactNode } from "react";
 
