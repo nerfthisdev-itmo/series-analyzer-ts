@@ -2,8 +2,6 @@
 
 import {
     CartesianGrid,
-    Line,
-    LineChart,
     Scatter,
     ScatterChart,
     XAxis,

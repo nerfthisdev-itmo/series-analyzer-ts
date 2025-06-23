@@ -28,7 +28,9 @@ export function testRegressionModel(
   );
 
   // SSE (Sum of Squared Errors)
-  const sse = regression.residuals.reduce((sum, r) => sum + r ** 2, 0);
+  const sse = regression.residuals
+    .map((value) => value.y)
+    .reduce((sum, r) => sum + r ** 2, 0);
 
   // F-статистика
   const fStat = ssr / 1 / (sse / (n - 2));

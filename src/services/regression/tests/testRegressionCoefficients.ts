@@ -16,7 +16,7 @@ export function testRegressionCoefficients(
   regression: RegressionResult,
 ): RegressionCoefficientsTestResult {
   const n = X.n;
-  const residuals = regression.residuals;
+  const residuals = regression.residuals.map((value) => value.y);
 
   // MSE (Mean Squared Error)
   const mse = residuals.reduce((sum, r) => sum + r ** 2, 0) / (n - 2);

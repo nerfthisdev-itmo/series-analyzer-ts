@@ -81,6 +81,8 @@ export function ScatterRegressionChart({
 
   const tests = allRegressionTests(X, Y, regressionResult);
 
+  console.log(tests)
+
   const CustomTooltip = ({ active, payload }: any) => {
     if (!active || !payload || !payload.length) return null;
 
@@ -186,9 +188,9 @@ export function ScatterRegressionChart({
           Showing {chartData.length} data points with regression line
         </div>
         <LinearRegressionFooter
-          // coefficientTest={tests.coefficientTest}
-          // modelTest={tests.fTest}
-          // correlationTest={tests.correlationTest}
+          coefficientTest={tests.coefficientTest}
+          modelTest={tests.fTest}
+          correlationTest={tests.correlationTest}
           regressionResult={regressionResult}
         ></LinearRegressionFooter>
       </CardFooter>
