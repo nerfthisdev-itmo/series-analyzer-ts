@@ -2,86 +2,62 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
 import type { Data, Layout } from 'plotly.js';
+import { useThemeColors } from '@/hooks/useThemeColors'; // Adjust the import path
 
 interface Base3DPlotProps {
   data: Array<Data>;
   layout?: Partial<Layout>;
   style?: React.CSSProperties;
+  config?: any;
 }
-
-const useThemeObserver = () => {
-  const [isDarkMode, setIsDarkMode] = React.useState(false);
-
-  React.useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setIsDarkMode(document.documentElement.classList.contains('dark'));
-    });
-
-    setIsDarkMode(document.documentElement.classList.contains('dark'));
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  return isDarkMode;
-};
 
 export const Base3DPlot: React.FC<Base3DPlotProps> = ({
   data,
   layout = {},
-  style = { width: '100%', height: '600px' }
+  style = { width: '100%', height: '600px' },
+  config = {}
 }) => {
-  const isDarkMode = useThemeObserver();
-
-  // Get theme colors
-  const themeColors = isDarkMode
-    ? {
-      background: "#18181b",
-      foreground: "#fafafa",
-      border: "#303032",
-      chart1: "#e1356f",
-      card: "#09090b"
-    }
-    : {
-      background: "#ffffff",
-      foreground: "#09090b",
-      border: "#a0a0a0",
-      chart1: "#e4497e",
-      card: "#fafafa"
-    };
+  const themeColors = useThemeColors();
 
   // Base layout configuration
   const baseLayout: Partial<Layout> = {
     paper_bgcolor: themeColors.background,
-    font: { color: themeColors.foreground },
-    margin: { t: 0, b: 0, l: 0, r: 0 },
+    plot_bgcolor: themeColors.background,
+    font: {
+      color: themeColors.foreground,
+      family: 'Inter, sans-serif'
+    },
+    margin: { t: 40, b: 40, l: 40, r: 40 },
     showlegend: true,
     legend: {
-      x: 0.8,
+      x: 0.9,
       y: 0.9,
       bgcolor: themeColors.card,
       bordercolor: themeColors.border,
       borderwidth: 1,
-      font: { color: themeColors.foreground }
+      font: { size: 12, color: themeColors.foreground },
+      orientation: 'v',
+      xanchor: 'right',
+      yanchor: 'top'
     },
     scene: {
       bgcolor: themeColors.background,
       xaxis: {
+        title: { font: { size: 14 } },
         gridcolor: themeColors.border,
         linecolor: themeColors.border,
         tickfont: { color: themeColors.foreground },
         zerolinecolor: themeColors.border
       },
       yaxis: {
+        title: { font: { size: 14 } },
         gridcolor: themeColors.border,
         linecolor: themeColors.border,
         tickfont: { color: themeColors.foreground },
         zerolinecolor: themeColors.border
       },
       zaxis: {
+        title: { font: { size: 14 } },
         gridcolor: themeColors.border,
         linecolor: themeColors.border,
         tickfont: { color: themeColors.foreground },
@@ -90,10 +66,15 @@ export const Base3DPlot: React.FC<Base3DPlotProps> = ({
       camera: {
         eye: { x: 1.5, y: -1.5, z: 0.8 }
       }
+    },
+    hoverlabel: {
+      bgcolor: themeColors.card,
+      bordercolor: themeColors.border,
+      font: { color: themeColors.foreground }
     }
   };
 
-  // Merge user-provided layout with base layout
+  // Merge layouts
   const mergedLayout = {
     ...baseLayout,
     ...layout,
@@ -119,30 +100,32 @@ export const Base3DPlot: React.FC<Base3DPlotProps> = ({
     }
   };
 
+  // Default config
+  const defaultConfig = {
+    responsive: true,
+    displayModeBar: true,
+    modeBarButtonsToRemove: ['lasso2d', 'select2d'],
+    displaylogo: false,
+    toImageButtonOptions: {
+      format: 'svg',
+      filename: '3d_plot',
+      height: 600,
+      width: 800,
+      scale: 2
+    }
+  };
+
   return (
     <div
-      className="border border-r-0 border-l-0 rounded-xl"
+      className="border border-r-0 border-l-0 rounded-xl overflow-hidden"
       style={{ backgroundColor: themeColors.background }}
-      key={isDarkMode ? 'dark' : 'light'}
     >
       <Plot
-        key={isDarkMode ? 'dark' : 'light'}
+        key={themeColors.background} // Re-render when theme changes
         data={data}
         layout={mergedLayout}
         style={style}
-        config={{
-          responsive: true,
-          displayModeBar: true,
-          modeBarButtonsToRemove: ['lasso2d', 'select2d'],
-          displaylogo: false,
-          toImageButtonOptions: {
-            format: 'svg',
-            filename: '3d_plot',
-            height: 600,
-            width: 800,
-            scale: 2
-          }
-        }}
+        config={{ ...defaultConfig, ...config }}
       />
     </div>
   );
