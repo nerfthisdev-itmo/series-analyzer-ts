@@ -40,9 +40,9 @@ export function ResidualsGraph({
   const xMin = min(residuals.map((value) => value.x));
   const xMax = max(residuals.map((value) => value.x));
 
-  const xRange = xMax - xMin
+  const xRange = xMax - xMin;
 
-  const xDomain = [xMin - xRange * 0.1, xMax + xRange * 0.1]
+  const xDomain = [xMin - xRange * 0.1, xMax + xRange * 0.1];
 
   return (
     <Card>
