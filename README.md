@@ -1,5 +1,7 @@
 # series analyzer
 
+[![Deploy static content to Pages](https://github.com/nerfthisdev-itmo/series-analyzer-ts/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/nerfthisdev-itmo/series-analyzer-ts/actions/workflows/main.yml)
+
 ## Выборка C:
 
 ### X:
