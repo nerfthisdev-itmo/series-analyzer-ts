@@ -1,3 +1,4 @@
+// @ts-ignore types are not developed
 import { jStat } from "jstat";
 import type {
   DistributionCharacteristics,

@@ -1,4 +1,4 @@
-// src/utils/twoSampleTTest.ts
+// @ts-ignore types are not developed
 import { jStat } from "jstat";
 import type { VariationSeries } from "@/services/series/variationSeries";
 
