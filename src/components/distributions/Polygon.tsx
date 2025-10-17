@@ -62,13 +62,13 @@ export function Polygon({
   let characteristics: SomeTheoreticalDistribution | undefined = undefined;
   let bestDistributionResult:
     | {
-        type: DistributionType;
-        result: PearsonResult;
-      }
+      type: DistributionType;
+      result: PearsonResult;
+    }
     | {
-        type: DistributionType;
-        result: KSTestResult;
-      }
+      type: DistributionType;
+      result: KSTestResult;
+    }
     | undefined = undefined;
   let resolvedDistributionType: DistributionType | undefined;
 
@@ -112,6 +112,8 @@ export function Polygon({
     );
   }
 
+  data.sort((a, b) => b.sample_value - a.sample_value)
+
   return (
     <Card>
       <CardHeader>
@@ -137,7 +139,7 @@ export function Polygon({
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              // tickFormatter={(value) => value.slice(0, 3)}
+            // tickFormatter={(value) => value.slice(0, 3)}
             />
             <ChartTooltip
               cursor={false}

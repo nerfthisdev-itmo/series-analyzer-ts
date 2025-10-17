@@ -30,7 +30,6 @@ import {
 import {
   ChartContainer,
   ChartTooltip,
-  ChartTooltipContent,
 } from "@/components/ui/chart";
 import { getBestDistributionType } from "@/services/distributions/getBestDistribution";
 import { calculateContinuousTheoreticalFrequencies } from "@/services/distributions/theoreticalFrequencies";
@@ -47,13 +46,53 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 type HistogramEntry = {
-  bin_center: number;
+  bin_label: string;
   number_of_occurrences: number;
 };
 
 type HistogramWithTheoreticalValuesEntry = HistogramEntry & {
   theoretical_frequency: number;
 };
+
+const CustomTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    return (
+      <div className="bg-background shadow-sm p-2 border rounded-lg">
+        <div className="gap-2 grid grid-cols-2">
+          <div className="flex flex-col">
+            <span className="text-muted-foreground">
+              Interval
+            </span>
+            <span className="font-bold">
+              {data.bin_label}
+            </span>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-muted-foreground">
+              Occurrences
+            </span>
+            <span className="font-bold">
+              {data.number_of_occurrences}
+            </span>
+          </div>
+          {data.theoretical_frequency !== undefined && (
+            <div className="flex flex-col">
+              <span className="text-muted-foreground uppercase">
+                Theoretical
+              </span>
+              <span className="font-bold">
+                {data.theoretical_frequency.toFixed(2)}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+  return null;
+};
+
 
 export function Histogram({
   intervalVariationSeries,
@@ -68,13 +107,13 @@ export function Histogram({
   let characteristics: SomeTheoreticalDistribution | undefined = undefined;
   let bestDistributionResult:
     | {
-        type: DistributionType;
-        result: PearsonResult;
-      }
+      type: DistributionType;
+      result: PearsonResult;
+    }
     | {
-        type: DistributionType;
-        result: KSTestResult;
-      }
+      type: DistributionType;
+      result: KSTestResult;
+    }
     | undefined = undefined;
   let resolvedDistributionType: DistributionType | undefined;
 
@@ -102,10 +141,8 @@ export function Histogram({
 
     Object.entries(intervalVariationSeries.getStatisticalSeries()).forEach(
       ([bin_center_str, number_of_occurrences]: [string, number], index) => {
-        const bin_center = parseFloat(bin_center_str);
-
         chartData.push({
-          bin_center,
+          bin_label: bin_center_str,
           number_of_occurrences,
           theoretical_frequency: theoretical_frequencies[index],
         } satisfies HistogramWithTheoreticalValuesEntry);
@@ -114,15 +151,16 @@ export function Histogram({
   } else {
     Object.entries(intervalVariationSeries.getStatisticalSeries()).forEach(
       ([bin_center_str, number_of_occurrences]: [string, number]) => {
-        const bin_center = parseFloat(bin_center_str);
 
         chartData.push({
-          bin_center,
+          bin_label: bin_center_str,
           number_of_occurrences,
         } satisfies HistogramEntry);
       },
     );
   }
+
+  console.log(chartData)
 
   return (
     <Card>
@@ -143,14 +181,14 @@ export function Histogram({
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey='bin_center'
+              dataKey='bin_label'
               tickLine={false}
               tickMargin={10}
               axisLine={false}
             />
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent hideLabel />}
+              content={<CustomTooltip hideLabel />}
             />
             <Bar
               dataKey='number_of_occurrences'
