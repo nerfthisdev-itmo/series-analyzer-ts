@@ -53,7 +53,7 @@ export class IntervalVariationSeries extends AbstractSeries {
       }
       const borders = this.intervalBorders;
       for (let i = 0; i < this.intervalCount; i++) {
-        const key = `[${borders[i]}, ${borders[i + 1]})`;
+        const key = `[${borders[i].toFixed(2)}, ${borders[i + 1].toFixed(2)})`;
         this._statisticalSeries[key] = series[i];
       }
     }
