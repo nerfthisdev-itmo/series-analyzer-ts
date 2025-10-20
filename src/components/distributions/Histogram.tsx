@@ -160,10 +160,12 @@ export function Histogram({
     );
   }
 
+  console.log(chartData)
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Interval analysis - Histogram</CardTitle>
+        <CardTitle>Histogram</CardTitle>
         <CardDescription>
           Constructed by counting number of elements inside each interval
         </CardDescription>

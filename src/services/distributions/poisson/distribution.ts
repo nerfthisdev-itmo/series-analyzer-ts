@@ -22,7 +22,7 @@ export const poisson: TheoreticalDistribution<PoissonDistributionCharacteristics
       };
     },
 
-    getTheoreticalExcess: (
+    getTheoreticalKurtosis: (
       characteristics: PoissonDistributionCharacteristics,
     ): number => {
       return 1 / characteristics.lambda;

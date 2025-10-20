@@ -23,7 +23,7 @@ export const exponential: TheoreticalDistribution<ExponentialDistributionCharact
       };
     },
 
-    getTheoreticalExcess: (
+    getTheoreticalKurtosis: (
       _: ExponentialDistributionCharacteristics,
     ): number => {
       return 6;

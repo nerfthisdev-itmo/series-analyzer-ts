@@ -117,7 +117,7 @@ export function Polygon({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Frequency analysis - Polygon chart</CardTitle>
+        <CardTitle>Polygon chart</CardTitle>
         <CardDescription>
           Constructed by counting a number of occurrences of each value
         </CardDescription>

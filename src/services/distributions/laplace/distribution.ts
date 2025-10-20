@@ -28,7 +28,7 @@ export const laplace: TheoreticalDistribution<LaplaceDistributionCharacteristics
       return 0;
     },
 
-    getTheoreticalExcess: () => {
+    getTheoreticalKurtosis: () => {
       return 3;
     },
 

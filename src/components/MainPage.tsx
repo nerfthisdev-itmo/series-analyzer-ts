@@ -38,11 +38,11 @@ const MainPage = () => {
       {/* графики показываем только когда есть данные */}
       {seriesA && seriesB && (
         <div className='flex gap-3 min-w-full'>
-          <div className='flex flex-col gap-3 w-1/2'>
+          <div className='gap-3 w-1/2'>
             <Polygon variationSeries={seriesA} distributionType='auto' />
             <CdfGraph variationSeries={seriesA} />
           </div>
-          <div className='flex flex-col gap-3 w-1/2'>
+          <div className='gap-3 w-1/2'>
             <Histogram
               intervalVariationSeries={seriesB}
               distributionType='auto'

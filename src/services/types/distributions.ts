@@ -5,8 +5,6 @@ import { laplace } from "../distributions/laplace/distribution";
 import { normal } from "../distributions/normal/distribution";
 import { poisson } from "../distributions/poisson/distribution";
 import { uniform } from "../distributions/uniform/distribution";
-import { hyperExponential } from "../distributions/hyper-exponential/distribution";
-import type { HyperExponentialDistributionCharacteristics } from "../distributions/hyper-exponential/distribution";
 import type { UniformDistributionCharacteristics } from "../distributions/uniform/distribution";
 import type { PoissonDistributionCharacteristics } from "../distributions/poisson/distribution";
 import type { LaplaceDistributionCharacteristics } from "../distributions/laplace/distribution";
@@ -23,8 +21,7 @@ export type DistributionType =
   | "laplace"
   | "geometric"
   | "uniform"
-  | "exponential"
-  | "hyper-exponential";
+  | "exponential";
 
 export type DistributionPair = [DistributionType, DistributionType];
 
@@ -41,7 +38,7 @@ export type StandardDistributionMetrics = {
 export type TheoreticalDistribution<T extends DistributionCharacteristics> = {
   getCharacteristicsFromEmpiricalData: (series: AbstractSeries) => T;
 
-  getTheoreticalExcess: (characteristics: T) => number;
+  getTheoreticalKurtosis: (characteristics: T) => number;
 
   getTheoreticalSkewness: (characteristics: T) => number;
 
@@ -58,8 +55,7 @@ export type SomeTheoreticalDistribution =
   | GeometricDistributionCharacteristics
   | UniformDistributionCharacteristics
   | PoissonDistributionCharacteristics
-  | ExponentialDistributionCharacteristics
-  | HyperExponentialDistributionCharacteristics;
+  | ExponentialDistributionCharacteristics;
 
 // Overloads for literal types
 export function getTheoreticalDistribution(
@@ -72,10 +68,10 @@ export function getTheoreticalDistribution(
   type: "laplace",
 ): TheoreticalDistribution<LaplaceDistributionCharacteristics>;
 export function getTheoreticalDistribution(
-  type: "geometric",
+  type: "laplace",
 ): TheoreticalDistribution<GeometricDistributionCharacteristics>;
 export function getTheoreticalDistribution(
-  type: "uniform",
+  type: "laplace",
 ): TheoreticalDistribution<UniformDistributionCharacteristics>;
 export function getTheoreticalDistribution(
   type: "poisson",
@@ -83,9 +79,6 @@ export function getTheoreticalDistribution(
 export function getTheoreticalDistribution(
   type: "exponential",
 ): TheoreticalDistribution<ExponentialDistributionCharacteristics>;
-export function getTheoreticalDistribution(
-  type: "hyper-exponential",
-): TheoreticalDistribution<HyperExponentialDistributionCharacteristics>;
 
 export function getTheoreticalDistribution(
   type: DistributionType,
@@ -110,8 +103,6 @@ export function getTheoreticalDistribution(
       return poisson;
     case "exponential":
       return exponential;
-    case "hyper-exponential":
-      return hyperExponential;
     default:
       throw new Error(`Unknown distribution type: ${type}`);
   }
@@ -129,6 +120,5 @@ export function getAllTheoreticalDistributions(): Array<{
     { type: "uniform", theory: uniform },
     { type: "poisson", theory: poisson },
     { type: "exponential", theory: exponential },
-    { type: "hyper-exponential", theory: hyperExponential },
   ];
 }

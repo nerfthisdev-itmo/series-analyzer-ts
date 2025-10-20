@@ -13,7 +13,6 @@ const ALL: Array<DistributionType> = [
   "geometric",
   "uniform",
   "exponential",
-  "hyper-exponential",
 ];
 
 type Props = {

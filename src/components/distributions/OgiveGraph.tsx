@@ -62,7 +62,7 @@ export function OgiveGraph({
   const x_domain = [
     0,
     intervalVariationSeries.cumulativeValues[
-    intervalVariationSeries.intervalCount - 1
+      intervalVariationSeries.intervalCount - 1
     ],
   ];
   const y_domain = [
@@ -99,7 +99,6 @@ export function OgiveGraph({
               tickCount={data.length}
               axisLine={false}
               tickMargin={8}
-              tickFormatter={(value) => value.toFixed(2)}
             />
             <YAxis
               dataKey='bin_center'
@@ -109,7 +108,6 @@ export function OgiveGraph({
               tickCount={data.length}
               axisLine={false}
               tickMargin={8}
-              tickFormatter={(value) => value.toFixed(2)}
             />
             <ChartTooltip
               cursor={false}
