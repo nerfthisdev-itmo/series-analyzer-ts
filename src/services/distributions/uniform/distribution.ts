@@ -44,10 +44,7 @@ export const uniform: TheoreticalDistribution<UniformDistributionCharacteristics
       };
     },
 
-    cdf: (
-      x: number,
-      { a, b, n }: UniformDistributionCharacteristics,
-    ): number => {
+    cdf: (x: number, { a, b }: UniformDistributionCharacteristics): number => {
       if (x <= a) return 0;
       if (x >= b) return 1;
       return (x - a) / (b - a);
