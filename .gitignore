@@ -4,3 +4,6 @@ dist
 dist-ssr
 *.local
 bun*
+
+.venv
+samples.txt

@@ -104,7 +104,7 @@ export function mergeCategoriesByLowerBound(
 
   // Final validation: ensure all theoretical frequencies ≥ 5
   for (const key in mergedTheoretical) {
-    if (mergedTheoretical[key] < DISTINCT_CATEGORY_LOWER_BOUND) {
+    if (mergedTheoretical[key] < lowerBound) {
       console.warn(
         `Expected frequency for category "${key}" is below threshold: ${mergedTheoretical[key]}.`,
       );

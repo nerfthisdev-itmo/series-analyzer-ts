@@ -22,7 +22,7 @@ export const binomial: TheoreticalDistribution<BinomialDistributionCharacteristi
       };
     },
 
-    getTheoreticalKurtosis: (
+    getTheoreticalExcess: (
       chars: BinomialDistributionCharacteristics,
     ): number => {
       return (

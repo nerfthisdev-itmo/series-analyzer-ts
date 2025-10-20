@@ -50,16 +50,14 @@ export function PearsonChiSquaredCharacteristic<
     theoreticalFreqs = calculateContinuousTheoreticalFrequencies(
       characteristics,
       theory,
-      series.intervalBorders.sort(),
+      series.intervalBorders,
     );
   } else {
     empiricalFreqs = series.getStatisticalSeries();
     theoreticalFreqs = calculateDiscreteTheoreticalFrequencies(
       characteristics,
       theory,
-      Object.keys(empiricalFreqs)
-        .map(parseFloat)
-        .sort((a, b) => a - b),
+      Object.keys(empiricalFreqs).map(parseFloat),
     );
   }
 
@@ -73,29 +71,51 @@ export function PearsonChiSquaredCharacteristic<
 
   sortedKeys.forEach((key) => {
     sortedEmpirical[key] = empiricalFreqs[key];
-    sortedTheoretical[key] = theoreticalFreqs[key] || 0;
+    sortedTheoretical[key] = theoreticalFreqs[key];
   });
 
   const { mergedEmpirical, mergedTheoretical } = mergeCategoriesByLowerBound(
     sortedEmpirical,
     sortedTheoretical,
+    2,
   );
 
+  const mergedDegreesOfFreedom = getDegreesOfFreedom(
+    Object.keys(mergedEmpirical).length,
+    characteristics,
+  );
+
+  const sortedDegreesOfFreedom = getDegreesOfFreedom(
+    Object.keys(sortedEmpirical).length,
+    characteristics,
+  );
+
+  const finalDegreesOfFreedom =
+    mergedDegreesOfFreedom >= 1
+      ? mergedDegreesOfFreedom
+      : sortedDegreesOfFreedom;
+
+  const chiSquared =
+    mergedDegreesOfFreedom >= 1
+      ? getChiSquared(mergedEmpirical, mergedTheoretical)
+      : getChiSquared(sortedEmpirical, sortedTheoretical);
+
+  const pValue = 1 - jStat.chisquare.cdf(chiSquared, finalDegreesOfFreedom);
+
+  return { chiSquared, degreesOfFreedom: finalDegreesOfFreedom, pValue };
+}
+
+function getChiSquared(
+  mergedEmpirical: Record<string, number>,
+  mergedTheoretical: Record<string, number>,
+) {
   let chiSquared = 0;
   for (const key in mergedEmpirical) {
     const o = mergedEmpirical[key] || 0;
     const e = mergedTheoretical[key];
     chiSquared += Math.pow(o - e, 2) / e;
   }
-
-  const degreesOfFreedom = getDegreesOfFreedom(
-    Object.keys(mergedEmpirical).length,
-    characteristics,
-  );
-
-  const pValue = 1 - jStat.chisquare.cdf(chiSquared, degreesOfFreedom);
-
-  return { chiSquared, degreesOfFreedom, pValue };
+  return chiSquared;
 }
 
 export function getPearsonForEveryDistributionType(
@@ -116,17 +136,13 @@ export function getBestDistributionTypeByPearson(
   series: AbstractSeries,
 ): { type: DistributionType; result: PearsonResult } | undefined {
   const results = getPearsonForEveryDistributionType(series);
-
-  // Filter only distributions with p-value ≥ 0.05
-  const validResults = results.filter((result) => result.result.pValue >= 0.05);
-
+  const validResults = results.filter((result) => result.result.pValue > 0.0);
   if (validResults.length === 0) {
     console.warn("No distribution passed the Chi-Squared test.");
     return undefined;
   }
+  console.log(results);
 
-  // Select best by highest p-value
-  validResults.sort((a, b) => b.result.chiSquared - a.result.chiSquared);
-
+  validResults.sort((a, b) => b.result.pValue - a.result.pValue);
   return validResults[0];
 }

@@ -89,7 +89,7 @@ export function CumulativeGraph({
               tickCount={data.length}
               axisLine={false}
               tickMargin={8}
-              // tickFormatter={(value) => value.slice(0, 3)}
+              tickFormatter={(value) => value.toFixed(2)}
             />
             <YAxis
               dataKey='cumulative_freq'
@@ -99,7 +99,7 @@ export function CumulativeGraph({
               tickCount={data.length}
               axisLine={false}
               tickMargin={8}
-              // tickFormatter={(value) => value.slice(0, 3)}
+              tickFormatter={(value) => value.toFixed(2)}
             />
             <ChartTooltip
               cursor={false}

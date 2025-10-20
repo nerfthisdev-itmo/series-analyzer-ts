@@ -29,7 +29,7 @@ export const geometric: TheoreticalDistribution<GeometricDistributionCharacteris
       return (2 - p) / Math.sqrt(1 - p);
     },
 
-    getTheoreticalKurtosis: ({ p }) => {
+    getTheoreticalExcess: ({ p }) => {
       return 6 + p ** 2 / (1 - p);
     },
 

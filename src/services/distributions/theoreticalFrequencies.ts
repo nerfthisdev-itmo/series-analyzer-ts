@@ -19,8 +19,9 @@ export function calculateContinuousTheoreticalFrequencies<
     const prob =
       theory.cdf(upperBound, characteristics) -
       theory.cdf(lowerBound, characteristics);
-    theoreticalFrequencies[`[${lowerBound}, ${upperBound})`] =
-      prob * characteristics.n;
+    theoreticalFrequencies[
+      `[${lowerBound.toFixed(2)}, ${upperBound.toFixed(2)})`
+    ] = prob * characteristics.n;
   }
   return theoreticalFrequencies;
 }

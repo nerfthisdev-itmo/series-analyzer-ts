@@ -23,7 +23,7 @@ export function MultiVariableRegressionPlotPage() {
   const result = multipleLinearRegression(seriesX, seriesY, seriesZ);
 
   return (
-    <div className='h-full min-h-[600px]'>
+    <div className='flex flex-col gap-6 h-full min-h-[600px]'>
       <MultiVariableRegressionPlotCard
         X1={seriesX.initial_data}
         X2={seriesY.initial_data}
