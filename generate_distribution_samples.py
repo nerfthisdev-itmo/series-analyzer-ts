@@ -10,15 +10,13 @@ Supported distributions:
   - geometric
   - uniform
   - exponential
-
-Each number is formatted with a dot (.) as decimal separator and values are
-separated by ', ' in the output file.
+  - hyperexponential
 """
 
 import numpy as np
 import argparse
 import sys
-from typing import Dict, Any, Tuple
+from typing import Dict, Any
 
 # Default parameters for each distribution
 DEFAULT_PARAMS: Dict[str, Dict[str, Any]] = {
@@ -29,6 +27,7 @@ DEFAULT_PARAMS: Dict[str, Dict[str, Any]] = {
     "geometric": {"p": 0.5},
     "uniform": {"low": 0.0, "high": 1.0},
     "exponential": {"scale": 1.0},
+    "hyperexponential": {"p": 0.5, "lambda1": 1.0, "lambda2": 0.1},
 }
 
 def generate_samples(dist_type: str, size: int, params: Dict[str, Any], seed: int = None) -> np.ndarray:
@@ -46,12 +45,22 @@ def generate_samples(dist_type: str, size: int, params: Dict[str, Any], seed: in
         elif dist_type == "laplace":
             return np.random.laplace(loc=params["loc"], scale=params["scale"], size=size)
         elif dist_type == "geometric":
-            # NumPy's geometric returns number of trials until first success (>=1)
             return np.random.geometric(p=params["p"], size=size)
         elif dist_type == "uniform":
             return np.random.uniform(low=params["low"], high=params["high"], size=size)
         elif dist_type == "exponential":
             return np.random.exponential(scale=params["scale"], size=size)
+        elif dist_type == "hyperexponential":
+            p = params["p"]
+            lambda1 = params["lambda1"]
+            lambda2 = params["lambda2"]
+            # Generate Bernoulli choices: True -> use lambda1, False -> use lambda2
+            choices = np.random.rand(size) < p
+            samples = np.empty(size)
+            # Sample from Exp(lambda1) for True, Exp(lambda2) for False
+            samples[choices] = np.random.exponential(scale=1.0 / lambda1, size=choices.sum())
+            samples[~choices] = np.random.exponential(scale=1.0 / lambda2, size=(~choices).sum())
+            return samples
         else:
             raise ValueError(f"Unsupported distribution: {dist_type}")
     except Exception as e:
@@ -64,7 +73,6 @@ def save_to_file(data: np.ndarray, filename: str, separator: str = ", ", decimal
     if decimal_places is not None:
         data = np.round(data, decimal_places)
 
-    # Convert to strings (NumPy uses '.' by default)
     str_data = [str(x) for x in data]
 
     with open(filename, 'w', encoding='utf-8') as f:
@@ -107,6 +115,16 @@ def parse_distribution_params(args: argparse.Namespace) -> Dict[str, Any]:
         if args.scale_exp <= 0:
             raise ValueError("scale must be positive for exponential distribution")
         params["scale"] = args.scale_exp
+    elif dist == "hyperexponential":
+        if not (0 < args.p_hyper <= 1):
+            raise ValueError("p (mixing probability) must be in (0, 1]")
+        if args.lambda1 <= 0:
+            raise ValueError("lambda1 must be positive")
+        if args.lambda2 <= 0:
+            raise ValueError("lambda2 must be positive")
+        params["p"] = args.p_hyper
+        params["lambda1"] = args.lambda1
+        params["lambda2"] = args.lambda2
 
     return params
 
@@ -120,7 +138,7 @@ def main():
         "distribution",
         choices=[
             "normal", "binomial", "poisson", "laplace",
-            "geometric", "uniform", "exponential"
+            "geometric", "uniform", "exponential", "hyperexponential"
         ],
         help="Type of distribution to sample from."
     )
@@ -152,7 +170,6 @@ def main():
     # Distribution-specific arguments
     dist_args = parser.add_argument_group("Distribution Parameters")
 
-    # Normal & Laplace share 'loc' and 'scale', but we give them distinct names to avoid conflict
     dist_args.add_argument("--loc", type=float, default=0.0, help="Mean (normal) (default: 0.0)")
     dist_args.add_argument("--scale", type=float, default=1.0, help="Std dev (normal) (default: 1.0)")
 
@@ -171,9 +188,13 @@ def main():
 
     dist_args.add_argument("--scale_exp", type=float, default=1.0, help="Scale = 1/lambda (exponential) (default: 1.0)")
 
+    # Hyperexponential parameters
+    dist_args.add_argument("--p_hyper", type=float, default=0.5, help="Mixing probability (hyperexponential) (default: 0.5)")
+    dist_args.add_argument("--lambda1", type=float, default=1.0, help="Rate of first exponential component (default: 1.0)")
+    dist_args.add_argument("--lambda2", type=float, default=0.1, help="Rate of second exponential component (default: 0.1)")
+
     args = parser.parse_args()
 
-    # Validate size
     if args.size <= 0:
         parser.error("Sample size must be a positive integer.")
 
