@@ -1,15 +1,15 @@
 // @ts-ignore types are not developed
 import { jStat } from "jstat";
 import type {
+  DistributionCharacteristics,
   StandardDistributionMetrics,
   TheoreticalDistribution,
 } from "../../types/distributions";
 import type { AbstractSeries } from "../../series/AbstractSeries";
 
-export type UniformDistributionCharacteristics = {
+export type UniformDistributionCharacteristics = DistributionCharacteristics & {
   a: number;
   b: number;
-  n: number;
 };
 
 export const uniform: TheoreticalDistribution<UniformDistributionCharacteristics> =
@@ -28,8 +28,8 @@ export const uniform: TheoreticalDistribution<UniformDistributionCharacteristics
       return 0; // Uniform distribution is symmetric
     },
 
-    getTheoreticalKurtosis: () => {
-      return 9 / 5; // Non-excess kurtosis for uniform distribution
+    getTheoreticalExcess: () => {
+      return -6 / 5; // Non-excess kurtosis for uniform distribution
     },
 
     getStandardMetrics: (
@@ -49,7 +49,7 @@ export const uniform: TheoreticalDistribution<UniformDistributionCharacteristics
       { a, b, n }: UniformDistributionCharacteristics,
     ): number => {
       if (x <= a) return 0;
-      if (x >= b) return n;
+      if (x >= b) return 1;
       return (x - a) / (b - a);
     },
 

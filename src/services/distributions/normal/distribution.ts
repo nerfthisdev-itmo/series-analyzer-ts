@@ -24,7 +24,7 @@ export const normal: TheoreticalDistribution<NormalDistributionCharacteristics> 
       };
     },
 
-    getTheoreticalKurtosis: (_: NormalDistributionCharacteristics): number => {
+    getTheoreticalExcess: (_: NormalDistributionCharacteristics): number => {
       return 0;
     },
 

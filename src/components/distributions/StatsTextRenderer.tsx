@@ -50,7 +50,7 @@ const StatsTextRenderer: React.FC<Props> = ({
       variance: base.variance,
       sd: base.sigma,
       skewness: dist.getTheoreticalSkewness(chars),
-      kurtosis: dist.getTheoreticalKurtosis(chars),
+      kurtosis: dist.getTheoreticalExcess(chars),
     };
   });
 

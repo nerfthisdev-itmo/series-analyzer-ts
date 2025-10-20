@@ -70,7 +70,7 @@ export function getBestDistributionByKS(
     .filter(
       (item) => !isNaN(item.result.ksStatistic) && !isNaN(item.result.pValue),
     )
-    .filter((result) => result.result.pValue >= 0.05);
+    .filter((result) => result.result.pValue >= 0.0);
 
   if (validResults.length === 0) {
     console.warn("No valid distributions available for K-S test.");
