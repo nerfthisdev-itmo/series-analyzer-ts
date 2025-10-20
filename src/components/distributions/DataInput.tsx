@@ -38,11 +38,11 @@ export const DataInput = ({ onSubmit }: Props) => {
   return (
     <div className='space-y-4'>
       <div>
-        <label className='block font-bold'>Данные A:</label>
+        <label className='block font-bold'>Данные для частотного анализа:</label>
         <textarea
           value={rawA}
           onChange={(e) => setRawA(e.target.value)}
-          className='w-full border p-2 rounded'
+          className='p-2 border rounded w-full'
           rows={3}
           placeholder='Пример: 1, 2, 3'
         />
@@ -55,11 +55,11 @@ export const DataInput = ({ onSubmit }: Props) => {
       </div>
 
       <div>
-        <label className='block font-bold'>Данные B:</label>
+        <label className='block font-bold'>Данные для интервального анализа:</label>
         <textarea
           value={rawB}
           onChange={(e) => setRawB(e.target.value)}
-          className='w-full border p-2 rounded'
+          className='p-2 border rounded w-full'
           rows={3}
           placeholder='Пример: 3, 2, 1'
         />
@@ -79,12 +79,12 @@ export const DataInput = ({ onSubmit }: Props) => {
           localStorage.setItem("inputA", rawA);
           localStorage.setItem("inputB", rawB);
         }}
-        className='px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700'
+        className='bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white'
       >
         Построить
       </button>
       <button
-        className='ml-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700'
+        className='bg-blue-600 hover:bg-blue-700 ml-2 px-4 py-2 rounded text-white'
         onClick={() => {
           localStorage.clear();
           setRawA("");

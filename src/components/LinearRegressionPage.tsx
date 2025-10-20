@@ -37,7 +37,7 @@ export function LinearRegressionPage() {
       <LinearRegressionDataInput onSubmit={handleSubmit} />
       <div className='flex gap-3 min-w-full'>
         {seriesX && seriesZ && resultXZ && (
-          <div className='gap-3 w-1/2'>
+          <div className='flex flex-col gap-3 w-1/2'>
             <ScatterRegressionChart
               X={seriesX}
               Y={seriesZ}
@@ -49,7 +49,7 @@ export function LinearRegressionPage() {
           </div>
         )}
         {seriesY && seriesZ && resultYZ && (
-          <div className='gap-3 w-1/2'>
+          <div className='flex flex-col gap-3 w-1/2'>
             <ScatterRegressionChart
               X={seriesY}
               Y={seriesZ}
